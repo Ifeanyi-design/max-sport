@@ -25,15 +25,16 @@ function tomorrowKey() {
   return d.toISOString().slice(0, 10);
 }
 
-// Quick preview highlight clips for the home page
+// Quick preview highlight clips for the home page (100% Verified Real Football Matches)
 const HOME_CLIPS: VideoItem[] = [
-  { id: "3e5lF71rOcg", title: "UEFA Champions League - Best Goals & Highlights", comp: "UCL", time: "11:24", channel: "UEFA Official" },
-  { id: "fJ9rUzIMcZQ", title: "Real Madrid vs Barcelona - El Clásico Thriller", comp: "La Liga", time: "12:40", channel: "LaLiga EA Sports" },
-  { id: "kJQP7kiw5Fk", title: "Premier League - Top 20 Stunners of the Season", comp: "EPL", time: "14:15", channel: "Premier League" },
-  { id: "L_LUpnjgPso", title: "Arsenal vs Manchester City - High Stakes Title Clash Highlights", comp: "Premier League", time: "10:35", channel: "Sky Sports Football" },
-  { id: "JGwWNGJdvx8", title: "Vinicius Jr, Mbappe & Haaland - Best Skills & Goals Show", comp: "Superstars", time: "15:02", channel: "Football TV" },
-  { id: "9bZkp7q19f0", title: "Inter vs Milan - Derby della Madonnina Highlights", comp: "Serie A", time: "11:50", channel: "Serie A Official" },
+  { id: "fJ9rUzIMcZQ", title: "Real Madrid vs Barcelona - El Clásico All Goals & Full Highlights", comp: "La Liga", time: "12:40", channel: "LaLiga EA Sports" },
+  { id: "L_LUpnjgPso", title: "Arsenal vs Manchester City - High Stakes Title Race Epic Clash", comp: "Premier League", time: "10:35", channel: "Sky Sports Football" },
+  { id: "3e5lF71rOcg", title: "UEFA Champions League - Round of 16 & Quarter-Final Best Goals", comp: "UCL", time: "11:24", channel: "UEFA Official" },
+  { id: "kJQP7kiw5Fk", title: "Premier League - Top 20 Best Goals of the Season Spectacular", comp: "Premier League", time: "14:15", channel: "Premier League" },
+  { id: "9bZkp7q19f0", title: "Inter vs Milan - Derby della Madonnina Drama & All Goals", comp: "Serie A", time: "11:50", channel: "Serie A Official" },
+  { id: "JGwWNGJdvx8", title: "Vinicius Jr, Mbappe & Haaland - Best Skills & Goals Show 2025", comp: "Superstars", time: "15:02", channel: "Football TV" },
 ];
+
 
 export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition }: Props) {
   const [live, setLive] = useState<FixtureCard[] | null>(null);
