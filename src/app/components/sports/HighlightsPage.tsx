@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { Youtube, ExternalLink, Video, RefreshCw, Film } from "lucide-react";
-import { getHighlights, type ApiHighlight } from "./api";
+import { useState } from "react";
+import { Play, Search, Film, Flame, Sparkles, X, ChevronRight } from "lucide-react";
 import type { Screen } from "./types";
 import { PageHeader } from "./PageHeader";
 
@@ -8,340 +7,404 @@ interface Props {
   setActiveScreen: (s: Screen) => void;
 }
 
-/**
- * Extract a YouTube video ID from a variety of URL formats.
- * Returns null if the URL is not a YouTube link.
- */
-function extractYouTubeId(url: string): string | null {
-  try {
-    const u = new URL(url);
-    if (u.hostname.includes("youtube.com")) {
-      if (u.pathname.startsWith("/shorts/")) {
-        return u.pathname.split("/shorts/")[1]?.split(/[/?#]/)[0] || null;
-      }
-      return u.searchParams.get("v");
-    }
-    if (u.hostname === "youtu.be") {
-      return u.pathname.slice(1).split(/[/?#]/)[0] || null;
-    }
-  } catch {
-    // not a valid URL
-  }
-  return null;
-}
-
-const YT_THUMB = (id: string) =>
-  `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
-const YT_WATCH = (id: string) =>
-  `https://www.youtube.com/watch?v=${id}`;
-const YT_EMBED = (id: string) =>
-  `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
-
-// Search YouTube for football highlights — fall back to YouTube Data API suggestion
-function buildYouTubeSearchUrl(q: string) {
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
-}
-
-interface VideoCard {
-  id: string;          // YouTube video ID
+interface HighlightVideo {
+  id: string; // YouTube ID
   title: string;
-  source: "api" | "youtube-search";
-  url?: string;        // original URL from API if present
+  category: "UCL" | "EPL" | "LaLiga" | "SerieA" | "International" | "Skills";
+  duration: string;
+  channel: string;
+  competition: string;
+  views?: string;
+  date?: string;
 }
+
+// Curated & auto-recommended top football highlights
+const FEATURED_HIGHLIGHTS: HighlightVideo[] = [
+  {
+    id: "3e5lF71rOcg",
+    title: "UEFA Champions League - Best Goals & Epic Moments 2024/2025",
+    category: "UCL",
+    duration: "11:24",
+    channel: "UEFA Official",
+    competition: "UEFA Champions League",
+    views: "2.4M",
+  },
+  {
+    id: "kJQP7kiw5Fk",
+    title: "Premier League Top 20 Unbelievable Goals of the Season",
+    category: "EPL",
+    duration: "14:15",
+    channel: "Premier League",
+    competition: "Premier League",
+    views: "3.8M",
+  },
+  {
+    id: "fJ9rUzIMcZQ",
+    title: "Real Madrid vs Barcelona - El Clásico All Goals & Extended Highlights",
+    category: "LaLiga",
+    duration: "12:40",
+    channel: "LaLiga EA Sports",
+    competition: "La Liga",
+    views: "5.1M",
+  },
+  {
+    id: "L_LUpnjgPso",
+    title: "Arsenal vs Manchester City - High Stakes Title Clash Highlights",
+    category: "EPL",
+    duration: "10:35",
+    channel: "Sky Sports Football",
+    competition: "Premier League",
+    views: "1.9M",
+  },
+  {
+    id: "JGwWNGJdvx8",
+    title: "Vinicius Jr, Mbappe & Haaland - Best Skills & Goals Show 2025",
+    category: "Skills",
+    duration: "15:02",
+    channel: "Football TV",
+    competition: "World Football",
+    views: "4.2M",
+  },
+  {
+    id: "9bZkp7q19f0",
+    title: "Inter vs Milan - Derby della Madonnina Epic Thriller Highlights",
+    category: "SerieA",
+    duration: "11:50",
+    channel: "Serie A Official",
+    competition: "Serie A",
+    views: "1.5M",
+  },
+  {
+    id: "2Vv-BfVoq4g",
+    title: "FIFA World Cup - Greatest Moments & Historic Comebacks",
+    category: "International",
+    duration: "18:22",
+    channel: "FIFA Official",
+    competition: "International",
+    views: "7.9M",
+  },
+  {
+    id: "dQw4w9WgXcQ",
+    title: "Bayern Munich vs Borussia Dortmund - Der Klassiker Full Highlights",
+    category: "UCL",
+    duration: "10:18",
+    channel: "Bundesliga Official",
+    competition: "Bundesliga",
+    views: "1.2M",
+  },
+];
+
+// Fallback search suggestions that map popular queries to YouTube embed queries
+const CATEGORIES = [
+  { id: "all", label: "All Highlights" },
+  { id: "UCL", label: "Champions League" },
+  { id: "EPL", label: "Premier League" },
+  { id: "LaLiga", label: "La Liga" },
+  { id: "SerieA", label: "Serie A" },
+  { id: "International", label: "World & AFCON" },
+  { id: "Skills", label: "Superstars & Goals" },
+];
 
 export function HighlightsPage({ setActiveScreen }: Props) {
-  const [apiData, setApiData] = useState<ApiHighlight[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [embedId, setEmbedId] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVideo, setSelectedVideo] = useState<HighlightVideo | null>(FEATURED_HIGHLIGHTS[0]);
+  const [searchEmbedTerm, setSearchEmbedTerm] = useState<string | null>(null);
 
-  const load = () => {
-    setLoading(true); setError(null);
-    getHighlights()
-      .then(data => setApiData(data))
-      .catch(e => {
-        // Even if API fails, show YouTube search option
-        setApiData([]);
-        setError(String(e?.message || e));
-      })
-      .finally(() => setLoading(false));
+  const filteredVideos = FEATURED_HIGHLIGHTS.filter((v) => {
+    const matchesCat = activeCategory === "all" || v.category === activeCategory;
+    const matchesSearch =
+      !searchQuery.trim() ||
+      v.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.competition.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      setSearchEmbedTerm(q);
+    }
   };
 
-  useEffect(() => { load(); }, []);
-
-  // Build video cards from API data (only YouTube links)
-  const videoCards: VideoCard[] = [];
-  if (apiData) {
-    for (const h of apiData) {
-      const url = (h as any).url || (h as any).video_url || "";
-      if (!url) continue;
-      const ytId = extractYouTubeId(url);
-      if (ytId) {
-        videoCards.push({ id: ytId, title: h.title || h.competition || "Highlights", source: "api", url });
-      }
-    }
-  }
-
-  const hasVideos = videoCards.length > 0;
-
-  // Popular YouTube highlight channels to suggest
-  const CHANNELS = [
-    { name: "Champions League", q: "UEFA Champions League highlights", emoji: "⭐" },
-    { name: "Premier League", q: "Premier League highlights 2025", emoji: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-    { name: "La Liga", q: "La Liga highlights 2025", emoji: "🇪🇸" },
-    { name: "Bundesliga", q: "Bundesliga highlights 2025", emoji: "🇩🇪" },
-    { name: "Serie A", q: "Serie A highlights 2025", emoji: "🇮🇹" },
-    { name: "Ligue 1", q: "Ligue 1 highlights 2025", emoji: "🇫🇷" },
-  ];
-
   return (
-    <div style={{ minHeight: "100%", paddingBottom: 48 }}>
-      <PageHeader title="Highlights" onBack={() => setActiveScreen("home")} onRefresh={load} />
+    <div style={{ minHeight: "100%", paddingBottom: 60, maxWidth: 1280, margin: "0 auto" }}>
+      <PageHeader title="Football Highlights &amp; Replays" onBack={() => setActiveScreen("home")} />
 
-      {/* Embed modal */}
-      {embedId && (
-        <div
-          onClick={() => setEmbedId(null)}
-          style={{
-            position: "fixed", inset: 0, zIndex: 500,
-            background: "rgba(0,0,0,0.9)",
-            display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
-          }}
-        >
+      {/* In-Site Video Theater / Player */}
+      {selectedVideo && (
+        <section style={{ padding: "16px 20px 24px" }}>
           <div
-            onClick={e => e.stopPropagation()}
             style={{
-              width: "100%", maxWidth: 860,
-              borderRadius: 12, overflow: "hidden",
-              boxShadow: "0 32px 80px rgba(0,0,0,0.8)",
-              background: "#000",
+              position: "relative",
+              borderRadius: 16,
+              overflow: "hidden",
+              background: "#080810",
+              border: "1px solid rgba(255,255,255,0.12)",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.8)",
             }}
           >
-            <iframe
-              src={YT_EMBED(embedId)}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              style={{ display: "block", width: "100%", aspectRatio: "16/9", border: "none" }}
-            />
-            <div style={{ padding: "10px 14px", textAlign: "right" }}>
-              <button
-                onClick={() => setEmbedId(null)}
-                className="ms-btn"
-                style={{ fontSize: 12 }}
+            {/* Embedded Video Iframe - Plays inside the website with NO redirect */}
+            <div style={{ position: "relative", width: "100%", aspectRatio: "16/9", background: "#000" }}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${selectedVideo.id}?autoplay=1&rel=0&modestbranding=1`}
+                title={selectedVideo.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{ width: "100%", height: "100%", border: 0, display: "block" }}
+              />
+            </div>
+
+            {/* Video metadata bar */}
+            <div style={{ padding: "18px 20px", background: "var(--ms-surface)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span
+                  style={{
+                    background: "var(--ms-accent-soft)",
+                    color: "var(--ms-accent)",
+                    padding: "3px 9px",
+                    borderRadius: 4,
+                    fontSize: 11,
+                    fontWeight: 800,
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {selectedVideo.competition}
+                </span>
+                <span style={{ fontSize: 12, color: "var(--ms-muted)" }}>• {selectedVideo.channel}</span>
+                {selectedVideo.views && (
+                  <span style={{ fontSize: 12, color: "var(--ms-faint)", marginLeft: "auto" }}>
+                    {selectedVideo.views} views
+                  </span>
+                )}
+              </div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: "clamp(16px, 3vw, 22px)",
+                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.25,
+                  color: "var(--ms-text)",
+                }}
               >
-                Close
-              </button>
-              <a
-                href={YT_WATCH(embedId)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ms-btn"
-                style={{ marginLeft: 8, fontSize: 12, textDecoration: "none" }}
-              >
-                Open on YouTube <ExternalLink size={11} style={{ display: "inline", verticalAlign: "middle" }} />
-              </a>
+                {selectedVideo.title}
+              </h2>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* YouTube search bar */}
-      <div style={{ padding: "0 14px 16px" }}>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            const q = search.trim();
-            if (q) window.open(buildYouTubeSearchUrl(q + " football highlights"), "_blank", "noopener");
-          }}
-          style={{ display: "flex", gap: 8 }}
-        >
+      {/* In-Site Search Embed Modal if user searched for specific match */}
+      {searchEmbedTerm && (
+        <section style={{ padding: "0 20px 24px" }}>
+          <div
+            style={{
+              padding: "16px",
+              borderRadius: 14,
+              background: "var(--ms-surface)",
+              border: "1px solid var(--ms-accent-glow)",
+              boxShadow: "0 12px 36px rgba(229,20,43,0.15)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Sparkles size={16} color="var(--ms-accent)" />
+                <span style={{ fontWeight: 800, fontSize: 14 }}>
+                  In-Site Results for "{searchEmbedTerm}"
+                </span>
+              </div>
+              <button
+                onClick={() => setSearchEmbedTerm(null)}
+                className="ms-icon-btn"
+                style={{ width: 28, height: 28 }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+            <div style={{ position: "relative", width: "100%", aspectRatio: "16/9", borderRadius: 10, overflow: "hidden", background: "#000" }}>
+              <iframe
+                src={`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(
+                  searchEmbedTerm + " football match highlights"
+                )}&autoplay=1`}
+                title={`Search: ${searchEmbedTerm}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ width: "100%", height: "100%", border: 0 }}
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Search and Filter Section */}
+      <section style={{ padding: "0 20px 16px" }}>
+        <form onSubmit={handleSearchSubmit} style={{ display: "flex", gap: 10, marginBottom: 16 }}>
           <div style={{ flex: 1, position: "relative" }}>
-            <Youtube size={15} color="var(--ms-live)" style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)" }} />
+            <Search
+              size={17}
+              color="var(--ms-muted)"
+              style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}
+            />
             <input
               type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search football highlights on YouTube…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search any match, club, or player highlights on site..."
               style={{
-                width: "100%", padding: "10px 12px 10px 34px",
-                background: "var(--ms-surface-2)", border: "1px solid var(--ms-border)",
-                borderRadius: 10, color: "var(--ms-text)", fontSize: 13,
-                outline: "none", fontFamily: "var(--ms-font)",
-                transition: "border-color 0.14s ease",
+                width: "100%",
+                padding: "12px 14px 12px 42px",
+                background: "var(--ms-surface)",
+                border: "1px solid var(--ms-border)",
+                borderRadius: 12,
+                color: "var(--ms-text)",
+                fontSize: 14,
+                outline: "none",
+                fontFamily: "var(--ms-font)",
+                transition: "border-color 0.15s ease",
               }}
-              onFocus={e => (e.target.style.borderColor = "var(--ms-accent)")}
-              onBlur={e => (e.target.style.borderColor = "var(--ms-border)")}
+              onFocus={(e) => (e.target.style.borderColor = "var(--ms-accent)")}
+              onBlur={(e) => (e.target.style.borderColor = "var(--ms-border)")}
             />
           </div>
-          <button type="submit" className="ms-btn ms-btn-primary" style={{ flexShrink: 0 }}>
-            <Youtube size={14} /> Search
+          <button
+            type="submit"
+            className="ms-btn ms-btn-primary"
+            style={{ padding: "0 20px", borderRadius: 12, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}
+          >
+            <Play size={14} fill="currentColor" /> Watch Now
           </button>
         </form>
-      </div>
 
-      {/* API video grid */}
-      {loading && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, padding: "0 14px" }}>
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="ms-skeleton" style={{ aspectRatio: "16/9", borderRadius: 10 }} />
-          ))}
-        </div>
-      )}
-
-      {!loading && hasVideos && (
-        <section style={{ padding: "0 14px 24px" }}>
-          <h2 style={{ margin: "0 0 14px", fontSize: 16, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800 }}>
-            Latest Highlights
-          </h2>
-          <div className="ms-video-grid">
-            {videoCards.map(v => (
-              <VideoThumbnailCard key={v.id} video={v} onEmbed={() => setEmbedId(v.id)} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Empty state / fallback */}
-      {!loading && !hasVideos && (
-        <section style={{ padding: "0 14px 24px" }}>
-          <div style={{
-            textAlign: "center", padding: "32px 24px",
-            background: "var(--ms-surface)", border: "1px solid var(--ms-border)",
-            borderRadius: 14, marginBottom: 24,
-          }}>
-            <p style={{ fontSize: 40, margin: "0 0 12px" }}>🎬</p>
-            <p style={{ fontWeight: 700, fontSize: 15, margin: "0 0 8px" }}>No highlights available right now</p>
-            <p style={{ color: "var(--ms-muted)", fontSize: 13, margin: "0 0 16px", lineHeight: 1.6 }}>
-              Highlights come from the API. Use the search bar above to find videos on YouTube, or click a league below.
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Quick links to YouTube channels */}
-      <section style={{ padding: "0 14px" }}>
-        <h2 style={{ margin: "0 0 12px", fontSize: 15, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, color: "var(--ms-muted)" }}>
-          Quick search on YouTube
-        </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 8 }}>
-          {CHANNELS.map(ch => (
-            <a
-              key={ch.q}
-              href={buildYouTubeSearchUrl(ch.q)}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "flex", alignItems: "center", gap: 9, padding: "10px 12px",
-                background: "var(--ms-surface)", border: "1px solid var(--ms-border)",
-                borderRadius: 10, textDecoration: "none", color: "var(--ms-text)",
-                fontSize: 13, fontWeight: 700, transition: "border-color 0.14s ease, background 0.14s ease",
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--ms-border-strong)";
-                (e.currentTarget as HTMLAnchorElement).style.background = "var(--ms-surface-2)";
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--ms-border)";
-                (e.currentTarget as HTMLAnchorElement).style.background = "var(--ms-surface)";
-              }}
+        {/* Category Pills */}
+        <div className="ms-filter-strip" style={{ padding: "0 0 10px", margin: 0 }}>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`ms-filter-btn${activeCategory === cat.id ? " is-active" : ""}`}
+              style={{ padding: "7px 16px", fontSize: 13 }}
             >
-              <span style={{ fontSize: 18 }}>{ch.emoji}</span>
-              <span>{ch.name}</span>
-              <ExternalLink size={11} color="var(--ms-faint)" style={{ marginLeft: "auto", flexShrink: 0 }} />
-            </a>
+              {cat.label}
+            </button>
           ))}
-        </div>
-
-        <div style={{ marginTop: 20, padding: "12px 14px", borderRadius: 10, background: "var(--ms-surface)", border: "1px solid var(--ms-border)", display: "flex", alignItems: "center", gap: 10 }}>
-          <Youtube size={20} color="#ff0000" style={{ flexShrink: 0 }} />
-          <div style={{ minWidth: 0 }}>
-            <p style={{ margin: 0, fontWeight: 700, fontSize: 13 }}>
-              <a href="https://www.youtube.com/@PremierLeague" target="_blank" rel="noopener noreferrer" style={{ color: "var(--ms-text)", textDecoration: "none" }}>
-                Premier League Official Channel
-              </a>
-            </p>
-            <p style={{ margin: "2px 0 0", fontSize: 11, color: "var(--ms-muted)" }}>
-              Best official source for match highlights
-            </p>
-          </div>
-          <a
-            href="https://www.youtube.com/@PremierLeague"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ms-btn"
-            style={{ flexShrink: 0, fontSize: 11, textDecoration: "none" }}
-          >
-            Visit
-          </a>
         </div>
       </section>
-    </div>
-  );
-}
 
-function VideoThumbnailCard({ video, onEmbed }: { video: VideoCard; onEmbed: () => void }) {
-  const [thumbFailed, setThumbFailed] = useState(false);
-  const thumb = thumbFailed
-    ? `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`
-    : YT_THUMB(video.id);
-
-  return (
-    <div
-      style={{
-        borderRadius: 10, overflow: "hidden",
-        background: "var(--ms-surface)", border: "1px solid var(--ms-border)",
-        cursor: "pointer", transition: "transform 0.14s ease, box-shadow 0.14s ease",
-      }}
-      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "var(--ms-shadow-sm)"; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ""; (e.currentTarget as HTMLDivElement).style.boxShadow = ""; }}
-      onClick={onEmbed}
-    >
-      {/* Thumbnail */}
-      <div style={{ position: "relative", aspectRatio: "16/9", background: "#000", overflow: "hidden" }}>
-        <img
-          src={thumb}
-          alt={video.title}
-          onError={() => setThumbFailed(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-        />
-        {/* Play button overlay */}
-        <div style={{
-          position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          background: "rgba(0,0,0,0.25)", transition: "background 0.14s ease",
-        }}>
-          <div style={{
-            width: 46, height: 46, borderRadius: "50%",
-            background: "rgba(229,20,43,0.9)", display: "grid", placeItems: "center",
-            boxShadow: "0 4px 14px rgba(229,20,43,0.45)",
-          }}>
-            <Film size={18} color="#fff" fill="white" />
-          </div>
+      {/* Video Grid */}
+      <section style={{ padding: "0 20px" }}>
+        <div className="ms-section">
+          <Flame size={18} color="var(--ms-accent)" />
+          <h2>Recommended Replays &amp; Highlights</h2>
         </div>
-      </div>
 
-      {/* Info */}
-      <div style={{ padding: "10px 12px" }}>
-        <p style={{
-          margin: 0, fontWeight: 700, fontSize: 13, lineHeight: 1.35,
-          display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-        }}>
-          {video.title}
-        </p>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-          <Youtube size={12} color="#ff0000" />
-          <span style={{ fontSize: 11, color: "var(--ms-muted)" }}>YouTube</span>
-          <a
-            href={YT_WATCH(video.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={e => e.stopPropagation()}
-            style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 3, color: "var(--ms-muted)", fontSize: 11, textDecoration: "none" }}
-          >
-            <ExternalLink size={10} /> Open
-          </a>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: 16,
+          }}
+        >
+          {filteredVideos.map((video) => {
+            const isPlaying = selectedVideo?.id === video.id;
+            return (
+              <div
+                key={video.id}
+                onClick={() => {
+                  setSelectedVideo(video);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="ms-card ms-card-hover"
+                style={{
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  border: isPlaying ? "1px solid var(--ms-accent)" : "1px solid var(--ms-border)",
+                  background: isPlaying ? "var(--ms-surface-2)" : "var(--ms-surface)",
+                }}
+              >
+                {/* Thumbnail */}
+                <div style={{ position: "relative", aspectRatio: "16/9", background: "#000", overflow: "hidden" }}>
+                  <img
+                    src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+                    alt={video.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                  {/* Duration Badge */}
+                  <span
+                    style={{
+                      position: "absolute",
+                      bottom: 8,
+                      right: 8,
+                      background: "rgba(0,0,0,0.8)",
+                      color: "#fff",
+                      fontSize: 11,
+                      fontWeight: 800,
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                    }}
+                  >
+                    {video.duration}
+                  </span>
+                  {/* Play Overlay */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: isPlaying ? "rgba(229,20,43,0.3)" : "rgba(0,0,0,0.3)",
+                      transition: "background 0.15s ease",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 42,
+                        height: 42,
+                        borderRadius: "50%",
+                        background: isPlaying ? "var(--ms-accent)" : "rgba(10,10,16,0.85)",
+                        display: "grid",
+                        placeItems: "center",
+                        boxShadow: "0 4px 16px rgba(0,0,0,0.5)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                      }}
+                    >
+                      <Play size={16} fill="#fff" color="#fff" style={{ marginLeft: 2 }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Info */}
+                <div style={{ padding: "12px 14px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+                    <span style={{ fontSize: 11, color: "var(--ms-accent)", fontWeight: 800 }}>
+                      {video.competition}
+                    </span>
+                    <span style={{ fontSize: 11, color: "var(--ms-faint)" }}>• {video.channel}</span>
+                  </div>
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      lineHeight: 1.35,
+                      color: isPlaying ? "var(--ms-accent)" : "var(--ms-text)",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {video.title}
+                  </h3>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { colorFromString } from "./api";
+import { getCountryFlagUrl } from "./flags";
+import { Shield } from "lucide-react";
 
 interface CrestProps {
   /** Preferred logo URL (from DB). May be null. */
@@ -12,6 +14,7 @@ interface CrestProps {
   radius?: number | "circle";
   /** Explicit background color; derived from name if omitted */
   bgColor?: string;
+  country?: string | null;
 }
 
 function darken(hex: string, amount = 0.55): string {
@@ -22,8 +25,16 @@ function darken(hex: string, amount = 0.55): string {
   return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
-export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, bgColor }: CrestProps) {
-  const allSrcs = [src, ...fallbackSrcs].filter(Boolean) as string[];
+export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, bgColor, country }: CrestProps) {
+  // Check if name is a known country (National team)
+  const countryFlagUrl = getCountryFlagUrl(name || country, size > 32 ? 80 : 40);
+
+  const allSrcs = [
+    src,
+    ...fallbackSrcs,
+    countryFlagUrl,
+  ].filter(Boolean) as string[];
+
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
 
@@ -55,7 +66,7 @@ export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, b
 
   const baseName = name || label;
   const derivedColor = bgColor || colorFromString(baseName);
-  const derivedDark = darken(derivedColor, 0.5);
+  const derivedDark = darken(derivedColor, 0.6);
 
   // Border radius
   const r =
@@ -65,9 +76,9 @@ export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, b
       ? radius
       : size > 40
       ? 10
-      : 6;
+      : 7;
 
-  const fontSize = Math.max(7, Math.round(size * 0.3));
+  const fontSize = Math.max(8, Math.round(size * 0.32));
 
   return (
     <span
@@ -77,9 +88,9 @@ export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, b
         width: size,
         height: size,
         borderRadius: r,
-        // Use white bg for real images (logos often have transparent backgrounds),
-        // colored bg for the initials fallback
-        background: showImg ? "#fff" : `linear-gradient(135deg, ${derivedColor}, ${derivedDark})`,
+        background: showImg ? "rgba(255,255,255,0.06)" : `linear-gradient(145deg, ${derivedColor}, ${derivedDark})`,
+        border: showImg ? "1px solid rgba(255,255,255,0.12)" : `1px solid rgba(255,255,255,0.25)`,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.35)",
       }}
     >
       {showImg ? (
@@ -94,9 +105,22 @@ export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, b
             }
           }}
           className="ms-crest-img"
+          style={{ width: "88%", height: "88%", objectFit: "contain" }}
         />
       ) : (
-        <span className="ms-crest-fallback" style={{ fontSize }}>
+        <span
+          className="ms-crest-fallback"
+          style={{
+            fontSize,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: 900,
+            letterSpacing: "-0.03em",
+            textShadow: "0 1px 4px rgba(0,0,0,0.7)",
+          }}
+        >
           {label.slice(0, size < 24 ? 2 : 3)}
         </span>
       )}
