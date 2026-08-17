@@ -174,23 +174,29 @@ export default function App() {
                 <div style={{ width: "1px", height: "14px", background: "rgba(255,59,59,0.2)", flexShrink: 0 }} />
 
                 <div style={{ flex: 1, overflow: "hidden" }}>
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={tickerIndex}
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
-                      transition={{ duration: 0.2 }}
-                      style={{ display: "flex", alignItems: "center", gap: "6px" }}
-                    >
-                       <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", fontWeight: 600, color: "#c0c5e0" }}>{liveTicker[tickerIdx].home}</span>
-                       <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: "14px", fontWeight: 900, color: "#fff", background: "rgba(255,255,255,0.07)", padding: "0 6px", borderRadius: "4px" }}>
-                         {liveTicker[tickerIdx].homeScore} — {liveTicker[tickerIdx].awayScore}
-                       </span>
-                       <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", fontWeight: 600, color: "#c0c5e0" }}>{liveTicker[tickerIdx].away}</span>
-                       <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: "10px", fontWeight: 800, color: "#ff3b3b" }}>{liveTicker[tickerIdx].minute}</span>
-                    </motion.div>
-                  </AnimatePresence>
+                  {liveTicker.length > 0 ? (
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={tickerIndex}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        transition={{ duration: 0.2 }}
+                        style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                      >
+                         <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", fontWeight: 600, color: "#c0c5e0" }}>{liveTicker[tickerIdx].home}</span>
+                         <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: "14px", fontWeight: 900, color: "#fff", background: "rgba(255,255,255,0.07)", padding: "0 6px", borderRadius: "4px" }}>
+                           {liveTicker[tickerIdx].homeScore} — {liveTicker[tickerIdx].awayScore}
+                         </span>
+                         <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", fontWeight: 600, color: "#c0c5e0" }}>{liveTicker[tickerIdx].away}</span>
+                         <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: "10px", fontWeight: 800, color: "#ff3b3b" }}>{liveTicker[tickerIdx].minute}</span>
+                      </motion.div>
+                    </AnimatePresence>
+                  ) : (
+                    <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", fontWeight: 600, color: "#5e6280" }}>
+                      No live matches right now — check back soon
+                    </span>
+                  )}
                 </div>
 
                 <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "10px", fontWeight: 600, color: "#5e6280", flexShrink: 0, letterSpacing: "0.03em" }}>Watch →</span>
