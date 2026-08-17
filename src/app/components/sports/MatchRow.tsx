@@ -14,11 +14,13 @@ export function MatchRow({ match, onClick, showLeague = true }: MatchRowProps) {
   const showScore = match.status !== "upcoming";
 
   const homeSrcs = teamLogoSources({
+    name: match.home,
     logo_url: match.homeLogo,
     provider_team_id: match.homeProviderId,
     provider_name: match.homeProviderName,
   });
   const awaySrcs = teamLogoSources({
+    name: match.away,
     logo_url: match.awayLogo,
     provider_team_id: match.awayProviderId,
     provider_name: match.awayProviderName,

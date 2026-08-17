@@ -1,18 +1,19 @@
 /**
- * Direct HD Club & League Logo Dictionary.
+ * Comprehensive HD Club & League Logo Dictionary.
  * Maps team names and common abbreviations to their official high-res transparent PNG crests.
- * Uses official Wikimedia / API-Sports / TheSportsDB CDN URLs.
  */
 
 export const CLUB_LOGOS: Record<string, string> = {
-  // --- Premier League ---
+  // --- Premier League & Championship ---
   arsenal: "https://media.api-sports.io/football/teams/42.png",
   "arsenal fc": "https://media.api-sports.io/football/teams/42.png",
   "aston villa": "https://media.api-sports.io/football/teams/66.png",
   bournemouth: "https://media.api-sports.io/football/teams/35.png",
+  "afc bournemouth": "https://media.api-sports.io/football/teams/35.png",
   brentford: "https://media.api-sports.io/football/teams/55.png",
   brighton: "https://media.api-sports.io/football/teams/51.png",
   "brighton & hove albion": "https://media.api-sports.io/football/teams/51.png",
+  "brighton and hove albion": "https://media.api-sports.io/football/teams/51.png",
   chelsea: "https://media.api-sports.io/football/teams/49.png",
   "chelsea fc": "https://media.api-sports.io/football/teams/49.png",
   "crystal palace": "https://media.api-sports.io/football/teams/52.png",
@@ -41,6 +42,44 @@ export const CLUB_LOGOS: Record<string, string> = {
   wolves: "https://media.api-sports.io/football/teams/39.png",
   wolverhampton: "https://media.api-sports.io/football/teams/39.png",
   "wolverhampton wanderers": "https://media.api-sports.io/football/teams/39.png",
+  sunderland: "https://media.api-sports.io/football/teams/71.png",
+  "leeds united": "https://media.api-sports.io/football/teams/63.png",
+  leeds: "https://media.api-sports.io/football/teams/63.png",
+  "hull city": "https://media.api-sports.io/football/teams/64.png",
+  hull: "https://media.api-sports.io/football/teams/64.png",
+  burnley: "https://media.api-sports.io/football/teams/44.png",
+  sheffield: "https://media.api-sports.io/football/teams/62.png",
+  "sheffield united": "https://media.api-sports.io/football/teams/62.png",
+  "sheffield wednesday": "https://media.api-sports.io/football/teams/70.png",
+  middlesbrough: "https://media.api-sports.io/football/teams/68.png",
+  norwich: "https://media.api-sports.io/football/teams/67.png",
+  "norwich city": "https://media.api-sports.io/football/teams/67.png",
+  "west brom": "https://media.api-sports.io/football/teams/60.png",
+  "west bromwich albion": "https://media.api-sports.io/football/teams/60.png",
+  watford: "https://media.api-sports.io/football/teams/38.png",
+  "luton town": "https://media.api-sports.io/football/teams/1359.png",
+  luton: "https://media.api-sports.io/football/teams/1359.png",
+  coventry: "https://media.api-sports.io/football/teams/1353.png",
+  "coventry city": "https://media.api-sports.io/football/teams/1353.png",
+  blackburn: "https://media.api-sports.io/football/teams/69.png",
+  "blackburn rovers": "https://media.api-sports.io/football/teams/69.png",
+  preston: "https://media.api-sports.io/football/teams/73.png",
+  "preston north end": "https://media.api-sports.io/football/teams/73.png",
+  "stoke city": "https://media.api-sports.io/football/teams/75.png",
+  stoke: "https://media.api-sports.io/football/teams/75.png",
+  millwall: "https://media.api-sports.io/football/teams/74.png",
+  qpr: "https://media.api-sports.io/football/teams/72.png",
+  "queens park rangers": "https://media.api-sports.io/football/teams/72.png",
+  derby: "https://media.api-sports.io/football/teams/58.png",
+  "derby county": "https://media.api-sports.io/football/teams/58.png",
+  plymouth: "https://media.api-sports.io/football/teams/1367.png",
+  "plymouth argyle": "https://media.api-sports.io/football/teams/1367.png",
+  cardiff: "https://media.api-sports.io/football/teams/61.png",
+  "cardiff city": "https://media.api-sports.io/football/teams/61.png",
+  swansea: "https://media.api-sports.io/football/teams/76.png",
+  "swansea city": "https://media.api-sports.io/football/teams/76.png",
+  "bristol city": "https://media.api-sports.io/football/teams/59.png",
+  portsmouth: "https://media.api-sports.io/football/teams/1368.png",
 
   // --- La Liga ---
   "real madrid": "https://media.api-sports.io/football/teams/541.png",
@@ -48,6 +87,7 @@ export const CLUB_LOGOS: Record<string, string> = {
   "fc barcelona": "https://media.api-sports.io/football/teams/529.png",
   "atletico madrid": "https://media.api-sports.io/football/teams/530.png",
   "atlético madrid": "https://media.api-sports.io/football/teams/530.png",
+  "atletico de madrid": "https://media.api-sports.io/football/teams/530.png",
   "real sociedad": "https://media.api-sports.io/football/teams/548.png",
   "athletic bilbao": "https://media.api-sports.io/football/teams/531.png",
   "athletic club": "https://media.api-sports.io/football/teams/531.png",
@@ -59,29 +99,36 @@ export const CLUB_LOGOS: Record<string, string> = {
   villarreal: "https://media.api-sports.io/football/teams/533.png",
   girona: "https://media.api-sports.io/football/teams/547.png",
   "celta vigo": "https://media.api-sports.io/football/teams/538.png",
+  "celta de vigo": "https://media.api-sports.io/football/teams/538.png",
   osasuna: "https://media.api-sports.io/football/teams/727.png",
   mallorca: "https://media.api-sports.io/football/teams/798.png",
+  "rcd mallorca": "https://media.api-sports.io/football/teams/798.png",
   "rayo vallecano": "https://media.api-sports.io/football/teams/728.png",
   getafe: "https://media.api-sports.io/football/teams/546.png",
   alaves: "https://media.api-sports.io/football/teams/542.png",
-  "deportivo alavés": "https://media.api-sports.io/football/teams/542.png",
+  "deportivo alaves": "https://media.api-sports.io/football/teams/542.png",
   "las palmas": "https://media.api-sports.io/football/teams/534.png",
+  "ud las palmas": "https://media.api-sports.io/football/teams/534.png",
   espanyol: "https://media.api-sports.io/football/teams/540.png",
+  "rcd espanyol": "https://media.api-sports.io/football/teams/540.png",
   valladolid: "https://media.api-sports.io/football/teams/720.png",
   "real valladolid": "https://media.api-sports.io/football/teams/720.png",
   leganes: "https://media.api-sports.io/football/teams/745.png",
+  "cd leganes": "https://media.api-sports.io/football/teams/745.png",
 
-  // --- Serie A ---
+  // --- Serie A & Serie B ---
   inter: "https://media.api-sports.io/football/teams/505.png",
   "inter milan": "https://media.api-sports.io/football/teams/505.png",
-  "internazionale": "https://media.api-sports.io/football/teams/505.png",
+  internazionale: "https://media.api-sports.io/football/teams/505.png",
   milan: "https://media.api-sports.io/football/teams/489.png",
   "ac milan": "https://media.api-sports.io/football/teams/489.png",
   juventus: "https://media.api-sports.io/football/teams/496.png",
   napoli: "https://media.api-sports.io/football/teams/492.png",
+  "ssc napoli": "https://media.api-sports.io/football/teams/492.png",
   roma: "https://media.api-sports.io/football/teams/497.png",
   "as roma": "https://media.api-sports.io/football/teams/497.png",
   lazio: "https://media.api-sports.io/football/teams/487.png",
+  "ss lazio": "https://media.api-sports.io/football/teams/487.png",
   atalanta: "https://media.api-sports.io/football/teams/499.png",
   fiorentina: "https://media.api-sports.io/football/teams/502.png",
   bologna: "https://media.api-sports.io/football/teams/500.png",
@@ -93,18 +140,27 @@ export const CLUB_LOGOS: Record<string, string> = {
   empoli: "https://media.api-sports.io/football/teams/511.png",
   parma: "https://media.api-sports.io/football/teams/523.png",
   como: "https://media.api-sports.io/football/teams/883.png",
+  "como 1907": "https://media.api-sports.io/football/teams/883.png",
   venezia: "https://media.api-sports.io/football/teams/517.png",
   sassuolo: "https://media.api-sports.io/football/teams/488.png",
   salernitana: "https://media.api-sports.io/football/teams/514.png",
   pisa: "https://media.api-sports.io/football/teams/524.png",
   cesena: "https://media.api-sports.io/football/teams/520.png",
+  palermo: "https://media.api-sports.io/football/teams/504.png",
+  sampdoria: "https://media.api-sports.io/football/teams/498.png",
+  spezia: "https://media.api-sports.io/football/teams/515.png",
+  cremonese: "https://media.api-sports.io/football/teams/522.png",
+  brescia: "https://media.api-sports.io/football/teams/506.png",
+  bari: "https://media.api-sports.io/football/teams/519.png",
+  catanzaro: "https://media.api-sports.io/football/teams/1585.png",
 
-  // --- Bundesliga ---
+  // --- Bundesliga & 2. Bundesliga ---
   "bayern munich": "https://media.api-sports.io/football/teams/157.png",
   "fc bayern": "https://media.api-sports.io/football/teams/157.png",
-  "bayern münchen": "https://media.api-sports.io/football/teams/157.png",
+  "bayern munchen": "https://media.api-sports.io/football/teams/157.png",
   "borussia dortmund": "https://media.api-sports.io/football/teams/165.png",
   dortmund: "https://media.api-sports.io/football/teams/165.png",
+  "bvb dortmund": "https://media.api-sports.io/football/teams/165.png",
   "bayer leverkusen": "https://media.api-sports.io/football/teams/168.png",
   leverkusen: "https://media.api-sports.io/football/teams/168.png",
   "rb leipzig": "https://media.api-sports.io/football/teams/173.png",
@@ -116,10 +172,11 @@ export const CLUB_LOGOS: Record<string, string> = {
   wolfsburg: "https://media.api-sports.io/football/teams/161.png",
   "vfl wolfsburg": "https://media.api-sports.io/football/teams/161.png",
   "borussia monchengladbach": "https://media.api-sports.io/football/teams/163.png",
-  "monchengladbach": "https://media.api-sports.io/football/teams/163.png",
+  monchengladbach: "https://media.api-sports.io/football/teams/163.png",
   freiburg: "https://media.api-sports.io/football/teams/160.png",
   "sc freiburg": "https://media.api-sports.io/football/teams/160.png",
   "union berlin": "https://media.api-sports.io/football/teams/182.png",
+  "1. fc union berlin": "https://media.api-sports.io/football/teams/182.png",
   "werder bremen": "https://media.api-sports.io/football/teams/162.png",
   bremen: "https://media.api-sports.io/football/teams/162.png",
   hoffenheim: "https://media.api-sports.io/football/teams/167.png",
@@ -128,11 +185,32 @@ export const CLUB_LOGOS: Record<string, string> = {
   "mainz 05": "https://media.api-sports.io/football/teams/164.png",
   bochum: "https://media.api-sports.io/football/teams/176.png",
   "st. pauli": "https://media.api-sports.io/football/teams/186.png",
+  "fc st. pauli": "https://media.api-sports.io/football/teams/186.png",
   heidenheim: "https://media.api-sports.io/football/teams/180.png",
   holstein: "https://media.api-sports.io/football/teams/191.png",
   "holstein kiel": "https://media.api-sports.io/football/teams/191.png",
+  hamburg: "https://media.api-sports.io/football/teams/175.png",
+  "hamburger sv": "https://media.api-sports.io/football/teams/175.png",
+  paderborn: "https://media.api-sports.io/football/teams/184.png",
+  "sc paderborn": "https://media.api-sports.io/football/teams/184.png",
+  "sc paderborn 07": "https://media.api-sports.io/football/teams/184.png",
+  koln: "https://media.api-sports.io/football/teams/192.png",
+  "1. fc koln": "https://media.api-sports.io/football/teams/192.png",
+  cologne: "https://media.api-sports.io/football/teams/192.png",
+  hertha: "https://media.api-sports.io/football/teams/159.png",
+  "hertha bsc": "https://media.api-sports.io/football/teams/159.png",
+  "hertha berlin": "https://media.api-sports.io/football/teams/159.png",
+  schalke: "https://media.api-sports.io/football/teams/174.png",
+  "schalke 04": "https://media.api-sports.io/football/teams/174.png",
+  hannover: "https://media.api-sports.io/football/teams/166.png",
+  "hannover 96": "https://media.api-sports.io/football/teams/166.png",
+  dusseldorf: "https://media.api-sports.io/football/teams/158.png",
+  "fortuna dusseldorf": "https://media.api-sports.io/football/teams/158.png",
+  nurnberg: "https://media.api-sports.io/football/teams/171.png",
+  "1. fc nurnberg": "https://media.api-sports.io/football/teams/171.png",
+  kaiserslautern: "https://media.api-sports.io/football/teams/179.png",
 
-  // --- Ligue 1 ---
+  // --- Ligue 1 & Ligue 2 ---
   "paris saint germain": "https://media.api-sports.io/football/teams/85.png",
   psg: "https://media.api-sports.io/football/teams/85.png",
   "paris sg": "https://media.api-sports.io/football/teams/85.png",
@@ -145,15 +223,32 @@ export const CLUB_LOGOS: Record<string, string> = {
   lille: "https://media.api-sports.io/football/teams/79.png",
   rennes: "https://media.api-sports.io/football/teams/94.png",
   nice: "https://media.api-sports.io/football/teams/84.png",
+  "ogc nice": "https://media.api-sports.io/football/teams/84.png",
   lens: "https://media.api-sports.io/football/teams/116.png",
+  "rc lens": "https://media.api-sports.io/football/teams/116.png",
   strasbourg: "https://media.api-sports.io/football/teams/95.png",
   toulouse: "https://media.api-sports.io/football/teams/96.png",
+  "toulouse fc": "https://media.api-sports.io/football/teams/96.png",
   reims: "https://media.api-sports.io/football/teams/93.png",
   nantes: "https://media.api-sports.io/football/teams/83.png",
   brest: "https://media.api-sports.io/football/teams/1063.png",
   auxerre: "https://media.api-sports.io/football/teams/108.png",
+  "aj auxerre": "https://media.api-sports.io/football/teams/108.png",
   "saint-etienne": "https://media.api-sports.io/football/teams/106.png",
+  "as saint-etienne": "https://media.api-sports.io/football/teams/106.png",
   angers: "https://media.api-sports.io/football/teams/77.png",
+  troyes: "https://media.api-sports.io/football/teams/110.png",
+  "estac troyes": "https://media.api-sports.io/football/teams/110.png",
+  "paris fc": "https://media.api-sports.io/football/teams/117.png",
+  lorient: "https://media.api-sports.io/football/teams/97.png",
+  "fc lorient": "https://media.api-sports.io/football/teams/97.png",
+  metz: "https://media.api-sports.io/football/teams/112.png",
+  clermont: "https://media.api-sports.io/football/teams/98.png",
+  bordeaux: "https://media.api-sports.io/football/teams/78.png",
+  guingamp: "https://media.api-sports.io/football/teams/90.png",
+  ajaccio: "https://media.api-sports.io/football/teams/105.png",
+  caen: "https://media.api-sports.io/football/teams/88.png",
+  amiens: "https://media.api-sports.io/football/teams/89.png",
 
   // --- Other European Giants ---
   ajax: "https://media.api-sports.io/football/teams/194.png",
@@ -202,15 +297,35 @@ export const CLUB_LOGOS: Record<string, string> = {
 };
 
 /**
- * Normalizes club name and searches dictionary for direct HD transparent PNG logo.
+ * Normalizes club name (removes accents, FC prefixes, etc.) and searches dictionary.
  */
 export function getClubDictionaryLogo(name?: string | null): string | null {
   if (!name) return null;
-  const clean = name
+  // Normalize string: convert ö to o, é to e, etc.
+  const unaccented = name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .trim()
-    .replace(/^fc\s+|\s+fc$|\s+cf$|^afc\s+|\s+afc$|\s+sc$|\s+ac$/g, "")
     .trim();
 
-  return CLUB_LOGOS[clean] || CLUB_LOGOS[name.toLowerCase().trim()] || null;
+  // Try direct match
+  if (CLUB_LOGOS[unaccented]) return CLUB_LOGOS[unaccented];
+  if (CLUB_LOGOS[name.toLowerCase().trim()]) return CLUB_LOGOS[name.toLowerCase().trim()];
+
+  // Strip FC, CF, AFC, SC, AC, SV, 1., etc.
+  const cleaned = unaccented
+    .replace(/\b(fc|cf|afc|sc|ac|sv|bsc|ssc|rc|ogc|aj|cd|ud|1\.)\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (CLUB_LOGOS[cleaned]) return CLUB_LOGOS[cleaned];
+
+  // Try partial word matching for known big clubs
+  for (const [key, url] of Object.entries(CLUB_LOGOS)) {
+    if (cleaned.length > 3 && (key === cleaned || key.startsWith(cleaned) || cleaned.startsWith(key))) {
+      return url;
+    }
+  }
+
+  return null;
 }

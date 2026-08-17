@@ -186,22 +186,21 @@ export function leagueStyle(slug?: string | null) {
   return LEAGUE_STYLES[slug ?? ""] ?? { abbr: "", color: "#6b6b7b" };
 }
 
-/** Build an ordered list of logo URLs to try for a team (first non-null wins). */
-export function teamLogoSources(team: { logo_url?: string | null; provider_team_id?: string | null; provider_name?: string | null }): string[] {
+import { getClubDictionaryLogo } from "./clubLogos";
+import { getCompetitionDictionaryLogo } from "./competitionLogos";
+
+/** Build an ordered list of logo URLs to try for a team (first valid wins). */
+export function teamLogoSources(team: { name?: string | null; logo_url?: string | null; provider_team_id?: string | null; provider_name?: string | null }): string[] {
   const sources: string[] = [];
+  const dictLogo = getClubDictionaryLogo(team.name);
+  if (dictLogo) sources.push(dictLogo);
   if (team.logo_url) sources.push(team.logo_url);
-  if (team.provider_team_id) {
-    if (!team.provider_name || team.provider_name === "api-football") {
-      sources.push(`https://media.api-sports.io/football/teams/${team.provider_team_id}.png`);
-    }
-    if (!team.provider_name || team.provider_name === "thesportsdb") {
-      sources.push(`https://www.thesportsdb.com/images/media/team/badge/${team.provider_team_id}.png`);
-    }
+  if (team.provider_team_id && (!team.provider_name || team.provider_name === "api-football")) {
+    sources.push(`https://media.api-sports.io/football/teams/${team.provider_team_id}.png`);
   }
   return sources;
 }
 
-import { getCompetitionDictionaryLogo } from "./competitionLogos";
 
 /** Build an ordered list of logo URLs to try for a competition. */
 export function competitionLogoSources(comp: { logo_url?: string | null; slug?: string | null; name?: string | null; provider_competition_id?: string | null; provider_name?: string | null }): string[] {
