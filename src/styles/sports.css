@@ -1,0 +1,65 @@
+:root {
+  --ms-bg: #0a0a10;
+  --ms-surface: #12121a;
+  --ms-surface-2: #181822;
+  --ms-border: rgba(255, 255, 255, 0.08);
+  --ms-text: #ececf1;
+  --ms-muted: #8b8b9a;
+  --ms-faint: #5c5c6b;
+  --ms-accent: #c81e1e;
+  --ms-live: #dc2626;
+  --ms-sidebar: 220px;
+  --ms-sidebar-collapsed: 64px;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  button:not(:disabled) {
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+  }
+
+  button:not(:disabled):hover {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+}
+
+.ms-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.ms-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.ms-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+}
+
+.ms-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes msLivePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.ms-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ms-live);
+  display: inline-block;
+  animation: msLivePulse 1.4s ease-in-out infinite;
+}

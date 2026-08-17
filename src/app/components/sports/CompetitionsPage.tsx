@@ -1,98 +1,46 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Trophy, ArrowLeft, RefreshCw, Star } from "lucide-react";
-import { getCompetitions, toCompetitionCard, CompetitionCard, ApiCompetition } from "./api";
+import { useEffect, useMemo, useState } from "react";
+import { Trophy } from "lucide-react";
+import type { Screen } from "./types";
+import { getCompetitions, toCompetitionCard, type CompetitionCard } from "./api";
+import { Crest } from "./Crest";
+import { EmptyState } from "./EmptyState";
+import { ErrorState } from "./ErrorState";
+import { PageHeader } from "./PageHeader";
 
 interface Props {
-  setActiveScreen: (s: string) => void;
+  setActiveScreen: (screen: Screen) => void;
+  onOpenCompetition: (slug: string) => void;
 }
 
-export function CompetitionsPage({ setActiveScreen }: Props) {
-  const [comps, setComps] = useState<CompetitionCard[]>([]);
+export function CompetitionsPage({ setActiveScreen, onOpenCompetition }: Props) {
+  const [competitions, setCompetitions] = useState<CompetitionCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const load = () => {
     setLoading(true);
     setError(null);
-    getCompetitions()
-      .then((data: ApiCompetition[]) => setComps(data.map(toCompetitionCard)))
-      .catch((e) => setError(String(e?.message || e)))
-      .finally(() => setLoading(false));
+    getCompetitions().then((items) => setCompetitions(items.map(toCompetitionCard))).catch((err) => setError(String(err?.message || err))).finally(() => setLoading(false));
   };
+  useEffect(load, []);
 
-  useEffect(() => {
-    load();
-  }, []);
+  const grouped = useMemo(() => ({
+    Domestic: competitions.filter((item) => !/champions|europa|conference|international|world cup|copa|nations/i.test(item.name)),
+    International: competitions.filter((item) => /champions|europa|conference|international|world cup|copa|nations/i.test(item.name)),
+  }), [competitions]);
 
-  const featured = comps.find((c) => c.season) ?? comps[0];
-  const club = useMemo(() => comps.filter((c) => !/champions league|europa|euro|copa|world cup|nations/i.test(c.name)), [comps]);
-  const intl = useMemo(() => comps.filter((c) => /champions league|europa|euro|copa|world cup|nations/i.test(c.name)), [comps]);
-
-  return (
-    <div style={{ minHeight: "100vh", background: "#0b0c1a", color: "#fff", paddingBottom: 40 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px" }}>
-        <button onClick={() => setActiveScreen("home")} style={{ background: "transparent", border: "none", color: "#fff", fontSize: 18 }}>
-          <ArrowLeft />
-        </button>
-        <div style={{ fontWeight: 800, fontSize: 18 }}>Competitions</div>
-        <button onClick={load} style={{ marginLeft: "auto", background: "transparent", border: "none", color: "#9095b8", cursor: "pointer" }}>
-          <RefreshCw />
-        </button>
-      </div>
-
-      {/* Featured hero */}
-      {featured && (
-        <div
-          onClick={() => setActiveScreen("standings")}
-          style={{ margin: "0 12px 14px", padding: 18, borderRadius: 16, cursor: "pointer", background: `linear-gradient(135deg, ${featured.color}, #1b1d3a)` }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8, opacity: 0.9, fontWeight: 700 }}>
-            <Star style={{ color: "#ffd43b" }} /> FEATURED
-          </div>
-          <div style={{ fontSize: 24, fontWeight: 900, marginTop: 6 }}>{featured.flag} {featured.name}</div>
-          <div style={{ opacity: 0.75, marginTop: 4 }}>Season {featured.season} · View standings & fixtures</div>
+  return <div style={{ minHeight: "100%", paddingBottom: 32 }}>
+    <PageHeader title="Competitions" onBack={() => setActiveScreen("home")} onRefresh={load} />
+    {loading ? <EmptyState title="Loading competitions…" /> : error ? <ErrorState message="Could not load competitions." onRetry={load} /> : competitions.length === 0 ? <EmptyState title="No competitions available" /> : Object.entries(grouped).map(([title, items]) => items.length > 0 && (
+      <section key={title} style={{ padding: "8px 20px 16px" }}>
+        <h2 style={{ margin: "10px 0 10px", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8b8b9a" }}>{title}</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 8 }}>
+          {items.map((competition) => <button key={competition.slug} type="button" onClick={() => onOpenCompetition(competition.slug)} style={{ textAlign: "left", display: "flex", alignItems: "center", gap: 12, padding: 12, borderRadius: 10, border: "1px solid rgba(255,255,255,0.07)", background: "#12121a", color: "#ececf1", cursor: "pointer" }}>
+            <Crest src={competition.logo} name={competition.name} abbr={competition.abbr} size={34} />
+            <span style={{ minWidth: 0, flex: 1 }}><span style={{ display: "block", fontSize: 14, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{competition.name}</span><span style={{ display: "block", marginTop: 3, fontSize: 11, color: "#8b8b9a" }}>{competition.season ? `Season ${competition.season}` : "View table"}</span></span>
+            <Trophy size={16} color="#8b8b9a" />
+          </button>)}
         </div>
-      )}
-
-      {loading ? (
-        <div style={{ textAlign: "center", opacity: 0.7, padding: 40 }}>Loading competitions…</div>
-      ) : error ? (
-        <div style={{ textAlign: "center", color: "#ff7875", padding: 40 }}>Could not load competitions.</div>
-      ) : (
-        <>
-          <Section title="Club Competitions" items={club} onOpen={() => setActiveScreen("standings")} />
-          <Section title="International" items={intl} onOpen={() => setActiveScreen("standings")} />
-        </>
-      )}
-    </div>
-  );
-}
-
-function Section({ title, items, onOpen }: { title: string; items: CompetitionCard[]; onOpen: () => void }) {
-  if (!items.length) return null;
-  return (
-    <div style={{ margin: "0 12px 16px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-        <Trophy style={{ color: "#ffd43b" }} />
-        <span style={{ fontWeight: 800 }}>{title}</span>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        {items.map((c) => (
-          <div
-            key={c.slug}
-            onClick={onOpen}
-            style={{ cursor: "pointer", background: "#12132b", borderRadius: 14, padding: 12, border: "1px solid #23254a", borderTop: `3px solid ${c.color}` }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 30, height: 30, borderRadius: 8, background: c.color, display: "grid", placeItems: "center", fontSize: 16 }}>{c.icon}</span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.name}</div>
-                <div style={{ fontSize: 11, opacity: 0.65 }}>{c.abbr} · {c.season || "—"}</div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+      </section>
+    ))}
+  </div>;
 }

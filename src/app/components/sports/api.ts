@@ -9,6 +9,7 @@ export interface ApiTeam {
   short_name: string | null;
   abbr: string;
   logo_url: string | null;
+  country?: string | null;
 }
 
 export interface ApiCompetition {
@@ -73,6 +74,17 @@ export interface ApiStream {
   priority: number;
 }
 
+export interface ApiTeamStanding extends ApiStanding {
+  competition: ApiCompetition;
+}
+
+export interface ApiTeamDetail {
+  team: ApiTeam;
+  recent_matches: ApiMatch[];
+  upcoming_matches: ApiMatch[];
+  standings: ApiTeamStanding[];
+}
+
 // --- API base -------------------------------------------------------------
 const API_BASE: string =
   (import.meta as any).env?.VITE_API_BASE ?? "https://www.maxcinema.name.ng/api/sports";
@@ -110,6 +122,14 @@ export function getMatches(opts: {
   return fetchJson<{ matches: ApiMatch[] }>("/matches", opts).then((d) => d.matches);
 }
 
+export function getTeams(opts: { competition?: string; q?: string; limit?: number } = {}): Promise<ApiTeam[]> {
+  return fetchJson<{ teams: ApiTeam[] }>("/teams", opts).then((d) => d.teams);
+}
+
+export function getTeam(slug: string): Promise<ApiTeamDetail> {
+  return fetchJson<ApiTeamDetail>("/teams/" + slug);
+}
+
 export function getMatch(
   id: number
 ): Promise<{ match: ApiMatch; events: ApiEvent[]; streams: ApiStream[] }> {
@@ -124,20 +144,25 @@ export function getStandings(slug: string): Promise<ApiStanding[]> {
   ).then((d) => d.standings);
 }
 
+export function getSportsMeta(): Promise<{ live_count: number; competitions: ApiCompetition[] }> {
+  return fetchJson<{ live_count: number; competitions: ApiCompetition[] }>("/");
+}
+
 // --- Cosmetic helpers ------------------------------------------------------
-// League styling keyed by the API competition slug.
-export const LEAGUE_STYLES: Record<string, { abbr: string; color: string; flag: string }> = {
-  "english-premier-league": { abbr: "EPL", color: "#7c3aed", flag: "🦁" },
-  "uefa-champions-league": { abbr: "UCL", color: "#1a56db", flag: "🏆" },
-  "la-liga": { abbr: "LL", color: "#e53e3e", flag: "🔴" },
-  "serie-a": { abbr: "SA", color: "#0066b3", flag: "🇮🇹" },
-  "bundesliga": { abbr: "BUN", color: "#d20515", flag: "🦅" },
-  "ligue-1": { abbr: "L1", color: "#00a859", flag: "🇫🇷" },
-  "uefa-europa-league": { abbr: "UEL", color: "#f97316", flag: "🟠" },
+// League styling keyed by the API competition slug. Colors are accents only;
+// crests come from logo_url.
+export const LEAGUE_STYLES: Record<string, { abbr: string; color: string }> = {
+  "english-premier-league": { abbr: "EPL", color: "#3d195b" },
+  "uefa-champions-league": { abbr: "UCL", color: "#1a56db" },
+  "la-liga": { abbr: "LL", color: "#c81e1e" },
+  "serie-a": { abbr: "SA", color: "#0066b3" },
+  "bundesliga": { abbr: "BUN", color: "#d20515" },
+  "ligue-1": { abbr: "L1", color: "#0a7a3e" },
+  "uefa-europa-league": { abbr: "UEL", color: "#c45c12" },
 };
 
 export function leagueStyle(slug?: string | null) {
-  return LEAGUE_STYLES[slug ?? ""] ?? { abbr: "", color: "#9095b8", flag: "🌐" };
+  return LEAGUE_STYLES[slug ?? ""] ?? { abbr: "", color: "#6b6b7b" };
 }
 
 // Deterministic hex color from a name (used for team badges).
@@ -170,21 +195,21 @@ export interface LiveCard {
   league: string;
   leagueAbbr: string;
   leagueColor: string;
-  leagueFlag: string;
+  leagueLogo: string | null;
   phase: string;
   home: string;
   homeAbbr: string;
   homeColor: string;
+  homeLogo: string | null;
   away: string;
   awayAbbr: string;
   awayColor: string;
+  awayLogo: string | null;
   homeScore: number;
   awayScore: number;
   minute: string;
   hot: boolean;
-  viewers: string;
-  homeGoals: string[];
-  awayGoals: string[];
+  status: string;
 }
 
 export function toLiveCard(m: ApiMatch): LiveCard {
@@ -211,21 +236,21 @@ export function toLiveCard(m: ApiMatch): LiveCard {
     league: m.competition?.name ?? m.league ?? "",
     leagueAbbr: ls.abbr,
     leagueColor: ls.color,
-    leagueFlag: ls.flag,
+    leagueLogo: m.competition?.logo_url ?? null,
     phase,
     home: m.home_team?.name ?? "Home",
     homeAbbr: m.home_team?.abbr || abbrFromName(m.home_team?.name ?? "HOM"),
     homeColor: m.home_team ? colorFromString(m.home_team.name) : "#9095b8",
+    homeLogo: m.home_team?.logo_url ?? null,
     away: m.away_team?.name ?? "Away",
     awayAbbr: m.away_team?.abbr || abbrFromName(m.away_team?.name ?? "AWA"),
     awayColor: m.away_team ? colorFromString(m.away_team.name) : "#9095b8",
+    awayLogo: m.away_team?.logo_url ?? null,
     homeScore: m.home_score,
     awayScore: m.away_score,
     minute,
     hot: m.featured,
-    viewers: "—",
-    homeGoals: [],
-    awayGoals: [],
+    status: m.status,
   };
 }
 
@@ -235,9 +260,11 @@ export interface FixtureCard {
   home: string;
   homeAbbr: string;
   homeColor: string;
+  homeLogo: string | null;
   away: string;
   awayAbbr: string;
   awayColor: string;
+  awayLogo: string | null;
   time: string;
   league: string;
   status: "live" | "finished" | "upcoming";
@@ -261,9 +288,11 @@ export function toFixtureCard(m: ApiMatch): FixtureCard {
     home: m.home_team?.name ?? "Home",
     homeAbbr: m.home_team?.abbr || abbrFromName(m.home_team?.name ?? "HOM"),
     homeColor: m.home_team ? colorFromString(m.home_team.name) : "#9095b8",
+    homeLogo: m.home_team?.logo_url ?? null,
     away: m.away_team?.name ?? "Away",
     awayAbbr: m.away_team?.abbr || abbrFromName(m.away_team?.name ?? "AWA"),
     awayColor: m.away_team ? colorFromString(m.away_team.name) : "#9095b8",
+    awayLogo: m.away_team?.logo_url ?? null,
     time,
     league: ls.abbr || m.competition?.name || "",
     status,
@@ -278,7 +307,8 @@ export interface StandingRow {
   team: string;
   abbr: string;
   color: string;
-  trend: "up" | "down" | "same";
+  logo: string | null;
+  slug: string | null;
   p: number;
   w: number;
   d: number;
@@ -287,7 +317,6 @@ export interface StandingRow {
   ga: number;
   gd: number;
   pts: number;
-  form: string[];
   zone: "champions" | "europa" | "relegation" | "normal";
 }
 
@@ -300,7 +329,8 @@ export function toStandingRow(r: ApiStanding): StandingRow {
     team: r.team.name,
     abbr: abbrFromName(r.team.name),
     color: colorFromString(r.team.name),
-    trend: "same",
+    logo: r.team.logo_url,
+    slug: r.team.slug,
     p: r.played,
     w: r.won,
     d: r.drawn,
@@ -309,7 +339,6 @@ export function toStandingRow(r: ApiStanding): StandingRow {
     ga: r.goals_against,
     gd: r.goal_difference,
     pts: r.points,
-    form: [],
     zone,
   };
 }
@@ -320,10 +349,9 @@ export interface CompetitionCard {
   abbr: string;
   season: string;
   color: string;
-  phase: string;
-  teams: number;
-  icon: string;
+  logo: string | null;
   slug: string;
+  featured: boolean;
 }
 
 export function toCompetitionCard(c: ApiCompetition): CompetitionCard {
@@ -334,9 +362,8 @@ export function toCompetitionCard(c: ApiCompetition): CompetitionCard {
     abbr: ls.abbr || abbrFromName(c.name),
     season: c.current_season ?? "",
     color: ls.color,
-    phase: "Season " + (c.current_season ?? ""),
-    teams: 0,
-    icon: ls.flag,
+    logo: c.logo_url,
     slug: c.slug,
+    featured: c.featured,
   };
 }

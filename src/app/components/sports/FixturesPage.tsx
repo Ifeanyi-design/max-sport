@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ArrowLeft, RefreshCw, Play, Check } from "lucide-react";
 import { getMatches, toFixtureCard, FixtureCard, ApiMatch } from "./api";
-import { navState } from "./navState";
+import type { Screen } from "./types";
+import { Crest } from "./Crest";
 
 interface Props {
-  setActiveScreen: (s: string) => void;
+  setActiveScreen: (s: Screen) => void;
+  onOpenMatch: (id: number) => void;
 }
 
 function dateLabel(key: string): string {
@@ -20,20 +22,20 @@ function dateLabel(key: string): string {
   return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
 }
 
-export function FixturesPage({ setActiveScreen }: Props) {
+export function FixturesPage({ setActiveScreen, onOpenMatch }: Props) {
   const [cards, setCards] = useState<FixtureCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [leagueFilter, setLeagueFilter] = useState<string>("All");
+  const [statusFilter, setStatusFilter] = useState<"all" | "upcoming" | "finished">("all");
 
   const load = () => {
     setLoading(true);
     setError(null);
     getMatches({ limit: 300 })
       .then((data: ApiMatch[]) => {
-        const upcoming = data.filter((m) => m.status !== "finished");
-        setCards(upcoming.map(toFixtureCard));
+        setCards(data.map(toFixtureCard));
       })
       .catch((e) => setError(String(e?.message || e)))
       .finally(() => setLoading(false));
@@ -57,25 +59,28 @@ export function FixturesPage({ setActiveScreen }: Props) {
   const visible = useMemo(
     () =>
       cards
+        .filter((c) => statusFilter === "all" ? true : statusFilter === "finished" ? c.status === "finished" : c.status !== "finished")
         .filter((c) => (leagueFilter === "All" ? true : c.league === leagueFilter))
         .filter((c) => (selectedDate ? c.date === selectedDate : true)),
-    [cards, leagueFilter, selectedDate]
+    [cards, leagueFilter, selectedDate, statusFilter]
   );
 
-  useEffect(() => {
-    if (!selectedDate && dates.length) setSelectedDate(dates[0]);
-  }, [dates, selectedDate]);
-
   return (
-    <div style={{ minHeight: "100vh", background: "#0b0c1a", color: "#fff", paddingBottom: 40 }}>
+    <div style={{ minHeight: "100%", background: "#0a0a10", color: "#ececf1", paddingBottom: 32 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px" }}>
         <button onClick={() => setActiveScreen("home")} style={{ background: "transparent", border: "none", color: "#fff", fontSize: 18 }}>
           <ArrowLeft />
         </button>
-        <div style={{ fontWeight: 800, fontSize: 18 }}>Fixtures</div>
+        <div style={{ fontWeight: 800, fontSize: 18 }}>Fixtures & results</div>
         <button onClick={load} style={{ marginLeft: "auto", background: "transparent", border: "none", color: "#9095b8", cursor: "pointer" }}>
           <RefreshCw />
         </button>
+      </div>
+
+      <div style={{ display: "flex", gap: 6, padding: "0 12px 10px" }}>
+        {[{ id: "all", label: "All" }, { id: "upcoming", label: "Fixtures" }, { id: "finished", label: "Results" }].map((item) => (
+          <button key={item.id} onClick={() => setStatusFilter(item.id as typeof statusFilter)} style={{ padding: "6px 12px", borderRadius: 16, border: "none", fontWeight: 700, fontSize: 12, background: statusFilter === item.id ? "#c81e1e" : "#181822", color: "#ececf1", cursor: "pointer" }}>{item.label}</button>
+        ))}
       </div>
 
       <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "0 12px 10px" }}>
@@ -85,7 +90,7 @@ export function FixturesPage({ setActiveScreen }: Props) {
             onClick={() => setLeagueFilter(l)}
             style={{
               flex: "0 0 auto", padding: "6px 12px", borderRadius: 16, border: "none", fontWeight: 700, fontSize: 12,
-              background: leagueFilter === l ? "#e23b5a" : "#1b1d3a", color: "#fff", cursor: "pointer",
+              background: leagueFilter === l ? "#c81e1e" : "#181822", color: "#ececf1", cursor: "pointer",
             }}
           >
             {l}
@@ -94,13 +99,14 @@ export function FixturesPage({ setActiveScreen }: Props) {
       </div>
 
       <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "0 12px 12px" }}>
+        <button onClick={() => setSelectedDate(null)} style={{ flex: "0 0 auto", padding: "8px 14px", borderRadius: 12, border: "none", fontWeight: 700, fontSize: 13, background: selectedDate === null ? "#c81e1e" : "#181822", color: "#ececf1", cursor: "pointer" }}>All dates</button>
         {dates.map((d) => (
           <button
             key={d}
             onClick={() => setSelectedDate(d)}
             style={{
               flex: "0 0 auto", padding: "8px 14px", borderRadius: 12, border: "none", fontWeight: 700, fontSize: 13,
-              background: selectedDate === d ? "#7c8cff" : "#1b1d3a", color: "#fff", cursor: "pointer",
+              background: selectedDate === d ? "#c81e1e" : "#181822", color: "#ececf1", cursor: "pointer",
             }}
           >
             {dateLabel(d)}
@@ -120,7 +126,7 @@ export function FixturesPage({ setActiveScreen }: Props) {
             <FixtureRow
               key={f.id}
               f={f}
-              onClick={f.status === "live" ? () => { navState.selectedMatchId = f.id; setActiveScreen("live-match"); } : undefined}
+              onClick={() => onOpenMatch(f.id)}
             />
           ))}
         </div>
@@ -133,11 +139,11 @@ function FixtureRow({ f, onClick }: { f: FixtureCard; onClick?: () => void }) {
   return (
     <div
       onClick={onClick}
-      style={{ cursor: onClick ? "pointer" : "default", background: "#12132b", borderRadius: 12, padding: 10, border: "1px solid #23254a", display: "flex", alignItems: "center", gap: 8 }}
+      style={{ cursor: onClick ? "pointer" : "default", background: "#12121a", borderRadius: 10, padding: 10, border: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", gap: 8 }}
     >
       <div style={{ width: 44, textAlign: "center" }}>
         {f.status === "live" ? (
-          <span style={{ color: "#ff4d4f", fontWeight: 800, fontSize: 12 }}>{f.min}</span>
+          <span style={{ color: "#dc2626", fontWeight: 800, fontSize: 12 }}>{f.min}</span>
         ) : f.status === "finished" ? (
           <Check style={{ color: "#9095b8" }} />
         ) : (
@@ -146,21 +152,21 @@ function FixtureRow({ f, onClick }: { f: FixtureCard; onClick?: () => void }) {
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 20, height: 20, borderRadius: 4, background: f.homeColor, display: "grid", placeItems: "center", fontSize: 9, fontWeight: 800 }}>{f.homeAbbr}</span>
+          <Crest src={f.homeLogo} name={f.home} abbr={f.homeAbbr} size={20} />
           <span style={{ fontWeight: 600, fontSize: 13, flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{f.home}</span>
           <span style={{ fontWeight: 900 }}>{f.status === "upcoming" ? "" : f.hs}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
-          <span style={{ width: 20, height: 20, borderRadius: 4, background: f.awayColor, display: "grid", placeItems: "center", fontSize: 9, fontWeight: 800 }}>{f.awayAbbr}</span>
+          <Crest src={f.awayLogo} name={f.away} abbr={f.awayAbbr} size={20} />
           <span style={{ fontWeight: 600, fontSize: 13, flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{f.away}</span>
           <span style={{ fontWeight: 900 }}>{f.status === "upcoming" ? "" : f.as}</span>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-        <span style={{ fontSize: 10, color: "#7c8cff", fontWeight: 700 }}>{f.league}</span>
+        <span style={{ fontSize: 10, color: "#8b8b9a", fontWeight: 700 }}>{f.league}</span>
         {f.status === "live" ? (
-            <span style={{ background: "#e23b5a", color: "#fff", padding: "3px 8px", borderRadius: 6, fontSize: 10, fontWeight: 800, display: "inline-flex", gap: 4, alignItems: "center" }}>
-            <Play /> LIVE
+            <span style={{ background: "#c81e1e", color: "#fff", padding: "3px 8px", borderRadius: 6, fontSize: 10, fontWeight: 800, display: "inline-flex", gap: 4, alignItems: "center" }}>
+            <Play size={10} /> LIVE
           </span>
         ) : f.status === "finished" ? (
           <span style={{ fontSize: 10, opacity: 0.6 }}>FT</span>

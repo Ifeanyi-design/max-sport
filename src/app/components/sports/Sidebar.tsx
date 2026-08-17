@@ -1,238 +1,231 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import {
-  Home, Wifi, Calendar, BarChart3, Trophy, Users,
-  Film, Search, Globe, Clapperboard, Smartphone, BookOpen, ChevronRight, ChevronsLeft
+  Home, Radio, Calendar, BarChart3, Trophy, Search, Users, Info, ChevronDown, ChevronsLeft, ChevronsRight,
 } from "lucide-react";
-import type { Screen, AppMode } from "./types";
+import type { Screen } from "./types";
+import { Wordmark } from "./Wordmark";
 
 interface SidebarProps {
   activeScreen: Screen;
   setActiveScreen: (s: Screen) => void;
-  mode: AppMode;
-  setMode: (m: AppMode) => void;
-  onCollapse: () => void;
+  collapsed: boolean;
+  onToggleCollapse: () => void;
+  liveCount: number;
 }
 
-type NavSection = {
-  label: string;
-  items: { id: string; label: string; Icon: React.FC<any>; screen: Screen; isLive?: boolean; isGold?: boolean }[];
-};
+type NavItem = { id: string; label: string; Icon: React.FC<{ size?: number; color?: string; strokeWidth?: number }>; screen: Screen; isLive?: boolean };
 
-const NAV_SECTIONS: NavSection[] = [
+const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
   {
-    label: "Main",
+    label: "Watch",
     items: [
-      { id: "home",      label: "Home",      Icon: Home,      screen: "home" },
-      { id: "live-list", label: "Live",       Icon: Wifi,      screen: "live-list", isLive: true },
-      { id: "fixtures",  label: "Fixtures",   Icon: Calendar,  screen: "fixtures" },
-      { id: "standings", label: "Standings",  Icon: BarChart3, screen: "standings" },
+      { id: "home", label: "Home", Icon: Home, screen: "home" },
+      { id: "live-list", label: "Live", Icon: Radio, screen: "live-list", isLive: true },
+      { id: "fixtures", label: "Fixtures", Icon: Calendar, screen: "fixtures" },
     ],
   },
   {
     label: "Browse",
     items: [
-      { id: "competitions", label: "Leagues",    Icon: Trophy, screen: "competitions" },
-      { id: "teams",        label: "Teams",      Icon: Users,  screen: "teams" },
-      { id: "highlights",   label: "Highlights", Icon: Film,   screen: "highlights" },
-      { id: "search",       label: "Search",     Icon: Search, screen: "search" },
-    ],
-  },
-  {
-    label: "Events",
-    items: [
-      { id: "world-cup", label: "World Cup", Icon: Globe, screen: "world-cup", isGold: true },
+      { id: "standings", label: "Standings", Icon: BarChart3, screen: "standings" },
+      { id: "competitions", label: "Leagues", Icon: Trophy, screen: "competitions" },
+      { id: "teams", label: "Teams", Icon: Users, screen: "teams" },
+      { id: "search", label: "Search", Icon: Search, screen: "search" },
+      { id: "about", label: "About", Icon: Info, screen: "about" },
     ],
   },
 ];
 
 const LIVE_RELATED: Screen[] = ["live-list", "live-match"];
-const STANDINGS_RELATED: Screen[] = ["standings", "player-profile"];
+const TEAM_RELATED: Screen[] = ["teams", "team"];
 
-export function Sidebar({ activeScreen, setActiveScreen, mode, setMode, onCollapse }: SidebarProps) {
-  const [liveCount] = useState(6);
+export function Sidebar({
+  activeScreen,
+  setActiveScreen,
+  collapsed,
+  onToggleCollapse,
+  liveCount,
+}: SidebarProps) {
+  const navRef = useRef<HTMLElement>(null);
+  const [canScrollMore, setCanScrollMore] = useState(false);
 
-  function isNavActive(id: string, screen: Screen): boolean {
-    if (id === "live-list") return LIVE_RELATED.includes(activeScreen);
-    if (id === "standings") return STANDINGS_RELATED.includes(activeScreen);
+  function checkOverflow() {
+    const el = navRef.current;
+    if (!el) return;
+    setCanScrollMore(el.scrollHeight - el.scrollTop - el.clientHeight > 12);
+  }
+
+  useEffect(() => {
+    checkOverflow();
+    const el = navRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", checkOverflow);
+    window.addEventListener("resize", checkOverflow);
+    return () => {
+      el.removeEventListener("scroll", checkOverflow);
+      window.removeEventListener("resize", checkOverflow);
+    };
+  }, [collapsed]);
+
+  function isNavActive(screen: Screen): boolean {
+    if (screen === "live-list") return LIVE_RELATED.includes(activeScreen);
+    if (screen === "teams") return TEAM_RELATED.includes(activeScreen);
     return activeScreen === screen;
   }
 
-  function getAccentColor(id: string) {
-    if (id === "live-list") return "#ff3b3b";
-    if (id === "world-cup") return "#f5c518";
-    return "#00d4ff";
-  }
-
-  function getActiveBg(id: string) {
-    if (id === "live-list") return "rgba(255,59,59,0.1)";
-    if (id === "world-cup") return "rgba(245,197,24,0.08)";
-    return "rgba(0,212,255,0.08)";
-  }
+  const width = collapsed ? 64 : 220;
 
   return (
-    <div style={{
-      width: "88px", flexShrink: 0, height: "100vh", position: "sticky", top: 0,
-      display: "flex", flexDirection: "column", alignItems: "center",
-      background: "rgba(7,7,15,0.99)",
-      borderRight: "1px solid rgba(255,255,255,0.06)",
-      zIndex: 50, overflowY: "auto", overflowX: "visible",
-      scrollbarWidth: "none",
-    }}>
-      <style>{`
-        @keyframes sidebarLivePulse {
-          0%,100% { opacity: 1; transform: scale(1); }
-          50%      { opacity: 0.4; transform: scale(0.75); }
-        }
-        @keyframes liveRing {
-          0%   { box-shadow: 0 0 0 0 rgba(255,59,59,0.6); }
-          70%  { box-shadow: 0 0 0 6px rgba(255,59,59,0); }
-          100% { box-shadow: 0 0 0 0 rgba(255,59,59,0); }
-        }
-        .sidebar-btn:hover { background: rgba(255,255,255,0.04) !important; }
-        .sidebar-btn:hover .sb-label { color: #c0c5e0 !important; }
-      `}</style>
-
-      {/* ── LOGO ── */}
-      <div style={{
-        padding: "20px 0 18px",
-        display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
-        width: "100%",
-      }}>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setActiveScreen("home")}
-          style={{
-            width: "44px", height: "44px", borderRadius: "14px", cursor: "pointer",
-            background: "linear-gradient(135deg, #e53e3e 0%, #ff6b6b 50%, #c0392b 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 4px 20px rgba(229,62,62,0.4), 0 0 0 1px rgba(255,107,107,0.2)",
-            position: "relative",
-          }}
-        >
-          <span style={{
-            fontFamily: "'Barlow Condensed', sans-serif", fontSize: "20px",
-            fontWeight: 900, color: "#fff", letterSpacing: "-1px",
-          }}>M</span>
-        </motion.div>
-
-        <div style={{
-          background: mode === "sports"
-            ? "linear-gradient(135deg, #00d4ff, #00ff87)"
-            : "linear-gradient(135deg, #e53e3e, #ff6b6b)",
-          borderRadius: "5px", padding: "2px 7px",
-        }}>
-          <span style={{
-            fontFamily: "'Barlow Condensed', sans-serif", fontSize: "8px",
-            fontWeight: 900, letterSpacing: "1.5px",
-            color: mode === "sports" ? "#07070f" : "#fff",
-          }}>{mode === "sports" ? "SPORTS" : "CINEMA"}</span>
-        </div>
-
+    <aside
+      style={{
+        width,
+        flexShrink: 0,
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "#0d0d14",
+        borderRight: "1px solid rgba(255,255,255,0.07)",
+        transition: "width 0.18s ease",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          padding: collapsed ? "18px 10px 14px" : "18px 16px 14px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: collapsed ? "center" : "flex-start",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          minHeight: 64,
+        }}
+      >
+        {collapsed ? (
+          <button
+            type="button"
+            onClick={() => setActiveScreen("home")}
+            aria-label="MaxSport home"
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "'Barlow Condensed', sans-serif",
+              fontSize: 22,
+              fontWeight: 900,
+              color: "#c81e1e",
+              letterSpacing: "-0.04em",
+              padding: 0,
+            }}
+          >
+            M
+          </button>
+        ) : (
+          <Wordmark onClick={() => setActiveScreen("home")} />
+        )}
       </div>
 
-      {/* ── NAV SECTIONS ── */}
-      <nav style={{ flex: 1, width: "100%", padding: "0 8px", display: "flex", flexDirection: "column", gap: "0" }}>
-        {NAV_SECTIONS.map((section, si) => (
-          <div key={section.label} style={{ marginBottom: si < NAV_SECTIONS.length - 1 ? "4px" : "0" }}>
-            {/* Section label */}
-            <div style={{
-              padding: "10px 8px 5px",
-              fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 700,
-              color: "#2e3050", textTransform: "uppercase", letterSpacing: "0.12em",
-              userSelect: "none",
-            }}>{section.label}</div>
-
-            {/* Items */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+      <nav
+        ref={navRef}
+        className="ms-scroll"
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          overflowX: "hidden",
+          padding: collapsed ? "10px 8px" : "12px 10px",
+        }}
+      >
+        {NAV_SECTIONS.map((section) => (
+          <div key={section.label} style={{ marginBottom: 14 }}>
+            {!collapsed && (
+              <div
+                style={{
+                  padding: "6px 10px 6px",
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "#5c5c6b",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                {section.label}
+              </div>
+            )}
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {section.items.map((item) => {
-                const isActive = isNavActive(item.id, item.screen);
-                const accent = getAccentColor(item.id);
-                const activeBg = getActiveBg(item.id);
-
+                const active = isNavActive(item.screen);
                 return (
-                  <motion.button
+                  <button
                     key={item.id}
-                    className="sidebar-btn"
-                    whileTap={{ scale: 0.93 }}
+                    type="button"
+                    title={collapsed ? item.label : undefined}
                     onClick={() => setActiveScreen(item.screen)}
                     style={{
-                      width: "100%", height: "52px", borderRadius: "11px", border: "none",
-                      cursor: "pointer", position: "relative", overflow: "visible",
-                      display: "flex", flexDirection: "column",
-                      alignItems: "center", justifyContent: "center", gap: "4px",
-                      background: isActive ? activeBg : "transparent",
-                      transition: "background 0.15s ease",
+                      width: "100%",
+                      height: 40,
+                      borderRadius: 8,
+                      border: "none",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: collapsed ? "center" : "flex-start",
+                      gap: 10,
+                      padding: collapsed ? 0 : "0 10px",
+                      background: active ? "rgba(200,30,30,0.12)" : "transparent",
+                      color: active ? "#ececf1" : "#8b8b9a",
+                      position: "relative",
                     }}
                   >
-                    {/* Active left bar */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="sidebar-active-bar"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    {active && (
+                      <span
                         style={{
-                          position: "absolute", left: "-8px", top: "50%",
-                          transform: "translateY(-50%)",
-                          width: "3px", height: "28px", borderRadius: "0 3px 3px 0",
-                          background: item.id === "live-list"
-                            ? "linear-gradient(180deg, #ff3b3b, #ff6b6b)"
-                            : item.id === "world-cup"
-                            ? "linear-gradient(180deg, #f5c518, #ff9500)"
-                            : "linear-gradient(180deg, #00d4ff, #00ff87)",
-                          boxShadow: `0 0 10px ${accent}80`,
+                          position: "absolute",
+                          left: 0,
+                          top: 8,
+                          bottom: 8,
+                          width: 3,
+                          borderRadius: "0 2px 2px 0",
+                          background: item.isLive ? "#dc2626" : "#c81e1e",
                         }}
                       />
                     )}
-
-                    {/* Icon wrapper */}
-                    <div style={{ position: "relative" }}>
-                      <item.Icon
-                        size={19}
-                        color={isActive ? accent : "#4a4f6e"}
-                        strokeWidth={isActive ? 2.3 : 1.8}
-                        style={{ transition: "color 0.15s" }}
-                      />
-
-                      {/* Live count badge */}
-                      {item.isLive && (
-                        <div style={{
-                          position: "absolute", top: "-5px", right: "-8px",
-                          minWidth: "16px", height: "14px", borderRadius: "7px",
-                          background: "#ff3b3b",
-                          border: "1.5px solid rgba(7,7,15,0.99)",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          fontFamily: "'Barlow Condensed', sans-serif",
-                          fontSize: "9px", fontWeight: 900, color: "#fff",
-                          padding: "0 3px",
-                          animation: "liveRing 2s ease-in-out infinite",
-                        }}>{liveCount}</div>
+                    <span style={{ position: "relative", display: "inline-flex" }}>
+                      <item.Icon size={18} color={active ? (item.isLive ? "#dc2626" : "#ececf1") : "#6b6b7b"} strokeWidth={active ? 2.2 : 1.8} />
+                      {item.isLive && liveCount > 0 && (
+                        <span
+                          style={{
+                            position: "absolute",
+                            top: -7,
+                            right: -9,
+                            minWidth: 15,
+                            height: 14,
+                            borderRadius: 7,
+                            background: "#dc2626",
+                            color: "#fff",
+                            fontFamily: "'Barlow Condensed', sans-serif",
+                            fontSize: 9,
+                            fontWeight: 800,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "0 3px",
+                          }}
+                        >
+                          {liveCount}
+                        </span>
                       )}
-
-                      {/* Gold glow dot for World Cup */}
-                      {item.isGold && !isActive && (
-                        <span style={{
-                          position: "absolute", top: "-3px", right: "-4px",
-                          width: "6px", height: "6px", borderRadius: "50%",
-                          background: "#f5c518", boxShadow: "0 0 6px #f5c518",
-                          display: "block",
-                        }} />
-                      )}
-                    </div>
-
-                    {/* Label */}
-                    <span
-                      className="sb-label"
-                      style={{
-                        fontFamily: "'Inter', sans-serif", fontSize: "9px",
-                        fontWeight: isActive ? 700 : 500,
-                        color: isActive ? accent : "#3a3f5e",
-                        letterSpacing: "0.02em",
-                        transition: "color 0.15s",
-                        lineHeight: 1,
-                      }}
-                    >{item.label}</span>
-                  </motion.button>
+                    </span>
+                    {!collapsed && (
+                      <span
+                        style={{
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: 13,
+                          fontWeight: active ? 650 : 500,
+                        }}
+                      >
+                        {item.label}
+                      </span>
+                    )}
+                  </button>
                 );
               })}
             </div>
@@ -240,135 +233,59 @@ export function Sidebar({ activeScreen, setActiveScreen, mode, setMode, onCollap
         ))}
       </nav>
 
-      {/* ── DIVIDER ── */}
-      <div style={{
-        width: "56px", height: "1px",
-        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent)",
-        margin: "6px 0",
-      }} />
-
-      {/* ── BOTTOM UTILITIES ── */}
-      <div style={{
-        padding: "6px 8px 20px", width: "100%",
-        display: "flex", flexDirection: "column", gap: "2px",
-      }}>
-        {/* Dev Reference */}
-        <UtilButton
-          label="Dev Ref"
-          active={activeScreen === "system-summary"}
-          activeColor="#f5c518"
-          onClick={() => setActiveScreen("system-summary")}
-        >
-          <BookOpen size={17} color={activeScreen === "system-summary" ? "#f5c518" : "#3a3f5e"} strokeWidth={1.8} />
-        </UtilButton>
-
-        {/* Mobile Preview */}
-        <UtilButton
-          label="Mobile"
-          active={activeScreen === "mobile"}
-          activeColor="#00d4ff"
-          onClick={() => setActiveScreen("mobile")}
-        >
-          <Smartphone size={17} color={activeScreen === "mobile" ? "#00d4ff" : "#3a3f5e"} strokeWidth={1.8} />
-        </UtilButton>
-
-        {/* Mode toggle */}
-        <motion.button
-          className="sidebar-btn"
-          whileTap={{ scale: 0.93 }}
-          onClick={() => setMode(mode === "sports" ? "movies" : "sports")}
+      {canScrollMore && (
+        <button
+          type="button"
+          onClick={() => navRef.current?.scrollBy({ top: 80, behavior: "smooth" })}
           style={{
-            width: "100%", height: "44px", borderRadius: "11px",
-            border: "1px solid rgba(255,255,255,0.07)",
-            cursor: "pointer", display: "flex", flexDirection: "column",
-            alignItems: "center", justifyContent: "center", gap: "3px",
-            background: mode === "movies" ? "rgba(229,62,62,0.1)" : "rgba(255,255,255,0.03)",
-            transition: "background 0.15s",
+            position: "absolute",
+            left: 8,
+            right: 8,
+            bottom: 56,
+            height: 28,
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 8,
+            background: "linear-gradient(180deg, rgba(13,13,20,0.2), rgba(13,13,20,0.95))",
+            color: "#8b8b9a",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 4,
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 11,
+            fontWeight: 600,
           }}
         >
-          <Clapperboard size={17} color={mode === "movies" ? "#ff6b6b" : "#3a3f5e"} strokeWidth={1.8} />
-          <span style={{
-            fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 500,
-            color: mode === "movies" ? "#ff6b6b" : "#3a3f5e", letterSpacing: "0.02em",
-          }}>{mode === "sports" ? "Cinema" : "Sports"}</span>
-        </motion.button>
+          <ChevronDown size={13} />
+          {!collapsed && "More"}
+        </button>
+      )}
 
-        {/* User avatar */}
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "4px" }}>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              width: "38px", height: "38px", borderRadius: "50%",
-              background: "linear-gradient(135deg, #667eea, #764ba2)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 700, color: "#fff",
-              cursor: "pointer",
-              border: "2px solid rgba(255,255,255,0.1)",
-              boxShadow: "0 4px 12px rgba(102,126,234,0.3)",
-              position: "relative",
-            }}
-          >
-            JD
-            {/* Online dot */}
-            <div style={{
-              position: "absolute", bottom: "1px", right: "1px",
-              width: "9px", height: "9px", borderRadius: "50%",
-              background: "#00ff87", border: "2px solid rgba(7,7,15,0.99)",
-            }} />
-          </motion.div>
-        </div>
-
-        {/* ── COLLAPSE BUTTON ── */}
-        <div style={{
-          width: "calc(100% - 2px)", height: "1px", margin: "8px 1px 4px",
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-        }} />
-        <motion.button
-          className="sidebar-btn"
-          whileTap={{ scale: 0.93 }}
-          onClick={onCollapse}
+      <div style={{ padding: 8, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <button
+          type="button"
+          onClick={onToggleCollapse}
           style={{
-            width: "100%", height: "36px", borderRadius: "10px", border: "none",
-            cursor: "pointer", display: "flex", flexDirection: "row",
-            alignItems: "center", justifyContent: "center", gap: "6px",
-            background: "transparent", transition: "background 0.15s",
+            width: "100%",
+            height: 36,
+            borderRadius: 8,
+            border: "none",
+            background: "transparent",
+            color: "#5c5c6b",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 11,
+            fontWeight: 600,
           }}
         >
-          <ChevronsLeft size={13} color="#2e3050" strokeWidth={2} />
-          <span style={{
-            fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 500,
-            color: "#2e3050", letterSpacing: "0.06em", textTransform: "uppercase",
-          }}>Collapse</span>
-        </motion.button>
+          {collapsed ? <ChevronsRight size={14} /> : <><ChevronsLeft size={14} /> Collapse</>}
+        </button>
       </div>
-    </div>
-  );
-}
-
-function UtilButton({
-  label, active, activeColor, onClick, children
-}: {
-  label: string; active: boolean; activeColor: string; onClick: () => void; children: React.ReactNode;
-}) {
-  return (
-    <motion.button
-      className="sidebar-btn"
-      whileTap={{ scale: 0.93 }}
-      onClick={onClick}
-      style={{
-        width: "100%", height: "44px", borderRadius: "11px", border: "none",
-        cursor: "pointer", display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center", gap: "3px",
-        background: active ? `${activeColor}12` : "transparent",
-        transition: "background 0.15s",
-      }}
-    >
-      {children}
-      <span style={{
-        fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: active ? 700 : 500,
-        color: active ? activeColor : "#3a3f5e", letterSpacing: "0.02em",
-      }}>{label}</span>
-    </motion.button>
+    </aside>
   );
 }
