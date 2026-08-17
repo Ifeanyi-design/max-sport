@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { colorFromString } from "./api";
 import { getCountryFlagUrl } from "./flags";
-import { Shield } from "lucide-react";
+import { getClubDictionaryLogo } from "./clubLogos";
 
 interface CrestProps {
   /** Preferred logo URL (from DB). May be null. */
@@ -26,14 +26,19 @@ function darken(hex: string, amount = 0.55): string {
 }
 
 export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, bgColor, country }: CrestProps) {
-  // Check if name is a known country (National team)
+  // 1. Direct dictionary logo for world football clubs
+  const dictLogo = getClubDictionaryLogo(name);
+
+  // 2. Check if name is a known country (National team)
   const countryFlagUrl = getCountryFlagUrl(name || country, size > 32 ? 80 : 40);
 
   const allSrcs = [
     src,
+    dictLogo,
     ...fallbackSrcs,
     countryFlagUrl,
   ].filter(Boolean) as string[];
+
 
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);

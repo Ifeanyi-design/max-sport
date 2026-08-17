@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Play, Search, Film, Flame, Sparkles, X, ChevronRight } from "lucide-react";
+import { Play, Search, Film, Flame, Sparkles, X } from "lucide-react";
 import type { Screen } from "./types";
 import { PageHeader } from "./PageHeader";
+import { VideoPlayerModal, type VideoItem } from "./VideoPlayerModal";
 
 interface Props {
   setActiveScreen: (s: Screen) => void;
 }
+
 
 interface HighlightVideo {
   id: string; // YouTube ID
@@ -108,7 +110,7 @@ const CATEGORIES = [
 export function HighlightsPage({ setActiveScreen }: Props) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedVideo, setSelectedVideo] = useState<HighlightVideo | null>(FEATURED_HIGHLIGHTS[0]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [searchEmbedTerm, setSearchEmbedTerm] = useState<string | null>(null);
 
   const filteredVideos = FEATURED_HIGHLIGHTS.filter((v) => {
@@ -132,70 +134,14 @@ export function HighlightsPage({ setActiveScreen }: Props) {
     <div style={{ minHeight: "100%", paddingBottom: 60, maxWidth: 1280, margin: "0 auto" }}>
       <PageHeader title="Football Highlights &amp; Replays" onBack={() => setActiveScreen("home")} />
 
-      {/* In-Site Video Theater / Player */}
-      {selectedVideo && (
-        <section style={{ padding: "16px 20px 24px" }}>
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 16,
-              overflow: "hidden",
-              background: "#080810",
-              border: "1px solid rgba(255,255,255,0.12)",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.8)",
-            }}
-          >
-            {/* Embedded Video Iframe - Plays inside the website with NO redirect */}
-            <div style={{ position: "relative", width: "100%", aspectRatio: "16/9", background: "#000" }}>
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${selectedVideo.id}?autoplay=1&rel=0&modestbranding=1`}
-                title={selectedVideo.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                style={{ width: "100%", height: "100%", border: 0, display: "block" }}
-              />
-            </div>
+      {/* In-Site Cinema Video Player Modal */}
+      <VideoPlayerModal
+        video={selectedVideo}
+        onClose={() => setSelectedVideo(null)}
+        onSelectVideo={(v) => setSelectedVideo(v)}
+        relatedVideos={FEATURED_HIGHLIGHTS}
+      />
 
-            {/* Video metadata bar */}
-            <div style={{ padding: "18px 20px", background: "var(--ms-surface)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <span
-                  style={{
-                    background: "var(--ms-accent-soft)",
-                    color: "var(--ms-accent)",
-                    padding: "3px 9px",
-                    borderRadius: 4,
-                    fontSize: 11,
-                    fontWeight: 800,
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {selectedVideo.competition}
-                </span>
-                <span style={{ fontSize: 12, color: "var(--ms-muted)" }}>• {selectedVideo.channel}</span>
-                {selectedVideo.views && (
-                  <span style={{ fontSize: 12, color: "var(--ms-faint)", marginLeft: "auto" }}>
-                    {selectedVideo.views} views
-                  </span>
-                )}
-              </div>
-              <h2
-                style={{
-                  margin: 0,
-                  fontSize: "clamp(16px, 3vw, 22px)",
-                  fontFamily: "'Barlow Condensed', sans-serif",
-                  fontWeight: 800,
-                  letterSpacing: "0.01em",
-                  lineHeight: 1.25,
-                  color: "var(--ms-text)",
-                }}
-              >
-                {selectedVideo.title}
-              </h2>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* In-Site Search Embed Modal if user searched for specific match */}
       {searchEmbedTerm && (

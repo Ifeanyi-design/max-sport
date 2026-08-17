@@ -11,6 +11,7 @@ import { Crest } from "./Crest";
 import { FlagIcon } from "./FlagIcon";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
+import { VideoPlayerModal, type VideoItem } from "./VideoPlayerModal";
 
 interface Props {
   setActiveScreen: (screen: Screen) => void;
@@ -25,10 +26,13 @@ function tomorrowKey() {
 }
 
 // Quick preview highlight clips for the home page
-const HOME_CLIPS = [
-  { id: "3e5lF71rOcg", title: "UEFA Champions League - Best Goals & Highlights", comp: "UCL", time: "11:24" },
-  { id: "fJ9rUzIMcZQ", title: "Real Madrid vs Barcelona - El Clásico Thriller", comp: "La Liga", time: "12:40" },
-  { id: "kJQP7kiw5Fk", title: "Premier League - Top 20 Stunners of the Season", comp: "EPL", time: "14:15" },
+const HOME_CLIPS: VideoItem[] = [
+  { id: "3e5lF71rOcg", title: "UEFA Champions League - Best Goals & Highlights", comp: "UCL", time: "11:24", channel: "UEFA Official" },
+  { id: "fJ9rUzIMcZQ", title: "Real Madrid vs Barcelona - El Clásico Thriller", comp: "La Liga", time: "12:40", channel: "LaLiga EA Sports" },
+  { id: "kJQP7kiw5Fk", title: "Premier League - Top 20 Stunners of the Season", comp: "EPL", time: "14:15", channel: "Premier League" },
+  { id: "L_LUpnjgPso", title: "Arsenal vs Manchester City - High Stakes Title Clash Highlights", comp: "Premier League", time: "10:35", channel: "Sky Sports Football" },
+  { id: "JGwWNGJdvx8", title: "Vinicius Jr, Mbappe & Haaland - Best Skills & Goals Show", comp: "Superstars", time: "15:02", channel: "Football TV" },
+  { id: "9bZkp7q19f0", title: "Inter vs Milan - Derby della Madonnina Highlights", comp: "Serie A", time: "11:50", channel: "Serie A Official" },
 ];
 
 export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition }: Props) {
@@ -37,7 +41,8 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
   const [competitions, setCompetitions] = useState<CompetitionCard[] | null>(null);
   const [error, setError] = useState(false);
   const [dateTab, setDateTab] = useState<string>("all");
-  const [activeClipId, setActiveClipId] = useState<string | null>(null);
+  const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
+
 
   const load = () => {
     setError(false);
@@ -309,47 +314,14 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
         </div>
       </section>
 
-      {/* 3. HIGHLIGHTS PREVIEW MODAL / PLAYER IF EMBEDDED */}
-      {activeClipId && (
-        <section style={{ padding: "0 16px 24px" }}>
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 16,
-              overflow: "hidden",
-              background: "#080810",
-              border: "1px solid rgba(255,255,255,0.14)",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.8)",
-            }}
-          >
-            <div style={{ position: "relative", width: "100%", aspectRatio: "16/9", background: "#000" }}>
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${activeClipId}?autoplay=1&rel=0`}
-                title="Highlight Replay"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                style={{ width: "100%", height: "100%", border: 0 }}
-              />
-            </div>
-            <div
-              style={{
-                padding: "12px 18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                background: "var(--ms-surface)",
-              }}
-            >
-              <span style={{ fontWeight: 800, fontSize: 13, color: "var(--ms-text)" }}>
-                Watching In-Site Football Highlights
-              </span>
-              <button onClick={() => setActiveClipId(null)} className="ms-btn" style={{ fontSize: 11, padding: "5px 12px" }}>
-                Close Player
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
+      {/* 3. FULL IMMERSIVE VIDEO THEATER MODAL */}
+      <VideoPlayerModal
+        video={activeVideo}
+        onClose={() => setActiveVideo(null)}
+        onSelectVideo={(v) => setActiveVideo(v)}
+        relatedVideos={HOME_CLIPS}
+        onOpenHighlightsHub={() => setActiveScreen("highlights")}
+      />
 
       {/* 4. LIVE MATCHES (Broadcast Cards) */}
       <section style={{ marginBottom: 28, padding: "0 16px" }}>
@@ -402,13 +374,13 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
         )}
       </section>
 
-      {/* 5. TRENDING HIGHLIGHTS & CLIPS CAROUSEL (Plays In-Site) */}
+      {/* 5. TRENDING HIGHLIGHTS & CLIPS (Clicking any box opens the Cinema Player Modal instantly) */}
       <section style={{ marginBottom: 32, padding: "0 16px" }}>
         <div className="ms-section">
           <Film size={17} color="var(--ms-accent)" />
           <h2>Trending Video Highlights</h2>
           <button type="button" onClick={() => setActiveScreen("highlights")} className="ms-section-action">
-            All Clips &amp; Search <ArrowRight size={12} />
+            Highlights Hub &amp; Search <ArrowRight size={12} />
           </button>
         </div>
 
@@ -422,10 +394,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
           {HOME_CLIPS.map((clip) => (
             <div
               key={clip.id}
-              onClick={() => {
-                setActiveClipId(clip.id);
-                window.scrollTo({ top: 120, behavior: "smooth" });
-              }}
+              onClick={() => setActiveVideo(clip)}
               className="ms-card ms-card-hover"
               style={{
                 cursor: "pointer",
@@ -466,29 +435,35 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                 >
                   <div
                     style={{
-                      width: 38,
-                      height: 38,
+                      width: 42,
+                      height: 42,
                       borderRadius: "50%",
                       background: "var(--ms-accent)",
                       display: "grid",
                       placeItems: "center",
-                      boxShadow: "0 4px 14px rgba(229,20,43,0.5)",
+                      boxShadow: "0 4px 16px rgba(229,20,43,0.6)",
                     }}
                   >
-                    <Play size={14} fill="#fff" color="#fff" style={{ marginLeft: 2 }} />
+                    <Play size={16} fill="#fff" color="#fff" style={{ marginLeft: 2 }} />
                   </div>
                 </div>
               </div>
-              <div style={{ padding: "10px 12px" }}>
-                <span style={{ fontSize: 10, color: "var(--ms-accent)", fontWeight: 800 }}>
-                  {clip.comp}
-                </span>
+              <div style={{ padding: "12px 14px" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
+                  <span style={{ fontSize: 10, color: "var(--ms-accent)", fontWeight: 900 }}>
+                    {clip.comp}
+                  </span>
+                  <span style={{ fontSize: 10, color: "var(--ms-faint)" }}>
+                    {clip.channel}
+                  </span>
+                </div>
                 <h3
                   style={{
-                    margin: "3px 0 0",
+                    margin: 0,
                     fontSize: 13,
-                    fontWeight: 700,
-                    lineHeight: 1.3,
+                    fontWeight: 750,
+                    lineHeight: 1.35,
+                    color: "var(--ms-text)",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
@@ -502,6 +477,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
           ))}
         </div>
       </section>
+
 
       {/* 6. UPCOMING FIXTURES with Date Filter Strip */}
       <section style={{ marginBottom: 32 }}>
