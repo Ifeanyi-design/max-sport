@@ -206,8 +206,8 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                   }}
                 >
                   <Crest
-                    src={teamLogoSources({ logo_url: heroMatch.homeLogo, provider_team_id: heroMatch.homeProviderId, provider_name: heroMatch.homeProviderName })[0]}
-                    fallbackSrcs={teamLogoSources({ logo_url: heroMatch.homeLogo, provider_team_id: heroMatch.homeProviderId, provider_name: heroMatch.homeProviderName }).slice(1)}
+                    src={teamLogoSources({ name: heroMatch.home, logo_url: heroMatch.homeLogo, provider_team_id: heroMatch.homeProviderId, provider_name: heroMatch.homeProviderName })[0]}
+                    fallbackSrcs={teamLogoSources({ name: heroMatch.home, logo_url: heroMatch.homeLogo, provider_team_id: heroMatch.homeProviderId, provider_name: heroMatch.homeProviderName }).slice(1)}
                     name={heroMatch.home}
                     abbr={heroMatch.homeAbbr}
                     size={30}
@@ -224,8 +224,8 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                     {heroMatch.status !== "upcoming" ? `${heroMatch.hs} - ${heroMatch.as}` : heroMatch.time}
                   </div>
                   <Crest
-                    src={teamLogoSources({ logo_url: heroMatch.awayLogo, provider_team_id: heroMatch.awayProviderId, provider_name: heroMatch.awayProviderName })[0]}
-                    fallbackSrcs={teamLogoSources({ logo_url: heroMatch.awayLogo, provider_team_id: heroMatch.awayProviderId, provider_name: heroMatch.awayProviderName }).slice(1)}
+                    src={teamLogoSources({ name: heroMatch.away, logo_url: heroMatch.awayLogo, provider_team_id: heroMatch.awayProviderId, provider_name: heroMatch.awayProviderName })[0]}
+                    fallbackSrcs={teamLogoSources({ name: heroMatch.away, logo_url: heroMatch.awayLogo, provider_team_id: heroMatch.awayProviderId, provider_name: heroMatch.awayProviderName }).slice(1)}
                     name={heroMatch.away}
                     abbr={heroMatch.awayAbbr}
                     size={30}
@@ -273,6 +273,8 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
           {competitions &&
             competitions.slice(0, 10).map((c) => {
               const logoSrcs = competitionLogoSources({
+                slug: c.slug,
+                name: c.name,
                 logo_url: c.logo,
                 provider_competition_id: c.provider_competition_id,
                 provider_name: c.provider_name,

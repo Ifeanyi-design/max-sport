@@ -142,6 +142,8 @@ export function CompetitionsPage({ setActiveScreen, onOpenCompetition }: Props) 
               >
                 {grouped[region].map((c) => {
                   const srcs = competitionLogoSources({
+                    slug: c.slug,
+                    name: c.name,
                     logo_url: c.logo,
                     provider_competition_id: c.provider_competition_id,
                     provider_name: c.provider_name,

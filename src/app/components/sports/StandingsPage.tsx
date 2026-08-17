@@ -55,6 +55,8 @@ export function StandingsPage({ slug, onBack, onSelectCompetition, onOpenMatch }
   const activeComp = competition;
   const compLogoSrcs = activeComp
     ? competitionLogoSources({
+        slug: activeComp.slug,
+        name: activeComp.name,
         logo_url: activeComp.logo_url,
         provider_competition_id: activeComp.provider_competition_id,
         provider_name: activeComp.provider_name,
@@ -72,6 +74,8 @@ export function StandingsPage({ slug, onBack, onSelectCompetition, onOpenMatch }
         {allCompetitions.map((c) => {
           const active = c.slug === slug;
           const srcs = competitionLogoSources({
+            slug: c.slug,
+            name: c.name,
             logo_url: c.logo_url,
             provider_competition_id: c.provider_competition_id,
             provider_name: c.provider_name,
