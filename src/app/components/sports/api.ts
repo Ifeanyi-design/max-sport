@@ -201,16 +201,17 @@ export function teamLogoSources(team: { logo_url?: string | null; provider_team_
   return sources;
 }
 
+import { getCompetitionDictionaryLogo } from "./competitionLogos";
+
 /** Build an ordered list of logo URLs to try for a competition. */
-export function competitionLogoSources(comp: { logo_url?: string | null; provider_competition_id?: string | null; provider_name?: string | null }): string[] {
+export function competitionLogoSources(comp: { logo_url?: string | null; slug?: string | null; name?: string | null; provider_competition_id?: string | null; provider_name?: string | null }): string[] {
   const sources: string[] = [];
+  const dictLogo = getCompetitionDictionaryLogo(comp.slug || comp.name);
+  if (dictLogo) sources.push(dictLogo);
   if (comp.logo_url) sources.push(comp.logo_url);
   if (comp.provider_competition_id) {
     if (!comp.provider_name || comp.provider_name === "api-football") {
       sources.push(`https://media.api-sports.io/football/leagues/${comp.provider_competition_id}.png`);
-    }
-    if (!comp.provider_name || comp.provider_name === "thesportsdb") {
-      sources.push(`https://www.thesportsdb.com/images/media/league/badge/${comp.provider_competition_id}.png`);
     }
   }
   return sources;
