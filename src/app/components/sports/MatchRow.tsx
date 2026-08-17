@@ -1,88 +1,104 @@
 import { Crest } from "./Crest";
 import type { FixtureCard } from "./api";
+import { teamLogoSources } from "./api";
 
 interface MatchRowProps {
   match: FixtureCard;
   onClick?: () => void;
+  showLeague?: boolean;
 }
 
-export function MatchRow({ match, onClick }: MatchRowProps) {
+export function MatchRow({ match, onClick, showLeague = true }: MatchRowProps) {
   const isLive = match.status === "live";
+  const isFinished = match.status === "finished";
   const showScore = match.status !== "upcoming";
+
+  const homeSrcs = teamLogoSources({
+    logo_url: match.homeLogo,
+    provider_team_id: match.homeProviderId,
+    provider_name: match.homeProviderName,
+  });
+  const awaySrcs = teamLogoSources({
+    logo_url: match.awayLogo,
+    provider_team_id: match.awayProviderId,
+    provider_name: match.awayProviderName,
+  });
 
   return (
     <button
       type="button"
       onClick={onClick}
-      style={{
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        padding: "12px 14px",
-        borderRadius: 10,
-        border: "1px solid rgba(255,255,255,0.06)",
-        background: "#12121a",
-        color: "#ececf1",
-        cursor: onClick ? "pointer" : "default",
-        textAlign: "left",
-      }}
+      className={`ms-match${isLive ? " is-live" : ""}`}
     >
-      <div style={{ width: 52, flexShrink: 0, textAlign: "center" }}>
+      {/* Status column */}
+      <div className="ms-match-status">
         {isLive ? (
-          <span style={{ color: "#dc2626", fontWeight: 800, fontSize: 12, fontFamily: "'Barlow Condensed', sans-serif" }}>
-            {match.min || "LIVE"}
-          </span>
-        ) : match.status === "finished" ? (
-          <span style={{ fontSize: 11, color: "#8b8b9a", fontWeight: 700 }}>FT</span>
+          <>
+            <span className="ms-live-dot" style={{ width: 6, height: 6 }} />
+            <span className="ms-live">{match.min || "LIVE"}</span>
+          </>
+        ) : isFinished ? (
+          <span className="ms-ft">FT</span>
         ) : (
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#c8c8d4" }}>{match.time}</span>
+          <span className="ms-time">{match.time}</span>
         )}
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-          <Crest src={match.homeLogo} name={match.home} abbr={match.homeAbbr} size={22} />
-          <span
-            style={{
-              flex: 1,
-              fontSize: 13,
-              fontWeight: 600,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {match.home}
-          </span>
-          {showScore && <span style={{ fontWeight: 800, fontSize: 14, fontVariantNumeric: "tabular-nums" }}>{match.hs}</span>}
+      {/* Teams + scores */}
+      <div className="ms-match-main">
+        <div className="ms-match-team">
+          <Crest
+            src={homeSrcs[0]}
+            fallbackSrcs={homeSrcs.slice(1)}
+            name={match.home}
+            abbr={match.homeAbbr}
+            size={22}
+          />
+          <span style={{ fontWeight: isLive ? 700 : 600 }}>{match.home}</span>
+          {showScore && (
+            <span
+              className="ms-match-score"
+              style={{ color: isLive && match.hs > match.as ? "var(--ms-text)" : undefined }}
+            >
+              {match.hs}
+            </span>
+          )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Crest src={match.awayLogo} name={match.away} abbr={match.awayAbbr} size={22} />
-          <span
-            style={{
-              flex: 1,
-              fontSize: 13,
-              fontWeight: 600,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {match.away}
-          </span>
-          {showScore && <span style={{ fontWeight: 800, fontSize: 14, fontVariantNumeric: "tabular-nums" }}>{match.as}</span>}
+        <div className="ms-match-team">
+          <Crest
+            src={awaySrcs[0]}
+            fallbackSrcs={awaySrcs.slice(1)}
+            name={match.away}
+            abbr={match.awayAbbr}
+            size={22}
+          />
+          <span style={{ fontWeight: isLive ? 700 : 600 }}>{match.away}</span>
+          {showScore && (
+            <span
+              className="ms-match-score"
+              style={{ color: isLive && match.as > match.hs ? "var(--ms-text)" : undefined }}
+            >
+              {match.as}
+            </span>
+          )}
         </div>
       </div>
 
-      <div style={{ flexShrink: 0, textAlign: "right" }}>
-        <div style={{ fontSize: 10, color: "#8b8b9a", fontWeight: 600 }}>{match.league}</div>
-        {isLive && (
-          <div style={{ marginTop: 4, fontSize: 10, fontWeight: 800, color: "#dc2626", letterSpacing: "0.06em" }}>
-            LIVE
-          </div>
-        )}
-      </div>
+      {/* Meta */}
+      {showLeague && (
+        <div className="ms-match-meta">
+          <div className="ms-match-league">{match.league}</div>
+          {isLive && (
+            <div className="ms-match-live">
+              <span className="ms-live-dot" style={{ width: 5, height: 5 }} />
+              LIVE
+            </div>
+          )}
+          {isFinished && (
+            <span className="ms-badge-ft">FT</span>
+          )}
+        </div>
+      )}
     </button>
   );
 }

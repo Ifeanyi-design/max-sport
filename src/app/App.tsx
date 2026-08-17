@@ -15,6 +15,7 @@ import { SearchPage } from "./components/sports/SearchPage";
 import { TeamsPage } from "./components/sports/TeamsPage";
 import { TeamProfilePage } from "./components/sports/TeamProfilePage";
 import { AboutPage } from "./components/sports/AboutPage";
+import { HighlightsPage } from "./components/sports/HighlightsPage";
 import "../styles/fonts.css";
 
 const TICKER_H = 32;
@@ -25,6 +26,7 @@ const screenPath: Record<Exclude<Screen, "live-match">, string> = {
   fixtures: "/fixtures",
   standings: "/standings/english-premier-league",
   competitions: "/competitions",
+  highlights: "/highlights",
   teams: "/teams",
   team: "/teams",
   about: "/about",
@@ -37,6 +39,7 @@ function screenForPath(pathname: string): Screen {
   if (pathname === "/fixtures") return "fixtures";
   if (pathname.startsWith("/standings/")) return "standings";
   if (pathname === "/competitions") return "competitions";
+  if (pathname === "/highlights") return "highlights";
   if (pathname.startsWith("/teams/")) return "team";
   if (pathname === "/teams") return "teams";
   if (pathname === "/about") return "about";
@@ -101,11 +104,11 @@ export default function App() {
   const tickerMatch = liveTicker.length ? liveTicker[tickerIndex % liveTicker.length] : null;
 
   return (
-    <div style={{ background: "#0a0a10", height: "100vh", overflow: "hidden", fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif", display: "flex", color: "#ececf1", ["--app-ticker-h" as string]: showTicker ? `${TICKER_H}px` : "0px" }}>
+    <div className="ms-app-bg" style={{ height: "100vh", overflow: "hidden", fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif", display: "flex", color: "#ececf1", ["--app-ticker-h" as string]: showTicker ? `${TICKER_H}px` : "0px" }}>
       {!isMobile && <Sidebar activeScreen={activeScreen} setActiveScreen={setActiveScreen} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed((value) => !value)} liveCount={liveCount} />}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {showTicker && (
-          <button type="button" onClick={() => navigate(tickerMatch ? `/match/${tickerMatch.id}` : "/live")} style={{ height: TICKER_H, display: "flex", alignItems: "center", gap: 10, padding: "0 20px", background: "rgba(220,38,38,0.06)", border: "none", borderBottom: "1px solid rgba(220,38,38,0.14)", cursor: "pointer", color: "inherit", width: "100%", textAlign: "left", flexShrink: 0 }}>
+          <button type="button" onClick={() => navigate(tickerMatch ? `/match/${tickerMatch.id}` : "/live")} className="ms-card-hover" style={{ height: TICKER_H, display: "flex", alignItems: "center", gap: 10, padding: "0 20px", background: "rgba(255,45,85,0.06)", border: "none", borderBottom: "1px solid rgba(255,45,85,0.14)", cursor: "pointer", color: "inherit", width: "100%", textAlign: "left", flexShrink: 0 }}>
             <span className="ms-live-dot" /><Radio size={12} color="#dc2626" />
             <span style={{ fontSize: 11, fontWeight: 800, color: "#dc2626", letterSpacing: "0.08em" }}>LIVE</span>
             <span style={{ fontSize: 11, color: "#8b8b9a" }}>{liveCount} matches</span>
@@ -126,6 +129,7 @@ export default function App() {
             <Route path="/teams/:slug" element={<TeamRoute />} />
             <Route path="/about" element={<AboutPage setActiveScreen={setActiveScreen} />} />
             <Route path="/search" element={<SearchPage setActiveScreen={setActiveScreen} onOpenMatch={(id) => navigate(`/match/${id}`)} onOpenCompetition={(slug) => navigate(`/standings/${slug}`)} onOpenTeam={(slug) => navigate(`/teams/${slug}`)} />} />
+            <Route path="/highlights" element={<HighlightsPage setActiveScreen={setActiveScreen} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

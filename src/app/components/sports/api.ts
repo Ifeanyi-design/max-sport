@@ -10,6 +10,8 @@ export interface ApiTeam {
   abbr: string;
   logo_url: string | null;
   country?: string | null;
+  provider_team_id?: string | null;
+  provider_name?: string | null;
 }
 
 export interface ApiCompetition {
@@ -21,6 +23,8 @@ export interface ApiCompetition {
   current_season: string | null;
   featured: boolean;
   sport: string;
+  provider_competition_id?: string | null;
+  provider_name?: string | null;
 }
 
 export interface ApiMatch {
@@ -148,6 +152,23 @@ export function getSportsMeta(): Promise<{ live_count: number; competitions: Api
   return fetchJson<{ live_count: number; competitions: ApiCompetition[] }>("/");
 }
 
+export interface ApiHighlight {
+  id: number;
+  title: string;
+  competition: string | null;
+  url?: string | null;
+  video_url?: string | null;
+  thumbnail_url?: string | null;
+  published_at?: string | null;
+}
+
+export function getHighlights(): Promise<ApiHighlight[]> {
+  // The highlights endpoint is optional — returns empty array if not available.
+  return fetchJson<{ highlights: ApiHighlight[] } | ApiHighlight[]>("/highlights")
+    .then(d => Array.isArray(d) ? d : d.highlights ?? [])
+    .catch(() => []);
+}
+
 // --- Cosmetic helpers ------------------------------------------------------
 // League styling keyed by the API competition slug. Colors are accents only;
 // crests come from logo_url.
@@ -163,6 +184,36 @@ export const LEAGUE_STYLES: Record<string, { abbr: string; color: string }> = {
 
 export function leagueStyle(slug?: string | null) {
   return LEAGUE_STYLES[slug ?? ""] ?? { abbr: "", color: "#6b6b7b" };
+}
+
+/** Build an ordered list of logo URLs to try for a team (first non-null wins). */
+export function teamLogoSources(team: { logo_url?: string | null; provider_team_id?: string | null; provider_name?: string | null }): string[] {
+  const sources: string[] = [];
+  if (team.logo_url) sources.push(team.logo_url);
+  if (team.provider_team_id) {
+    if (!team.provider_name || team.provider_name === "api-football") {
+      sources.push(`https://media.api-sports.io/football/teams/${team.provider_team_id}.png`);
+    }
+    if (!team.provider_name || team.provider_name === "thesportsdb") {
+      sources.push(`https://www.thesportsdb.com/images/media/team/badge/${team.provider_team_id}.png`);
+    }
+  }
+  return sources;
+}
+
+/** Build an ordered list of logo URLs to try for a competition. */
+export function competitionLogoSources(comp: { logo_url?: string | null; provider_competition_id?: string | null; provider_name?: string | null }): string[] {
+  const sources: string[] = [];
+  if (comp.logo_url) sources.push(comp.logo_url);
+  if (comp.provider_competition_id) {
+    if (!comp.provider_name || comp.provider_name === "api-football") {
+      sources.push(`https://media.api-sports.io/football/leagues/${comp.provider_competition_id}.png`);
+    }
+    if (!comp.provider_name || comp.provider_name === "thesportsdb") {
+      sources.push(`https://www.thesportsdb.com/images/media/league/badge/${comp.provider_competition_id}.png`);
+    }
+  }
+  return sources;
 }
 
 // Deterministic hex color from a name (used for team badges).
@@ -196,15 +247,21 @@ export interface LiveCard {
   leagueAbbr: string;
   leagueColor: string;
   leagueLogo: string | null;
+  leagueProviderId: string | null;
+  leagueProviderName: string | null;
   phase: string;
   home: string;
   homeAbbr: string;
   homeColor: string;
   homeLogo: string | null;
+  homeProviderId: string | null;
+  homeProviderName: string | null;
   away: string;
   awayAbbr: string;
   awayColor: string;
   awayLogo: string | null;
+  awayProviderId: string | null;
+  awayProviderName: string | null;
   homeScore: number;
   awayScore: number;
   minute: string;
@@ -237,15 +294,21 @@ export function toLiveCard(m: ApiMatch): LiveCard {
     leagueAbbr: ls.abbr,
     leagueColor: ls.color,
     leagueLogo: m.competition?.logo_url ?? null,
+    leagueProviderId: m.competition?.provider_competition_id ?? null,
+    leagueProviderName: m.competition?.provider_name ?? null,
     phase,
     home: m.home_team?.name ?? "Home",
     homeAbbr: m.home_team?.abbr || abbrFromName(m.home_team?.name ?? "HOM"),
     homeColor: m.home_team ? colorFromString(m.home_team.name) : "#9095b8",
     homeLogo: m.home_team?.logo_url ?? null,
+    homeProviderId: m.home_team?.provider_team_id ?? null,
+    homeProviderName: m.home_team?.provider_name ?? null,
     away: m.away_team?.name ?? "Away",
     awayAbbr: m.away_team?.abbr || abbrFromName(m.away_team?.name ?? "AWA"),
     awayColor: m.away_team ? colorFromString(m.away_team.name) : "#9095b8",
     awayLogo: m.away_team?.logo_url ?? null,
+    awayProviderId: m.away_team?.provider_team_id ?? null,
+    awayProviderName: m.away_team?.provider_name ?? null,
     homeScore: m.home_score,
     awayScore: m.away_score,
     minute,
@@ -261,12 +324,20 @@ export interface FixtureCard {
   homeAbbr: string;
   homeColor: string;
   homeLogo: string | null;
+  homeProviderId: string | null;
+  homeProviderName: string | null;
   away: string;
   awayAbbr: string;
   awayColor: string;
   awayLogo: string | null;
+  awayProviderId: string | null;
+  awayProviderName: string | null;
   time: string;
   league: string;
+  leagueLogo: string | null;
+  leagueProviderId: string | null;
+  leagueProviderName: string | null;
+  leagueSlug: string | null;
   status: "live" | "finished" | "upcoming";
   hs: number;
   as: number;
@@ -289,12 +360,20 @@ export function toFixtureCard(m: ApiMatch): FixtureCard {
     homeAbbr: m.home_team?.abbr || abbrFromName(m.home_team?.name ?? "HOM"),
     homeColor: m.home_team ? colorFromString(m.home_team.name) : "#9095b8",
     homeLogo: m.home_team?.logo_url ?? null,
+    homeProviderId: m.home_team?.provider_team_id ?? null,
+    homeProviderName: m.home_team?.provider_name ?? null,
     away: m.away_team?.name ?? "Away",
     awayAbbr: m.away_team?.abbr || abbrFromName(m.away_team?.name ?? "AWA"),
     awayColor: m.away_team ? colorFromString(m.away_team.name) : "#9095b8",
     awayLogo: m.away_team?.logo_url ?? null,
+    awayProviderId: m.away_team?.provider_team_id ?? null,
+    awayProviderName: m.away_team?.provider_name ?? null,
     time,
     league: ls.abbr || m.competition?.name || "",
+    leagueLogo: m.competition?.logo_url ?? null,
+    leagueProviderId: m.competition?.provider_competition_id ?? null,
+    leagueProviderName: m.competition?.provider_name ?? null,
+    leagueSlug: m.competition?.slug ?? null,
     status,
     hs: m.home_score,
     as: m.away_score,
@@ -308,6 +387,8 @@ export interface StandingRow {
   abbr: string;
   color: string;
   logo: string | null;
+  provider_team_id?: string | null;
+  provider_name?: string | null;
   slug: string | null;
   p: number;
   w: number;
@@ -330,6 +411,8 @@ export function toStandingRow(r: ApiStanding): StandingRow {
     abbr: abbrFromName(r.team.name),
     color: colorFromString(r.team.name),
     logo: r.team.logo_url,
+    provider_team_id: (r.team as any).provider_team_id ?? null,
+    provider_name: (r.team as any).provider_name ?? null,
     slug: r.team.slug,
     p: r.played,
     w: r.won,
@@ -352,6 +435,9 @@ export interface CompetitionCard {
   logo: string | null;
   slug: string;
   featured: boolean;
+  country?: string | null;
+  provider_competition_id?: string | null;
+  provider_name?: string | null;
 }
 
 export function toCompetitionCard(c: ApiCompetition): CompetitionCard {
@@ -365,5 +451,8 @@ export function toCompetitionCard(c: ApiCompetition): CompetitionCard {
     logo: c.logo_url,
     slug: c.slug,
     featured: c.featured,
+    country: c.country,
+    provider_competition_id: c.provider_competition_id,
+    provider_name: c.provider_name,
   };
 }

@@ -1,13 +1,28 @@
 import { useEffect, useState } from "react";
-import { CalendarDays } from "lucide-react";
-import { getCompetitions, getMatches, getStandings, toFixtureCard, toStandingRow, type ApiCompetition, type FixtureCard, type StandingRow } from "./api";
+import { CalendarDays, Info } from "lucide-react";
+import {
+  getCompetitions, getMatches, getStandings, toFixtureCard, toStandingRow,
+  competitionLogoSources, teamLogoSources,
+  type ApiCompetition, type FixtureCard, type StandingRow
+} from "./api";
 import { Crest } from "./Crest";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
 import { PageHeader } from "./PageHeader";
 import { MatchRow } from "./MatchRow";
 
-interface Props { slug: string; onBack: () => void; onSelectCompetition: (slug: string) => void; onOpenMatch: (id: number) => void; }
+interface Props {
+  slug: string;
+  onBack: () => void;
+  onSelectCompetition: (slug: string) => void;
+  onOpenMatch: (id: number) => void;
+}
+
+const ZONE_CONFIG = [
+  { zone: "champions" as const, label: "UEFA Champions League", color: "var(--ms-champ)" },
+  { zone: "europa" as const, label: "UEFA Europa League", color: "var(--ms-europa)" },
+  { zone: "relegation" as const, label: "Relegation", color: "var(--ms-releg)" },
+];
 
 export function StandingsPage({ slug, onBack, onSelectCompetition, onOpenMatch }: Props) {
   const [rows, setRows] = useState<StandingRow[]>([]);
@@ -16,30 +31,187 @@ export function StandingsPage({ slug, onBack, onSelectCompetition, onOpenMatch }
   const [fixtures, setFixtures] = useState<FixtureCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const load = () => {
     setLoading(true); setError(null);
-    Promise.all([getCompetitions(), getStandings(slug), getMatches({ competition: slug, limit: 60 })]).then(([competitions, standings, matches]) => {
-      setAllCompetitions(competitions); setCompetition(competitions.find((item) => item.slug === slug) ?? null); setRows(standings.map(toStandingRow)); setFixtures(matches.map(toFixtureCard));
-    }).catch((err) => setError(String(err?.message || err))).finally(() => setLoading(false));
+    Promise.all([
+      getCompetitions(),
+      getStandings(slug),
+      getMatches({ competition: slug, limit: 60 }),
+    ]).then(([competitions, standings, matches]) => {
+      setAllCompetitions(competitions);
+      setCompetition(competitions.find(c => c.slug === slug) ?? null);
+      setRows(standings.map(toStandingRow));
+      setFixtures(matches.map(toFixtureCard));
+    }).catch(err => setError(String(err?.message || err))).finally(() => setLoading(false));
   };
   useEffect(load, [slug]);
 
-  return <div style={{ minHeight: "100%", paddingBottom: 32 }}>
-    <PageHeader title={competition?.name || "Standings"} onBack={onBack} onRefresh={load} />
-    <div className="ms-scroll" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "4px 20px 14px" }}>
-      {allCompetitions.map((item) => <button key={item.slug} type="button" onClick={() => onSelectCompetition(item.slug)} style={{ whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 7, padding: "7px 10px", borderRadius: 8, border: `1px solid ${item.slug === slug ? "rgba(200,30,30,0.55)" : "rgba(255,255,255,0.08)"}`, background: item.slug === slug ? "rgba(200,30,30,0.14)" : "#12121a", color: "#ececf1", cursor: "pointer", fontSize: 12, fontWeight: 700 }}><Crest src={item.logo_url} name={item.name} size={18} />{item.name}</button>)}
-    </div>
-    {competition && <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "0 20px 12px", padding: "12px 14px", borderRadius: 10, background: "#12121a", border: "1px solid rgba(255,255,255,0.07)" }}><Crest src={competition.logo_url} name={competition.name} size={36} /><div><div style={{ fontWeight: 800 }}>{competition.name}</div><div style={{ marginTop: 3, fontSize: 12, color: "#8b8b9a" }}>{competition.current_season ? `Season ${competition.current_season}` : "Current table"}</div></div></div>}
-    {loading ? <EmptyState title="Loading standings…" /> : error ? <ErrorState message="Could not load standings for this competition." onRetry={load} /> : rows.length === 0 ? <EmptyState title="No standings are available yet." /> : <div style={{ margin: "0 20px", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, overflowX: "auto" }}>
-      <div style={{ minWidth: 600 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "36px minmax(190px,1fr) repeat(7,42px)", padding: "10px 12px", color: "#8b8b9a", fontSize: 11, fontWeight: 800, borderBottom: "1px solid rgba(255,255,255,0.07)" }}><span>#</span><span>TEAM</span><span>P</span><span>W</span><span>D</span><span>L</span><span>GD</span><span>PTS</span></div>
-        {rows.map((row) => <div key={row.pos} style={{ display: "grid", gridTemplateColumns: "36px minmax(190px,1fr) repeat(7,42px)", alignItems: "center", padding: "9px 12px", borderBottom: "1px solid rgba(255,255,255,0.05)", fontSize: 13, borderLeft: `3px solid ${row.zone === "champions" ? "#2563eb" : row.zone === "relegation" ? "#dc2626" : "transparent"}` }}><span>{row.pos}</span><span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}><Crest src={row.logo} name={row.team} abbr={row.abbr} size={22} /><span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 650 }}>{row.team}</span></span><span>{row.p}</span><span>{row.w}</span><span>{row.d}</span><span>{row.l}</span><span>{row.gd > 0 ? `+${row.gd}` : row.gd}</span><strong>{row.pts}</strong></div>)}
+  const activeComp = competition;
+  const compLogoSrcs = activeComp
+    ? competitionLogoSources({
+        logo_url: activeComp.logo_url,
+        provider_competition_id: activeComp.provider_competition_id,
+        provider_name: activeComp.provider_name,
+      })
+    : [];
+
+  // Which zones are present in this table?
+  const zonesPresent = new Set(rows.map(r => r.zone).filter(z => z !== "normal"));
+
+  return (
+    <div style={{ minHeight: "100%", paddingBottom: 40 }}>
+      <PageHeader title={competition?.name || "Standings"} onBack={onBack} onRefresh={load} />
+
+      {/* Competition selector pills */}
+      <div className="ms-scroll ms-filter-strip" style={{ paddingBottom: 14 }}>
+        {allCompetitions.map(c => {
+          const active = c.slug === slug;
+          const srcs = competitionLogoSources({
+            logo_url: c.logo_url,
+            provider_competition_id: c.provider_competition_id,
+            provider_name: c.provider_name,
+          });
+          return (
+            <button
+              key={c.slug}
+              type="button"
+              onClick={() => onSelectCompetition(c.slug)}
+              className={`ms-pill${active ? " is-active" : ""}`}
+              style={{ fontSize: 11 }}
+            >
+              <Crest src={srcs[0]} fallbackSrcs={srcs.slice(1)} name={c.name} size={16} radius={4} />
+              {c.name}
+            </button>
+          );
+        })}
       </div>
-    </div>}
-    {!loading && !error && fixtures.length > 0 && <section style={{ margin: "24px 20px 0" }}>
-      <h2 style={{ margin: "0 0 10px", fontSize: 15 }}>Fixtures & results</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 8 }}>{fixtures.slice(0, 12).map((fixture) => <MatchRow key={fixture.id} match={fixture} onClick={() => onOpenMatch(fixture.id)} />)}</div>
-    </section>}
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 14, color: "#8b8b9a", fontSize: 12 }}><CalendarDays size={14} /> Tables are supplied by MaxCinema’s sports data feed.</div>
-  </div>;
+
+      {/* Active competition banner */}
+      {activeComp && (
+        <div className="ms-card" style={{ display: "flex", alignItems: "center", gap: 12, margin: "0 14px 16px", padding: "14px 16px" }}>
+          <Crest
+            src={compLogoSrcs[0]}
+            fallbackSrcs={compLogoSrcs.slice(1)}
+            name={activeComp.name} size={42} radius={8}
+          />
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 15 }}>{activeComp.name}</div>
+            {activeComp.country && (
+              <div style={{ fontSize: 12, color: "var(--ms-muted)", marginTop: 2 }}>{activeComp.country}</div>
+            )}
+            <div style={{ fontSize: 11, color: "var(--ms-faint)", marginTop: 2 }}>
+              {activeComp.current_season ? `Season ${activeComp.current_season}` : "Current table"}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Table */}
+      {loading ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "0 14px" }}>
+          {[...Array(10)].map((_, i) => (
+            <div key={i} className="ms-skeleton" style={{ height: 42, borderRadius: 8 }} />
+          ))}
+        </div>
+      ) : error ? (
+        <ErrorState message="Could not load standings for this competition." onRetry={load} />
+      ) : rows.length === 0 ? (
+        <EmptyState title="No standings available yet." detail="Check back later or choose another competition." />
+      ) : (
+        <div style={{ margin: "0 14px" }}>
+          <div className="ms-table">
+            <div className="ms-table-inner">
+              {/* Header */}
+              <div className="ms-table-head" style={{ position: "sticky", top: 0, zIndex: 1, background: "var(--ms-surface)" }}>
+                <span>#</span>
+                <span>Team</span>
+                <span title="Played">P</span>
+                <span title="Won">W</span>
+                <span title="Drawn">D</span>
+                <span title="Lost">L</span>
+                <span title="Goal Difference">GD</span>
+                <span title="Points" style={{ fontWeight: 900, color: "var(--ms-text)" }}>PTS</span>
+              </div>
+
+              {rows.map(row => {
+                const zoneClass =
+                  row.zone === "champions" ? "ms-zone-champ" :
+                  row.zone === "europa" ? "ms-zone-europa" :
+                  row.zone === "relegation" ? "ms-zone-releg" : "";
+                const posClass =
+                  row.zone === "champions" ? "ms-pos-top" :
+                  row.zone === "relegation" ? "ms-pos-releg" : "ms-pos";
+                const teamSrcs = teamLogoSources({
+                  logo_url: row.logo,
+                  provider_team_id: (row as any).provider_team_id,
+                  provider_name: (row as any).provider_name,
+                });
+
+                return (
+                  <div key={row.pos} className={`ms-table-row ${zoneClass}`}>
+                    <span className={posClass}>{row.pos}</span>
+                    <span className="ms-team-cell">
+                      <Crest
+                        src={teamSrcs[0]}
+                        fallbackSrcs={teamSrcs.slice(1)}
+                        name={row.team} abbr={row.abbr} size={22}
+                      />
+                      <span>{row.team}</span>
+                    </span>
+                    <span style={{ fontVariantNumeric: "tabular-nums", color: "var(--ms-text-2)" }}>{row.p}</span>
+                    <span style={{ fontVariantNumeric: "tabular-nums", color: "var(--ms-win)" }}>{row.w}</span>
+                    <span style={{ fontVariantNumeric: "tabular-nums", color: "var(--ms-draw)" }}>{row.d}</span>
+                    <span style={{ fontVariantNumeric: "tabular-nums", color: "var(--ms-loss)" }}>{row.l}</span>
+                    <span style={{ fontVariantNumeric: "tabular-nums", color: row.gd > 0 ? "var(--ms-win)" : row.gd < 0 ? "var(--ms-loss)" : "var(--ms-muted)" }}>
+                      {row.gd > 0 ? `+${row.gd}` : row.gd}
+                    </span>
+                    <strong className="ms-pts">{row.pts}</strong>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Zone legend */}
+            {zonesPresent.size > 0 && (
+              <div className="ms-zone-legend">
+                {ZONE_CONFIG.filter(z => zonesPresent.has(z.zone)).map(z => (
+                  <div key={z.zone} className="ms-zone-legend-item">
+                    <span className="ms-zone-legend-dot" style={{ background: z.color }} />
+                    {z.label}
+                  </div>
+                ))}
+                <div className="ms-zone-legend-item" style={{ marginLeft: "auto" }}>
+                  <Info size={11} />
+                  <span style={{ fontSize: 10 }}>Positions may update live</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Fixtures for this competition */}
+      {!loading && !error && fixtures.length > 0 && (
+        <section style={{ margin: "24px 14px 0" }}>
+          <h2 style={{
+            margin: "0 0 12px", fontSize: 17,
+            fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800
+          }}>
+            Fixtures &amp; Results
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {fixtures.slice(0, 12).map(f => (
+              <MatchRow key={f.id} match={f} onClick={() => onOpenMatch(f.id)} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 20, color: "var(--ms-faint)", fontSize: 11 }}>
+        <CalendarDays size={12} />
+        Tables supplied by MaxCinema sports data feed
+      </div>
+    </div>
+  );
 }

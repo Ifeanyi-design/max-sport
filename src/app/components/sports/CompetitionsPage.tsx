@@ -1,46 +1,148 @@
-import { useEffect, useMemo, useState } from "react";
-import { Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Globe, Trophy } from "lucide-react";
+import { getCompetitions, toCompetitionCard, competitionLogoSources, type CompetitionCard } from "./api";
 import type { Screen } from "./types";
-import { getCompetitions, toCompetitionCard, type CompetitionCard } from "./api";
 import { Crest } from "./Crest";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
 import { PageHeader } from "./PageHeader";
 
 interface Props {
-  setActiveScreen: (screen: Screen) => void;
+  setActiveScreen: (s: Screen) => void;
   onOpenCompetition: (slug: string) => void;
 }
 
+// Country → emoji flag mapping for common football countries
+const COUNTRY_FLAGS: Record<string, string> = {
+  England: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", Spain: "🇪🇸", Germany: "🇩🇪", Italy: "🇮🇹", France: "🇫🇷",
+  Portugal: "🇵🇹", Netherlands: "🇳🇱", Brazil: "🇧🇷", Argentina: "🇦🇷",
+  Europe: "🌍", International: "🌐", Scotland: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", Turkey: "🇹🇷",
+  "United States": "🇺🇸", Mexico: "🇲🇽", Russia: "🇷🇺", Belgium: "🇧🇪",
+};
+
 export function CompetitionsPage({ setActiveScreen, onOpenCompetition }: Props) {
-  const [competitions, setCompetitions] = useState<CompetitionCard[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [competitions, setCompetitions] = useState<CompetitionCard[] | null>(null);
+  const [error, setError] = useState(false);
+  const [filter, setFilter] = useState<"all" | "featured">("all");
+
   const load = () => {
-    setLoading(true);
-    setError(null);
-    getCompetitions().then((items) => setCompetitions(items.map(toCompetitionCard))).catch((err) => setError(String(err?.message || err))).finally(() => setLoading(false));
+    setError(false);
+    getCompetitions()
+      .then(data => setCompetitions(data.map(toCompetitionCard)))
+      .catch(() => setError(true));
   };
   useEffect(load, []);
 
-  const grouped = useMemo(() => ({
-    Domestic: competitions.filter((item) => !/champions|europa|conference|international|world cup|copa|nations/i.test(item.name)),
-    International: competitions.filter((item) => /champions|europa|conference|international|world cup|copa|nations/i.test(item.name)),
-  }), [competitions]);
+  const visible = competitions
+    ? filter === "featured"
+      ? competitions.filter(c => c.featured)
+      : competitions
+    : null;
 
-  return <div style={{ minHeight: "100%", paddingBottom: 32 }}>
-    <PageHeader title="Competitions" onBack={() => setActiveScreen("home")} onRefresh={load} />
-    {loading ? <EmptyState title="Loading competitions…" /> : error ? <ErrorState message="Could not load competitions." onRetry={load} /> : competitions.length === 0 ? <EmptyState title="No competitions available" /> : Object.entries(grouped).map(([title, items]) => items.length > 0 && (
-      <section key={title} style={{ padding: "8px 20px 16px" }}>
-        <h2 style={{ margin: "10px 0 10px", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8b8b9a" }}>{title}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 8 }}>
-          {items.map((competition) => <button key={competition.slug} type="button" onClick={() => onOpenCompetition(competition.slug)} style={{ textAlign: "left", display: "flex", alignItems: "center", gap: 12, padding: 12, borderRadius: 10, border: "1px solid rgba(255,255,255,0.07)", background: "#12121a", color: "#ececf1", cursor: "pointer" }}>
-            <Crest src={competition.logo} name={competition.name} abbr={competition.abbr} size={34} />
-            <span style={{ minWidth: 0, flex: 1 }}><span style={{ display: "block", fontSize: 14, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{competition.name}</span><span style={{ display: "block", marginTop: 3, fontSize: 11, color: "#8b8b9a" }}>{competition.season ? `Season ${competition.season}` : "View table"}</span></span>
-            <Trophy size={16} color="#8b8b9a" />
-          </button>)}
+  // Group by continent/region
+  const grouped = visible
+    ? visible.reduce<Record<string, CompetitionCard[]>>((acc, c) => {
+        const region = (c as any).country || "International";
+        const key = ["Europe", "England", "Spain", "Germany", "Italy", "France", "Portugal"].includes(region)
+          ? region === "Europe" ? "European Competitions" : region
+          : "Other";
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(c);
+        return acc;
+      }, {})
+    : {};
+
+  const regionOrder = ["England", "Spain", "Germany", "Italy", "France", "Portugal", "European Competitions", "Other"];
+  const sortedRegions = Object.keys(grouped).sort((a, b) => {
+    const ia = regionOrder.indexOf(a); const ib = regionOrder.indexOf(b);
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1; if (ib === -1) return -1;
+    return ia - ib;
+  });
+
+  return (
+    <div style={{ minHeight: "100%", paddingBottom: 40 }}>
+      <PageHeader title="Competitions" onBack={() => setActiveScreen("home")} />
+
+      {/* Filter */}
+      <div className="ms-filter-strip">
+        <button className={`ms-filter-btn${filter === "all" ? " is-active" : ""}`} onClick={() => setFilter("all")}>
+          All
+        </button>
+        <button className={`ms-filter-btn${filter === "featured" ? " is-active" : ""}`} onClick={() => setFilter("featured")}>
+          ⭐ Featured
+        </button>
+      </div>
+
+      {error && <ErrorState message="Could not load competitions." onRetry={load} />}
+      {visible === null && !error && <EmptyState title="Loading competitions…" />}
+      {visible !== null && visible.length === 0 && <EmptyState title="No competitions found." />}
+
+      {visible !== null && visible.length > 0 && (
+        <div style={{ padding: "0 14px" }}>
+          {sortedRegions.map(region => (
+            <div key={region} style={{ marginBottom: 24 }}>
+              {/* Region header */}
+              <div style={{
+                display: "flex", alignItems: "center", gap: 8,
+                padding: "0 2px 12px",
+                fontSize: 12, fontWeight: 800, color: "var(--ms-muted)",
+                textTransform: "uppercase", letterSpacing: "0.08em",
+              }}>
+                <span>{COUNTRY_FLAGS[region] || "🌍"}</span>
+                {region}
+              </div>
+
+              {/* Cards grid */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {grouped[region].map(c => {
+                  const srcs = competitionLogoSources({
+                    logo_url: c.logo,
+                    provider_competition_id: (c as any).provider_competition_id,
+                    provider_name: (c as any).provider_name,
+                  });
+                  return (
+                    <button
+                      key={c.slug}
+                      type="button"
+                      onClick={() => onOpenCompetition(c.slug)}
+                      className="ms-comp-card"
+                      style={{ "--comp-color": c.color } as React.CSSProperties}
+                    >
+                      <Crest
+                        src={srcs[0]}
+                        fallbackSrcs={srcs.slice(1)}
+                        name={c.name}
+                        abbr={c.abbr}
+                        size={40}
+                        bgColor={c.color}
+                        radius={8}
+                      />
+                      <span style={{ flex: 1, minWidth: 0 }}>
+                        <span className="ms-comp-name" style={{ fontSize: 14 }}>{c.name}</span>
+                        {(c as any).country && (
+                          <span className="ms-comp-country">
+                            {COUNTRY_FLAGS[(c as any).country] || ""} {(c as any).country}
+                          </span>
+                        )}
+                        <span className="ms-comp-sub">{c.season || "View standings"}</span>
+                      </span>
+                      {c.featured && (
+                        <span style={{
+                          flexShrink: 0, fontSize: 10, fontWeight: 800, color: "#f5b945",
+                          background: "rgba(245,185,69,0.12)", padding: "3px 8px", borderRadius: 4
+                        }}>
+                          Featured
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
-    ))}
-  </div>;
+      )}
+    </div>
+  );
 }

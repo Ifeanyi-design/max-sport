@@ -1,65 +1,598 @@
+/* ============================================================
+   MaxSport — Design System
+   ============================================================ */
 :root {
-  --ms-bg: #0a0a10;
-  --ms-surface: #12121a;
-  --ms-surface-2: #181822;
-  --ms-border: rgba(255, 255, 255, 0.08);
-  --ms-text: #ececf1;
-  --ms-muted: #8b8b9a;
-  --ms-faint: #5c5c6b;
-  --ms-accent: #c81e1e;
-  --ms-live: #dc2626;
+  /* Palette */
+  --ms-bg: #080810;
+  --ms-surface: #111118;
+  --ms-surface-2: #18181f;
+  --ms-surface-3: #20202c;
+  --ms-surface-glass: rgba(255, 255, 255, 0.04);
+  --ms-border: rgba(255, 255, 255, 0.07);
+  --ms-border-strong: rgba(255, 255, 255, 0.14);
+  --ms-border-accent: rgba(229, 20, 43, 0.3);
+
+  /* Text */
+  --ms-text: #eaeaf2;
+  --ms-text-2: #c4c4d0;
+  --ms-muted: #868698;
+  --ms-faint: #50505e;
+
+  /* Accent */
+  --ms-accent: #e5142b;
+  --ms-accent-hover: #ff2d45;
+  --ms-accent-soft: rgba(229, 20, 43, 0.13);
+  --ms-accent-glow: rgba(229, 20, 43, 0.22);
+
+  /* Semantic */
+  --ms-live: #ff2d55;
+  --ms-live-soft: rgba(255, 45, 85, 0.14);
+  --ms-win: #22c55e;
+  --ms-draw: #f5b945;
+  --ms-loss: #f8657a;
+  --ms-champ: #3b82f6;
+  --ms-champ-soft: rgba(59, 130, 246, 0.12);
+  --ms-europa: #a855f7;
+  --ms-europa-soft: rgba(168, 85, 247, 0.12);
+  --ms-releg: #ef4444;
+  --ms-releg-soft: rgba(239, 68, 68, 0.12);
+  --ms-conference: #22c55e;
+
+  /* Layout */
   --ms-sidebar: 220px;
   --ms-sidebar-collapsed: 64px;
+
+  /* Radii */
+  --ms-r-xs: 5px;
+  --ms-r-sm: 8px;
+  --ms-r: 12px;
+  --ms-r-lg: 16px;
+  --ms-r-xl: 20px;
+
+  /* Shadows */
+  --ms-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --ms-shadow-sm: 0 6px 20px rgba(0, 0, 0, 0.35);
+  --ms-shadow-accent: 0 8px 32px rgba(229, 20, 43, 0.2);
+
+  /* Ring */
+  --ms-ring: #e5142b;
+
+  /* Typography */
+  --ms-font: "Inter", "Segoe UI", system-ui, sans-serif;
+  --ms-display: "Barlow Condensed", sans-serif;
 }
 
-button, a {
+/* -------- Reset / Base ---------------------------------------- */
+* {
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
-button:focus-visible, a:focus-visible, input:focus-visible {
-  outline: 2px solid #dc2626;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ms-ring);
   outline-offset: 2px;
 }
 
-@media (hover: hover) {
-  button:not(:disabled) {
-    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
-  }
-
-  button:not(:disabled):hover {
-    border-color: rgba(255, 255, 255, 0.18);
-  }
+::selection {
+  background: rgba(229, 20, 43, 0.3);
+  color: #fff;
 }
 
+body {
+  font-family: var(--ms-font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* -------- App background -------------------------------------- */
+.ms-app-bg {
+  background:
+    radial-gradient(ellipse 900px 520px at 10% -8%, rgba(229, 20, 43, 0.1), transparent 55%),
+    radial-gradient(ellipse 820px 500px at 102% -2%, rgba(59, 130, 246, 0.07), transparent 55%),
+    var(--ms-bg);
+}
+
+/* -------- Scrollbar ------------------------------------------- */
 .ms-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
 }
+.ms-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+.ms-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 8px; }
+.ms-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.26); }
+.ms-scroll::-webkit-scrollbar-track { background: transparent; }
 
-.ms-scroll::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.ms-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 8px;
-}
-
-.ms-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+/* -------- Animations ------------------------------------------ */
 @keyframes msLivePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.78); }
+}
+@keyframes msShimmer {
+  0% { background-position: -300px 0; }
+  100% { background-position: calc(300px + 100%) 0; }
+}
+@keyframes msFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .ms-live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ms-live);
-  display: inline-block;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--ms-live); display: inline-block;
   animation: msLivePulse 1.4s ease-in-out infinite;
+  flex-shrink: 0;
 }
+.ms-live-dot.lg { width: 10px; height: 10px; }
+
+/* -------- Surfaces / Cards ------------------------------------ */
+.ms-card {
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r);
+}
+
+.ms-card-hover {
+  transition: transform 0.14s ease, border-color 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
+}
+@media (hover: hover) {
+  .ms-card-hover:hover {
+    transform: translateY(-2px);
+    border-color: var(--ms-border-strong);
+    background: var(--ms-surface-2);
+    box-shadow: var(--ms-shadow-sm);
+  }
+}
+
+/* Glass panel */
+.ms-glass {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* -------- Section header -------------------------------------- */
+.ms-section {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+}
+.ms-section h2 {
+  margin: 0; font-family: var(--ms-display); font-size: 20px;
+  font-weight: 800; letter-spacing: 0.01em; line-height: 1.1;
+  color: var(--ms-text);
+}
+.ms-section-action {
+  margin-left: auto; padding: 5px 10px; border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r-sm); background: transparent; color: var(--ms-muted);
+  cursor: pointer; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: color 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+}
+@media (hover: hover) {
+  .ms-section-action:hover { color: var(--ms-text); border-color: var(--ms-border-strong); background: var(--ms-surface-2); }
+}
+
+.ms-eyebrow {
+  margin: 0; color: var(--ms-faint); font-size: 11px;
+  font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+/* -------- Pills / chips -------------------------------------- */
+.ms-pill {
+  white-space: nowrap; display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 13px; border-radius: 999px;
+  border: 1px solid var(--ms-border); background: var(--ms-surface);
+  color: var(--ms-text); cursor: pointer; font-size: 12px; font-weight: 700;
+  transition: border-color 0.14s ease, background-color 0.14s ease, color 0.14s ease;
+}
+.ms-pill.is-active {
+  border-color: rgba(229, 20, 43, 0.5); background: var(--ms-accent-soft); color: #fff;
+}
+@media (hover: hover) {
+  .ms-pill:hover:not(.is-active) { border-color: var(--ms-border-strong); background: var(--ms-surface-2); }
+}
+
+/* -------- Buttons -------------------------------------------- */
+.ms-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 9px 16px; border-radius: var(--ms-r-sm);
+  border: 1px solid var(--ms-border); background: var(--ms-surface-2);
+  color: var(--ms-text); cursor: pointer; font-size: 13px; font-weight: 700;
+  transition: border-color 0.14s ease, background-color 0.14s ease, transform 0.1s ease;
+  font-family: var(--ms-font);
+}
+.ms-btn:active { transform: translateY(1px); }
+.ms-btn-primary { background: var(--ms-accent); border-color: transparent; color: #fff; }
+@media (hover: hover) {
+  .ms-btn-primary:hover { background: var(--ms-accent-hover); box-shadow: var(--ms-shadow-accent); }
+  .ms-btn:hover { border-color: var(--ms-border-strong); }
+}
+
+.ms-icon-btn {
+  width: 34px; height: 34px; border-radius: var(--ms-r-sm);
+  border: 1px solid var(--ms-border); background: transparent; color: var(--ms-muted);
+  display: grid; place-items: center; cursor: pointer;
+  transition: border-color 0.14s ease, color 0.14s ease, background-color 0.14s ease;
+}
+@media (hover: hover) {
+  .ms-icon-btn:hover { color: var(--ms-text); border-color: var(--ms-border-strong); background: var(--ms-surface-2); }
+}
+
+/* -------- Live hero ------------------------------------------ */
+.ms-hero {
+  position: relative; overflow: hidden; border-radius: var(--ms-r-lg);
+  border: 1px solid rgba(255, 45, 85, 0.2);
+  background:
+    linear-gradient(135deg, rgba(229, 20, 43, 0.18), rgba(229, 20, 43, 0.03) 60%),
+    var(--ms-surface);
+  padding: 20px 22px;
+}
+.ms-hero::before {
+  content: "";
+  position: absolute; top: 0; right: 0; width: 220px; height: 100%;
+  background: radial-gradient(ellipse at 100% 50%, rgba(255, 45, 85, 0.08), transparent 70%);
+  pointer-events: none;
+}
+.ms-hero-calm {
+  border-color: var(--ms-border);
+  background: var(--ms-surface);
+}
+.ms-hero-calm::before { display: none; }
+
+/* -------- Competition card ----------------------------------- */
+.ms-comp-card {
+  display: flex; align-items: center; gap: 12px; padding: 14px;
+  background: var(--ms-surface); border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r); color: var(--ms-text); cursor: pointer;
+  text-align: left; position: relative; overflow: hidden;
+  transition: transform 0.14s ease, border-color 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
+}
+.ms-comp-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--comp-color, var(--ms-accent)); border-radius: 0 2px 2px 0;
+  opacity: 0.7;
+}
+@media (hover: hover) {
+  .ms-comp-card:hover {
+    transform: translateY(-2px); border-color: var(--ms-border-strong);
+    background: var(--ms-surface-2); box-shadow: var(--ms-shadow-sm);
+  }
+}
+.ms-comp-card .ms-comp-name {
+  display: block; font-weight: 750; font-size: 13px; line-height: 1.3;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ms-comp-card .ms-comp-sub {
+  font-size: 11px; color: var(--ms-muted); margin-top: 2px;
+}
+.ms-comp-card .ms-comp-country {
+  font-size: 10px; color: var(--ms-faint); font-weight: 600; margin-top: 1px;
+}
+
+/* -------- Match row ------------------------------------------ */
+.ms-match {
+  width: 100%; display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: var(--ms-r);
+  border: 1px solid var(--ms-border); background: var(--ms-surface);
+  color: var(--ms-text); cursor: pointer; text-align: left;
+  transition: transform 0.14s ease, border-color 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
+}
+.ms-match.is-live {
+  border-color: rgba(255, 45, 85, 0.22);
+  background:
+    linear-gradient(135deg, rgba(255, 45, 85, 0.06), transparent 60%),
+    var(--ms-surface);
+}
+@media (hover: hover) {
+  .ms-match:hover {
+    transform: translateY(-1px); border-color: var(--ms-border-strong);
+    background: var(--ms-surface-2); box-shadow: var(--ms-shadow-sm);
+  }
+  .ms-match.is-live:hover { border-color: rgba(255, 45, 85, 0.38); }
+}
+
+.ms-match-status {
+  width: 46px; flex-shrink: 0; text-align: center;
+  font-family: var(--ms-display); font-weight: 800; font-size: 13px; line-height: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.ms-match-status .ms-live { color: var(--ms-live); }
+.ms-match-status .ms-ft { color: var(--ms-muted); font-size: 11px; font-weight: 800; }
+.ms-match-status .ms-time { color: var(--ms-muted); font-size: 12px; font-weight: 700; }
+
+.ms-match-main {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px;
+}
+.ms-match-team {
+  display: flex; align-items: center; gap: 9px; min-width: 0;
+}
+.ms-match-team span {
+  flex: 1; min-width: 0; font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ms-match-score {
+  font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.ms-match-meta {
+  width: 80px; flex-shrink: 0; text-align: right;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+}
+.ms-match-league {
+  font-size: 10px; color: var(--ms-muted); font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px;
+}
+.ms-match-live {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.06em;
+  color: var(--ms-live); display: flex; align-items: center; gap: 4px;
+}
+
+/* -------- Fixture group (date header) ------------------------ */
+.ms-fixture-group { margin-bottom: 20px; animation: msFadeUp 0.22s ease; }
+.ms-fixture-date {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 14px 10px; font-size: 12px; font-weight: 800;
+  color: var(--ms-muted); text-transform: uppercase; letter-spacing: 0.08em;
+}
+.ms-fixture-date-line {
+  flex: 1; height: 1px; background: var(--ms-border);
+}
+.ms-fixture-date-today { color: var(--ms-accent); }
+
+/* -------- Competition group header (within fixture date) ------ */
+.ms-comp-group-header {
+  display: flex; align-items: center; gap: 8px; padding: 8px 14px 6px;
+  font-size: 11px; font-weight: 700; color: var(--ms-muted);
+  letter-spacing: 0.04em;
+}
+.ms-comp-group-matches { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+
+/* -------- Live list cards ------------------------------------ */
+.ms-live-pill, .ms-live-card {
+  cursor: pointer; background: var(--ms-surface); border-radius: var(--ms-r);
+  padding: 14px; border: 1px solid var(--ms-border);
+  transition: transform 0.14s ease, border-color 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
+}
+@media (hover: hover) {
+  .ms-live-pill:hover, .ms-live-card:hover {
+    transform: translateY(-2px); border-color: var(--ms-border-strong);
+    background: var(--ms-surface-2); box-shadow: var(--ms-shadow-sm);
+  }
+}
+.ms-live-watch {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--ms-accent); color: #fff; padding: 6px 14px;
+  border-radius: var(--ms-r-sm); font-weight: 800; font-size: 11px;
+  letter-spacing: 0.04em; transition: background 0.14s ease;
+}
+@media (hover: hover) { .ms-live-watch:hover { background: var(--ms-accent-hover); } }
+
+/* -------- Standings table ------------------------------------ */
+.ms-table {
+  margin: 0; border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r); overflow-x: auto; background: var(--ms-surface);
+}
+.ms-table-inner { min-width: 580px; }
+.ms-table-head, .ms-table-row {
+  display: grid;
+  grid-template-columns: 36px minmax(170px, 1fr) repeat(4, 38px) 44px 44px;
+  align-items: center;
+}
+.ms-table-head {
+  padding: 10px 14px; color: var(--ms-muted); font-size: 10px; font-weight: 800;
+  border-bottom: 1px solid var(--ms-border); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.ms-table-row {
+  padding: 8px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+  font-size: 13px; transition: background-color 0.14s ease; cursor: pointer;
+}
+.ms-table-row:last-child { border-bottom: none; }
+@media (hover: hover) { .ms-table-row:hover { background: var(--ms-surface-2); } }
+
+/* Zone indicators */
+.ms-zone-champ { border-left: 3px solid var(--ms-champ); }
+.ms-zone-europa { border-left: 3px solid var(--ms-europa); }
+.ms-zone-conference { border-left: 3px solid var(--ms-conference); }
+.ms-zone-releg { border-left: 3px solid var(--ms-releg); }
+
+.ms-pos { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 12px; color: var(--ms-muted); }
+.ms-pos-top { color: var(--ms-champ); }
+.ms-pos-releg { color: var(--ms-releg); }
+
+.ms-team-cell {
+  display: flex; align-items: center; gap: 9px; min-width: 0;
+  cursor: pointer; border-radius: var(--ms-r-xs);
+  transition: color 0.14s ease;
+}
+.ms-team-cell span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
+@media (hover: hover) { .ms-team-cell:hover { color: var(--ms-accent); } }
+
+.ms-pts { font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; font-size: 14px; }
+
+/* Form guide */
+.ms-form { display: flex; gap: 3px; }
+.ms-form-dot {
+  width: 18px; height: 18px; border-radius: 4px; font-size: 9px; font-weight: 800;
+  display: grid; place-items: center; line-height: 1;
+}
+.ms-form-w { background: var(--ms-win); color: #0a1a0e; }
+.ms-form-d { background: var(--ms-draw); color: #1a1000; }
+.ms-form-l { background: var(--ms-loss); color: #fff; }
+
+/* Standings zone legend */
+.ms-zone-legend {
+  display: flex; flex-wrap: wrap; gap: 12px; padding: 12px 16px;
+  border-top: 1px solid var(--ms-border); margin-top: 0;
+  background: var(--ms-surface);
+  border-radius: 0 0 var(--ms-r) var(--ms-r);
+}
+.ms-zone-legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--ms-muted); font-weight: 600;
+}
+.ms-zone-legend-dot {
+  width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+}
+
+/* -------- Crest --------------------------------------------- */
+.ms-crest {
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0; border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--crest-bg, var(--ms-surface-3));
+}
+.ms-crest-img {
+  width: 84%; height: 84%; object-fit: contain;
+}
+.ms-crest-fallback {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ms-display); font-weight: 900; color: #fff;
+  letter-spacing: -0.02em; line-height: 1; font-size: inherit;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Round crests for team badges */
+.ms-crest.ms-crest-round { border-radius: 50%; }
+
+/* -------- Empty / error ------------------------------------- */
+.ms-state { text-align: center; padding: 52px 24px; }
+.ms-state-icon { font-size: 36px; margin-bottom: 12px; }
+.ms-state-title {
+  font-family: var(--ms-font); font-size: 15px; font-weight: 700; color: var(--ms-text);
+}
+.ms-state-detail {
+  font-family: var(--ms-font); font-size: 13px; margin-top: 6px;
+  line-height: 1.55; color: var(--ms-muted);
+}
+.ms-state-error { color: #ff9aa6; }
+
+/* -------- Score display ------------------------------------- */
+.ms-score {
+  font-family: var(--ms-display); font-weight: 900; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------- Skeleton shimmer ---------------------------------- */
+.ms-skeleton {
+  border-radius: var(--ms-r-sm);
+  background: linear-gradient(90deg, var(--ms-surface) 25%, var(--ms-surface-2) 50%, var(--ms-surface) 75%);
+  background-size: 600px 100%;
+  animation: msShimmer 1.5s infinite linear;
+}
+
+/* -------- Bottom Tab Bar ------------------------------------ */
+.ms-bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: stretch;
+  background: rgba(10, 10, 16, 0.96);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.ms-bottom-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 4px; padding: 9px 4px 11px;
+  background: transparent; border: none; cursor: pointer;
+  transition: opacity 0.14s ease;
+}
+.ms-bottom-tab-icon {
+  position: relative; display: inline-flex;
+}
+.ms-bottom-tab-label {
+  font-family: var(--ms-font); font-size: 10px; letter-spacing: 0.01em;
+}
+.ms-bottom-tab.is-active .ms-bottom-tab-label { font-weight: 700; }
+.ms-bottom-tab:not(.is-active) .ms-bottom-tab-label { color: var(--ms-faint); font-weight: 500; }
+.ms-bottom-tab-indicator {
+  position: absolute; bottom: -13px; left: 50%; transform: translateX(-50%);
+  width: 20px; height: 2.5px; border-radius: 2px;
+  background: var(--ms-accent); opacity: 0; transition: opacity 0.14s ease;
+}
+.ms-bottom-tab.is-active .ms-bottom-tab-indicator { opacity: 1; }
+
+/* -------- Page header --------------------------------------- */
+.ms-page-header {
+  display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px;
+  position: sticky; top: 0; z-index: 10;
+  background: linear-gradient(180deg, rgba(8, 8, 16, 0.98) 0%, rgba(8, 8, 16, 0.9) 100%);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.ms-page-title {
+  font-family: var(--ms-display); font-size: 20px; font-weight: 800;
+  color: var(--ms-text); letter-spacing: 0.01em;
+}
+
+/* -------- Filter strip -------------------------------------- */
+.ms-filter-strip {
+  display: flex; gap: 8px; overflow-x: auto; padding: 10px 14px;
+  scrollbar-width: none;
+}
+.ms-filter-strip::-webkit-scrollbar { display: none; }
+.ms-filter-btn {
+  flex-shrink: 0; padding: 6px 14px; border-radius: 999px; border: none;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+  background: var(--ms-surface-2); color: var(--ms-muted);
+  font-family: var(--ms-font);
+}
+.ms-filter-btn.is-active { background: var(--ms-accent); color: #fff; }
+@media (hover: hover) {
+  .ms-filter-btn:not(.is-active):hover { background: var(--ms-surface-3); color: var(--ms-text); }
+}
+
+/* -------- Status badges ------------------------------------- */
+.ms-badge-live {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 800;
+  letter-spacing: 0.05em; background: var(--ms-accent); color: #fff;
+}
+.ms-badge-ft {
+  padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700;
+  background: var(--ms-surface-3); color: var(--ms-muted); letter-spacing: 0.04em;
+}
+
+/* -------- Highlights grid ----------------------------------- */
+.ms-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+@media (max-width: 600px) {
+  .ms-video-grid { grid-template-columns: 1fr; }
+}
+
+/* -------- Competition featured card ------------------------- */
+.ms-comp-featured {
+  border-radius: var(--ms-r-xl); overflow: hidden; cursor: pointer;
+  background: var(--ms-surface); border: 1px solid var(--ms-border);
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+@media (hover: hover) {
+  .ms-comp-featured:hover { transform: translateY(-3px); box-shadow: var(--ms-shadow); }
+}
+.ms-comp-featured-banner {
+  height: 80px; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.ms-comp-featured-body { padding: 14px 16px; }
+
+/* -------- Responsive ---------------------------------------- */
+@media (max-width: 768px) {
+  .ms-table-head,
+  .ms-table-row {
+    grid-template-columns: 32px minmax(130px, 1fr) repeat(4, 32px) 36px 36px;
+  }
+  .ms-table { margin: 0; }
+  .ms-video-grid { grid-template-columns: 1fr; gap: 12px; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+

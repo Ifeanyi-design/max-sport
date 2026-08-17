@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Radio, Share2 } from "lucide-react";
-import { getMatch, type ApiEvent, type ApiMatch, type ApiStream } from "./api";
+import { getMatch, teamLogoSources, type ApiEvent, type ApiMatch, type ApiStream } from "./api";
 import { Crest } from "./Crest";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
 import { PageHeader } from "./PageHeader";
+
 
 interface Props { matchId: number; onBack: () => void; onOpenMatch: (id: number) => void; }
 type Detail = { match: ApiMatch; events: ApiEvent[]; streams: ApiStream[] };
@@ -66,5 +67,12 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
 }
 
 function Team({ team, align }: { team: ApiMatch["home_team"]; align: "left" | "right" }) {
-  return <div style={{ width: "min(29vw, 190px)", display: "flex", flexDirection: "column", alignItems: align === "right" ? "flex-end" : "flex-start", gap: 8 }}><Crest src={team?.logo_url} name={team?.name} abbr={team?.abbr} size={44} /><span style={{ fontSize: "clamp(13px, 2vw, 17px)", fontWeight: 800, textAlign: align }}>{team?.name || "TBD"}</span></div>;
+  const srcs = team ? teamLogoSources({ logo_url: team.logo_url, provider_team_id: team.provider_team_id, provider_name: team.provider_name }) : [];
+  return (
+    <div style={{ width: "min(29vw, 190px)", display: "flex", flexDirection: "column", alignItems: align === "right" ? "flex-end" : "flex-start", gap: 8 }}>
+      <Crest src={srcs[0]} fallbackSrcs={srcs.slice(1)} name={team?.name} abbr={team?.abbr} size={48} />
+      <span style={{ fontSize: "clamp(13px, 2vw, 17px)", fontWeight: 800, textAlign: align }}>{team?.name || "TBD"}</span>
+    </div>
+  );
 }
+

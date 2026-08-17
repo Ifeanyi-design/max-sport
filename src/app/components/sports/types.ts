@@ -5,6 +5,7 @@ export type Screen =
   | "fixtures"
   | "standings"
   | "competitions"
+  | "highlights"
   | "teams"
   | "team"
   | "about"

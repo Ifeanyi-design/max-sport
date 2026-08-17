@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  Home, Radio, Calendar, BarChart3, Trophy, Search, Users, Info, ChevronDown, ChevronsLeft, ChevronsRight,
+  Home, Radio, Calendar, BarChart3, Trophy, Search, Users, Info, Film, ChevronDown, ChevronsLeft, ChevronsRight,
 } from "lucide-react";
 import type { Screen } from "./types";
 import { Wordmark } from "./Wordmark";
@@ -22,6 +22,7 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
       { id: "home", label: "Home", Icon: Home, screen: "home" },
       { id: "live-list", label: "Live", Icon: Radio, screen: "live-list", isLive: true },
       { id: "fixtures", label: "Fixtures", Icon: Calendar, screen: "fixtures" },
+      { id: "highlights", label: "Highlights", Icon: Film, screen: "highlights" },
     ],
   },
   {
@@ -35,6 +36,7 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
     ],
   },
 ];
+
 
 const LIVE_RELATED: Screen[] = ["live-list", "live-match"];
 const TEAM_RELATED: Screen[] = ["teams", "team"];
