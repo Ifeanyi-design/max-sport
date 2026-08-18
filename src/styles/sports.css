@@ -1,35 +1,39 @@
 /* ============================================================
-   MaxSport — Design System
+   MaxSport â€” Design System v2
+   Dark navy (Camel.tv) + MaxCinema blue accent + Green LIVE
    ============================================================ */
 :root {
-  /* Palette */
-  --ms-bg: #080810;
-  --ms-surface: #111118;
-  --ms-surface-2: #18181f;
-  --ms-surface-3: #20202c;
-  --ms-surface-glass: rgba(255, 255, 255, 0.04);
+  /* Backgrounds â€” Camel.tv dark navy style */
+  --ms-bg: #070c12;
+  --ms-surface: #0d1520;
+  --ms-surface-2: #12202e;
+  --ms-surface-3: #1a2d3f;
+  --ms-surface-glass: rgba(255, 255, 255, 0.03);
   --ms-border: rgba(255, 255, 255, 0.07);
   --ms-border-strong: rgba(255, 255, 255, 0.14);
-  --ms-border-accent: rgba(229, 20, 43, 0.3);
+  --ms-border-accent: rgba(37, 99, 235, 0.3);
 
   /* Text */
-  --ms-text: #eaeaf2;
-  --ms-text-2: #c4c4d0;
-  --ms-muted: #868698;
-  --ms-faint: #50505e;
+  --ms-text: #e2eaf4;
+  --ms-text-2: #b8c8da;
+  --ms-muted: #7a90a8;
+  --ms-faint: #3f5468;
 
-  /* Accent */
-  --ms-accent: #e5142b;
-  --ms-accent-hover: #ff2d45;
-  --ms-accent-soft: rgba(229, 20, 43, 0.13);
-  --ms-accent-glow: rgba(229, 20, 43, 0.22);
+  /* Accent â€” MaxCinema indigo-blue */
+  --ms-accent: #2563eb;
+  --ms-accent-hover: #3b7ef8;
+  --ms-accent-soft: rgba(37, 99, 235, 0.14);
+  --ms-accent-glow: rgba(37, 99, 235, 0.25);
+
+  /* LIVE â€” always green (Camel.tv / Sofascore standard) */
+  --ms-live: #16a34a;
+  --ms-live-bright: #22c55e;
+  --ms-live-soft: rgba(22, 163, 74, 0.15);
 
   /* Semantic */
-  --ms-live: #ff2d55;
-  --ms-live-soft: rgba(255, 45, 85, 0.14);
   --ms-win: #22c55e;
-  --ms-draw: #f5b945;
-  --ms-loss: #f8657a;
+  --ms-draw: #eab308;
+  --ms-loss: #ef4444;
   --ms-champ: #3b82f6;
   --ms-champ-soft: rgba(59, 130, 246, 0.12);
   --ms-europa: #a855f7;
@@ -43,19 +47,19 @@
   --ms-sidebar-collapsed: 64px;
 
   /* Radii */
-  --ms-r-xs: 5px;
+  --ms-r-xs: 4px;
   --ms-r-sm: 8px;
-  --ms-r: 12px;
-  --ms-r-lg: 16px;
-  --ms-r-xl: 20px;
+  --ms-r: 10px;
+  --ms-r-lg: 14px;
+  --ms-r-xl: 18px;
 
   /* Shadows */
-  --ms-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
-  --ms-shadow-sm: 0 6px 20px rgba(0, 0, 0, 0.35);
-  --ms-shadow-accent: 0 8px 32px rgba(229, 20, 43, 0.2);
+  --ms-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  --ms-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --ms-shadow-accent: 0 8px 32px rgba(37, 99, 235, 0.25);
 
   /* Ring */
-  --ms-ring: #e5142b;
+  --ms-ring: #2563eb;
 
   /* Typography */
   --ms-font: "Inter", "Segoe UI", system-ui, sans-serif;
@@ -77,7 +81,7 @@ input:focus-visible,
 }
 
 ::selection {
-  background: rgba(229, 20, 43, 0.3);
+  background: rgba(37, 99, 235, 0.25);
   color: #fff;
 }
 
@@ -90,7 +94,7 @@ body {
 /* -------- App background -------------------------------------- */
 .ms-app-bg {
   background:
-    radial-gradient(ellipse 900px 520px at 10% -8%, rgba(229, 20, 43, 0.1), transparent 55%),
+    radial-gradient(ellipse 900px 520px at 10% -8%, rgba(37, 99, 235, 0.06), transparent 55%),
     radial-gradient(ellipse 820px 500px at 102% -2%, rgba(59, 130, 246, 0.07), transparent 55%),
     var(--ms-bg);
 }
@@ -223,16 +227,16 @@ body {
 /* -------- Live hero ------------------------------------------ */
 .ms-hero {
   position: relative; overflow: hidden; border-radius: var(--ms-r-lg);
-  border: 1px solid rgba(255, 45, 85, 0.2);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   background:
-    linear-gradient(135deg, rgba(229, 20, 43, 0.18), rgba(229, 20, 43, 0.03) 60%),
+    linear-gradient(135deg, rgba(37, 99, 235, 0.10), rgba(37, 99, 235, 0.02) 60%),
     var(--ms-surface);
   padding: 20px 22px;
 }
 .ms-hero::before {
   content: "";
   position: absolute; top: 0; right: 0; width: 220px; height: 100%;
-  background: radial-gradient(ellipse at 100% 50%, rgba(255, 45, 85, 0.08), transparent 70%);
+  background: radial-gradient(ellipse at 100% 50%, rgba(22, 163, 74, 0.08), transparent 70%);
   pointer-events: none;
 }
 .ms-hero-calm {
@@ -280,9 +284,9 @@ body {
   transition: transform 0.14s ease, border-color 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
 }
 .ms-match.is-live {
-  border-color: rgba(255, 45, 85, 0.22);
+  border-color: rgba(22, 163, 74, 0.18);
   background:
-    linear-gradient(135deg, rgba(255, 45, 85, 0.06), transparent 60%),
+    linear-gradient(135deg, rgba(22, 163, 74, 0.06), transparent 60%),
     var(--ms-surface);
 }
 @media (hover: hover) {
@@ -290,7 +294,7 @@ body {
     transform: translateY(-1px); border-color: var(--ms-border-strong);
     background: var(--ms-surface-2); box-shadow: var(--ms-shadow-sm);
   }
-  .ms-match.is-live:hover { border-color: rgba(255, 45, 85, 0.38); }
+  .ms-match.is-live:hover { border-color: rgba(22, 163, 74, 0.32); }
 }
 
 .ms-match-status {
@@ -595,4 +599,289 @@ body {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ================================================================
+   NEW v2 COMPONENTS — Camel.tv + Sofascore style
+   ================================================================ */
+
+/* -------- Live Ticker Strip --------------------------------- */
+.ms-ticker {
+  background: #091522;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  height: 36px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.ms-ticker-inner {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: msTicker 50s linear infinite;
+}
+.ms-ticker-inner:hover { animation-play-state: paused; }
+@keyframes msTicker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ms-ticker-match {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ms-text-2);
+  cursor: pointer;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  height: 36px;
+  transition: background 0.12s;
+}
+.ms-ticker-match:hover { background: rgba(255,255,255,0.04); }
+.ms-ticker-score {
+  font-family: var(--ms-display); font-weight: 900;
+  font-size: 13px; color: #fff;
+  min-width: 28px; text-align: center;
+}
+.ms-ticker-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--ms-live-bright);
+  animation: msLivePulse 1.4s ease-in-out infinite;
+}
+
+/* -------- Green LIVE badge (Camel.tv) ----------------------- */
+.ms-live-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--ms-live); color: #fff;
+  font-size: 10px; font-weight: 900; letter-spacing: 0.06em;
+  padding: 3px 7px; border-radius: 4px; line-height: 1;
+  flex-shrink: 0;
+}
+.ms-live-badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  animation: msLivePulse 1.4s ease-in-out infinite;
+}
+
+/* -------- Camel.tv compact match row ----------------------- */
+.ms-compact-match {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.ms-compact-match:last-child { border-bottom: none; }
+.ms-compact-match:hover { background: rgba(255,255,255,0.03); }
+.ms-compact-match.is-live { background: rgba(22,163,74,0.04); }
+.ms-compact-time {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+}
+.ms-compact-time-date { font-size: 10px; color: var(--ms-muted); font-weight: 600; }
+.ms-compact-time-val  { font-size: 12px; font-weight: 800; color: var(--ms-text-2); }
+.ms-compact-time-min  { font-size: 10px; font-weight: 800; color: var(--ms-live-bright); }
+.ms-compact-teams {
+  display: flex; flex-direction: column; gap: 5px;
+  min-width: 0; padding: 0 10px;
+}
+.ms-compact-team {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--ms-text); min-width: 0;
+}
+.ms-compact-team span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-compact-team.winner { font-weight: 800; color: #fff; }
+.ms-compact-scores {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+}
+.ms-compact-score {
+  font-family: var(--ms-display); font-weight: 900;
+  font-size: 16px; color: #fff;
+  font-variant-numeric: tabular-nums; line-height: 1;
+}
+
+/* -------- Camel.tv league group ----------------------------- */
+.ms-league-group { margin-bottom: 8px; }
+.ms-league-group-header {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 14px;
+  background: var(--ms-surface-2);
+  border-radius: var(--ms-r) var(--ms-r) 0 0;
+  border: 1px solid var(--ms-border); border-bottom: none;
+  cursor: pointer;
+}
+.ms-league-group-name {
+  font-size: 12px; font-weight: 800; color: var(--ms-text-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ms-league-group-count {
+  margin-left: auto; font-size: 11px; color: var(--ms-muted); font-weight: 700;
+}
+.ms-league-group-body {
+  border: 1px solid var(--ms-border);
+  border-radius: 0 0 var(--ms-r) var(--ms-r);
+  overflow: hidden; background: var(--ms-surface);
+}
+
+/* -------- Two-column layout --------------------------------- */
+.ms-two-col {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 14px; align-items: start;
+}
+@media (max-width: 900px) { .ms-two-col { grid-template-columns: 1fr; } }
+.ms-panel {
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r-lg); overflow: hidden;
+}
+.ms-panel-head {
+  padding: 12px 16px;
+  background: var(--ms-surface-2);
+  border-bottom: 1px solid var(--ms-border);
+  font-size: 14px; font-weight: 800; color: var(--ms-text);
+  font-family: var(--ms-display); letter-spacing: 0.01em;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* -------- Sofascore match detail header --------------------- */
+.ms-match-hdr {
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r-lg); padding: 20px 16px;
+}
+.ms-match-hdr-teams {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.ms-match-hdr-team {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; text-align: center;
+}
+.ms-match-hdr-name {
+  font-family: var(--ms-display); font-size: clamp(13px,2.5vw,18px);
+  font-weight: 900; color: #fff; line-height: 1.2;
+}
+.ms-match-hdr-centre {
+  flex-shrink: 0; display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+}
+.ms-match-hdr-score {
+  font-family: var(--ms-display);
+  font-size: clamp(36px,7vw,60px);
+  font-weight: 900; color: #fff;
+  letter-spacing: 0.04em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------- Detail tabs (Sofascore style) --------------------- */
+.ms-dtabs {
+  display: flex;
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r-lg); overflow: hidden;
+}
+.ms-dtab {
+  flex: 1; padding: 12px 6px; text-align: center;
+  font-size: 12px; font-weight: 700; color: var(--ms-muted);
+  background: transparent; border: none; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.14s, border-color 0.14s, background 0.14s;
+  font-family: var(--ms-font);
+}
+.ms-dtab.is-active {
+  color: var(--ms-accent); border-bottom-color: var(--ms-accent);
+  background: var(--ms-accent-soft);
+}
+.ms-dtab:hover:not(.is-active) { color: var(--ms-text); background: rgba(255,255,255,0.03); }
+
+/* -------- Sidebar v2 --------------------------------------- */
+.ms-sidebar-v2 {
+  display: flex; flex-direction: column;
+  height: 100%; overflow: hidden;
+  background: #081421;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.ms-nav-item-v2 {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px;
+  border: none; background: transparent;
+  color: var(--ms-muted); cursor: pointer; width: 100%;
+  text-align: left; font-size: 13px; font-weight: 600;
+  transition: color 0.14s, background 0.14s;
+  border-left: 3px solid transparent;
+  font-family: var(--ms-font);
+}
+.ms-nav-item-v2:hover { color: var(--ms-text); background: rgba(255,255,255,0.04); }
+.ms-nav-item-v2.is-active {
+  color: #fff; background: rgba(37,99,235,0.12);
+  border-left-color: var(--ms-accent); font-weight: 750;
+}
+.ms-nav-section-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ms-faint);
+  padding: 14px 19px 5px;
+}
+
+/* -------- Hero crest header (league / team) ----------------- */
+.ms-crest-hero {
+  text-align: center; padding: 28px 20px 20px;
+  background: linear-gradient(180deg, rgba(37,99,235,0.05) 0%, transparent 100%);
+  border-bottom: 1px solid var(--ms-border);
+}
+.ms-crest-hero-circle {
+  width: 84px; height: 84px; border-radius: 50%;
+  background: #fff; margin: 0 auto 12px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.55), 0 0 0 4px rgba(255,255,255,0.07);
+  overflow: hidden;
+}
+.ms-crest-hero-title {
+  font-family: var(--ms-display); font-size: 22px; font-weight: 900; color: #fff;
+}
+.ms-crest-hero-sub { font-size: 12px; color: var(--ms-muted); margin-top: 3px; }
+
+/* -------- Form dots (Camel.tv W/D/L bubbles) ---------------- */
+.ms-form-v2 { display: flex; gap: 4px; }
+.ms-form-v2-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  font-size: 9px; font-weight: 900;
+  display: grid; place-items: center;
+}
+.ms-form-v2-W { background: var(--ms-win); color: #071a0a; }
+.ms-form-v2-D { background: rgba(255,255,255,0.15); color: var(--ms-text); }
+.ms-form-v2-L { background: var(--ms-loss); color: #fff; }
+
+/* -------- Progress bar (matchday progress) ------------------ */
+.ms-progress { height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; }
+.ms-progress-fill { height: 100%; background: var(--ms-accent); border-radius: 2px; }
+
+/* -------- Info card rows (Sofascore info sidebar) ----------- */
+.ms-info-list { padding: 0 16px; }
+.ms-info-row {
+  display: flex; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 13px;
+}
+.ms-info-row:last-child { border-bottom: none; }
+.ms-info-label { color: var(--ms-muted); font-size: 11px; width: 80px; flex-shrink: 0; padding-top: 1px; }
+.ms-info-value { color: var(--ms-text); font-weight: 600; line-height: 1.4; }
+
+/* -------- Bottom tab active state override (blue) ----------- */
+.ms-bottom-tab.is-active .ms-bottom-tab-label { color: var(--ms-accent) !important; }
+.ms-bottom-tab.is-active .ms-bottom-tab-indicator { background: var(--ms-accent) !important; }
+
+/* -------- Breadcrumb --------------------------------------- */
+.ms-breadcrumb {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--ms-muted); flex-wrap: wrap;
+}
+.ms-breadcrumb-sep { color: var(--ms-faint); }
+.ms-breadcrumb a, .ms-breadcrumb span { color: var(--ms-muted); }
+.ms-breadcrumb span:last-child { color: var(--ms-text); font-weight: 600; }
+
+
 

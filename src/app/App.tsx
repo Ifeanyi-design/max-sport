@@ -104,17 +104,17 @@ export default function App() {
   const tickerMatch = liveTicker.length ? liveTicker[tickerIndex % liveTicker.length] : null;
 
   return (
-    <div className="ms-app-bg" style={{ height: "100vh", overflow: "hidden", fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif", display: "flex", color: "#ececf1", ["--app-ticker-h" as string]: showTicker ? `${TICKER_H}px` : "0px" }}>
+    <div className="ms-app-bg" style={{ height: "100vh", overflow: "hidden", fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif", display: "flex", color: "var(--ms-text)", ["--app-ticker-h" as string]: showTicker ? `${TICKER_H}px` : "0px" }}>
       {!isMobile && <Sidebar activeScreen={activeScreen} setActiveScreen={setActiveScreen} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed((value) => !value)} liveCount={liveCount} />}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {showTicker && (
-          <button type="button" onClick={() => navigate(tickerMatch ? `/match/${tickerMatch.id}` : "/live")} className="ms-card-hover" style={{ height: TICKER_H, display: "flex", alignItems: "center", gap: 10, padding: "0 20px", background: "rgba(255,45,85,0.06)", border: "none", borderBottom: "1px solid rgba(255,45,85,0.14)", cursor: "pointer", color: "inherit", width: "100%", textAlign: "left", flexShrink: 0 }}>
-            <span className="ms-live-dot" /><Radio size={12} color="#dc2626" />
-            <span style={{ fontSize: 11, fontWeight: 800, color: "#dc2626", letterSpacing: "0.08em" }}>LIVE</span>
-            <span style={{ fontSize: 11, color: "#8b8b9a" }}>{liveCount} matches</span>
-            <span style={{ width: 1, height: 12, background: "rgba(220,38,38,0.2)" }} />
-            <span style={{ flex: 1, overflow: "hidden", fontSize: 12, color: "#c8c8d4" }}>{tickerMatch ? `${tickerMatch.home} ${tickerMatch.homeScore}–${tickerMatch.awayScore} ${tickerMatch.away}${tickerMatch.minute ? `  ${tickerMatch.minute}` : ""}` : "No live matches right now"}</span>
-            <span style={{ fontSize: 11, color: "#8b8b9a" }}>Open live</span>
+          <button type="button" onClick={() => navigate(tickerMatch ? `/match/${tickerMatch.id}` : "/live")} className="ms-card-hover" style={{ height: TICKER_H, display: "flex", alignItems: "center", gap: 10, padding: "0 20px", background: "rgba(22,163,74,0.06)", border: "none", borderBottom: "1px solid rgba(22,163,74,0.15)", cursor: "pointer", color: "inherit", width: "100%", textAlign: "left", flexShrink: 0 }}>
+            <span className="ms-ticker-dot" /><Radio size={12} color="var(--ms-live-bright)" />
+            <span style={{ fontSize: 11, fontWeight: 800, color: "var(--ms-live-bright)", letterSpacing: "0.08em" }}>LIVE</span>
+            <span style={{ fontSize: 11, color: "var(--ms-muted)" }}>{liveCount} matches</span>
+            <span style={{ width: 1, height: 12, background: "rgba(255,255,255,0.1)" }} />
+            <span style={{ flex: 1, overflow: "hidden", fontSize: 12, color: "var(--ms-text-2)" }}>{tickerMatch ? `${tickerMatch.home} ${tickerMatch.homeScore}–${tickerMatch.awayScore} ${tickerMatch.away}${tickerMatch.minute ? `  ${tickerMatch.minute}` : ""}` : "No live matches right now"}</span>
+            <span style={{ fontSize: 11, color: "var(--ms-accent)", fontWeight: 700 }}>Open live →</span>
           </button>
         )}
         <main className="ms-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", paddingBottom: isMobile ? 72 : 0 }}>
