@@ -883,5 +883,289 @@ body {
 .ms-breadcrumb a, .ms-breadcrumb span { color: var(--ms-muted); }
 .ms-breadcrumb span:last-child { color: var(--ms-text); font-weight: 600; }
 
+/* ================================================================
+   HYBRID OTT & STATS PLATFORM EXTENSIONS (DAZN, SofaScore, FIFA+)
+   ================================================================ */
+
+/* -------- OTT Hero Showcase (DAZN / FIFA+ style) ----------- */
+.ms-ott-hero {
+  position: relative;
+  border-radius: var(--ms-r-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: #09131d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+.ms-ott-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.25) 0%, transparent 60%),
+              radial-gradient(circle at 10% 80%, rgba(22, 163, 74, 0.15) 0%, transparent 50%),
+              linear-gradient(180deg, rgba(8, 16, 26, 0.4) 0%, rgba(7, 12, 18, 0.95) 100%);
+  z-index: 1;
+}
+.ms-ott-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: clamp(16px, 3vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ms-ott-pill-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ms-ott-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--ms-live);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 4px 9px;
+  border-radius: 4px;
+  box-shadow: 0 0 12px rgba(22, 163, 74, 0.4);
+}
+.ms-ott-badge-comp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--ms-text);
+  font-size: 11px;
+  font-weight: 750;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.ms-ott-teams-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ms-ott-team-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.ms-ott-team-name {
+  font-family: var(--ms-display);
+  font-size: clamp(16px, 3vw, 24px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ms-ott-score-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.ms-ott-score-val {
+  font-family: var(--ms-display);
+  font-size: clamp(28px, 6vw, 44px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* -------- Broadcaster Badges (Live Soccer TV style) -------- */
+.ms-tv-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--ms-text-2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ms-tv-supersport {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+.ms-tv-skysports {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+.ms-tv-dazn {
+  background: rgba(234, 179, 8, 0.12);
+  border-color: rgba(234, 179, 8, 0.3);
+  color: #fde047;
+}
+.ms-tv-bein {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #d8b4fe;
+}
+.ms-tv-tnt {
+  background: rgba(20, 184, 166, 0.12);
+  border-color: rgba(20, 184, 166, 0.3);
+  color: #5eead4;
+}
+
+/* -------- Quick Status & League Filter Bar (Flashscore) ---- */
+.ms-quick-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  scrollbar-width: none;
+}
+.ms-quick-filter-bar::-webkit-scrollbar { display: none; }
+.ms-qf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--ms-surface-2);
+  color: var(--ms-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.14s ease;
+  font-family: var(--ms-font);
+}
+.ms-qf-btn:hover {
+  background: var(--ms-surface-3);
+  color: var(--ms-text);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.ms-qf-btn.is-active {
+  background: var(--ms-accent);
+  color: #fff;
+  border-color: transparent;
+}
+.ms-qf-btn.is-live-active {
+  background: var(--ms-live);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* -------- Trending News & Editorial (OneFootball / 365Scores) */
+.ms-news-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: background 0.12s ease;
+  text-decoration: none;
+}
+.ms-news-item:last-child { border-bottom: none; }
+.ms-news-item:hover { background: rgba(255, 255, 255, 0.03); }
+.ms-news-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ms-accent);
+  margin-bottom: 3px;
+}
+.ms-news-headline {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ms-text);
+  line-height: 1.35;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ms-news-time {
+  font-size: 10px;
+  color: var(--ms-muted);
+  margin-top: 4px;
+}
+
+/* -------- SofaScore Momentum & Pressure Graph -------------- */
+.ms-momentum-box {
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-r-sm);
+  padding: 14px;
+  margin-top: 12px;
+}
+.ms-momentum-bars {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  height: 60px;
+  margin: 10px 0;
+  padding: 0 4px;
+  position: relative;
+}
+.ms-momentum-zero-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  z-index: 1;
+}
+.ms-momentum-col {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.ms-momentum-bar-top {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.ms-momentum-bar-bot {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.ms-m-fill {
+  width: 80%;
+  max-width: 8px;
+  border-radius: 2px;
+  transition: height 0.3s ease;
+}
+
+
 
 

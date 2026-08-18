@@ -88,16 +88,19 @@ export function MatchRow({ match, onClick, showLeague = true }: MatchRowProps) {
 
       {/* Meta */}
       {showLeague && (
-        <div className="ms-match-meta">
+        <div className="ms-match-meta" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
           <div className="ms-match-league">{match.league}</div>
-          {isLive && (
+          {isLive ? (
             <div className="ms-match-live">
               <span className="ms-live-dot" style={{ width: 5, height: 5 }} />
               LIVE
             </div>
-          )}
-          {isFinished && (
+          ) : isFinished ? (
             <span className="ms-badge-ft">FT</span>
+          ) : (
+            <span className="ms-tv-badge ms-tv-supersport" style={{ fontSize: 9, padding: "1px 5px" }}>
+              TV Live
+            </span>
           )}
         </div>
       )}

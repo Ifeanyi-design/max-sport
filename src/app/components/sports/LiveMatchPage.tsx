@@ -227,6 +227,26 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
             </div>
 
           </div>
+
+          {/* TV Guide Strip (Live Soccer TV style) */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            marginTop: 16,
+            paddingTop: 12,
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            flexWrap: "wrap",
+          }}>
+            <span style={{ fontSize: 11, color: "var(--ms-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+              <Tv size={12} color="var(--ms-accent)" /> Official TV:
+            </span>
+            <span className="ms-tv-badge ms-tv-supersport">SuperSport Premier League</span>
+            <span className="ms-tv-badge ms-tv-skysports">Sky Sports Main Event</span>
+            <span className="ms-tv-badge ms-tv-dazn">DAZN 1 HD</span>
+            <span className="ms-tv-badge ms-tv-bein">beIN Sports Premium</span>
+          </div>
         </div>
       </div>
 
@@ -501,7 +521,7 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
               <div className="ms-panel" style={{ marginBottom: 16 }}>
                 <div className="ms-panel-head">
                   <BarChart2 size={14} color="var(--ms-accent)" />
-                  Match Statistics
+                  Match Statistics &amp; Attack Momentum
                 </div>
                 <div style={{ padding: "16px" }}>
                   {/* Possession Bar */}
@@ -517,11 +537,64 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
                     </div>
                   </div>
 
-                  <StatRow label="Total Shots" home={homeScore * 3 + 8} away={awayScore * 3 + 4} />
-                  <StatRow label="Shots on Target" home={homeScore + 4} away={awayScore + 2} />
-                  <StatRow label="Corner Kicks" home={6} away={3} />
-                  <StatRow label="Fouls Committed" home={8} away={11} />
-                  <StatRow label="Offsides" home={2} away={1} />
+                  {/* SofaScore Match Attack Momentum Pressure Graph */}
+                  <div className="ms-momentum-box">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: "var(--ms-text)", display: "flex", alignItems: "center", gap: 5 }}>
+                        <TrendingUp size={12} color="var(--ms-accent)" /> Attack Momentum (Live Pressure)
+                      </span>
+                      <span style={{ fontSize: 10, color: "var(--ms-muted)" }}>0' — 90'</span>
+                    </div>
+
+                    <div className="ms-momentum-bars">
+                      <div className="ms-momentum-zero-line" />
+                      {[
+                        { home: 65, away: 0 }, { home: 80, away: 0 }, { home: 0, away: 45 },
+                        { home: 90, away: 0 }, { home: 30, away: 0 }, { home: 0, away: 70 },
+                        { home: 0, away: 85 }, { home: 40, away: 0 }, { home: 75, away: 0 },
+                        { home: 0, away: 50 }, { home: 60, away: 0 }, { home: 95, away: 0 },
+                        { home: 0, away: 60 }, { home: 0, away: 80 }, { home: 70, away: 0 },
+                        { home: 85, away: 0 }, { home: 45, away: 0 }, { home: 65, away: 0 },
+                      ].map((bar, i) => (
+                        <div key={i} className="ms-momentum-col">
+                          <div className="ms-momentum-bar-top">
+                            {bar.home > 0 && (
+                              <div
+                                className="ms-m-fill"
+                                style={{ height: `${bar.home}%`, background: "var(--ms-accent)" }}
+                                title={`${homeName} pressure: ${bar.home}%`}
+                              />
+                            )}
+                          </div>
+                          <div className="ms-momentum-bar-bot">
+                            {bar.away > 0 && (
+                              <div
+                                className="ms-m-fill"
+                                style={{ height: `${bar.away}%`, background: "var(--ms-live-bright)" }}
+                                title={`${awayName} pressure: ${bar.away}%`}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "var(--ms-muted)", fontWeight: 700 }}>
+                      <span style={{ color: "var(--ms-accent)" }}>▲ {homeName}</span>
+                      <span>1st Half (45')</span>
+                      <span>2nd Half (90')</span>
+                      <span style={{ color: "var(--ms-live-bright)" }}>▼ {awayName}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 12 }}>
+                    <StatRow label="Total Shots" home={homeScore * 3 + 8} away={awayScore * 3 + 4} />
+                    <StatRow label="Shots on Target" home={homeScore + 4} away={awayScore + 2} />
+                    <StatRow label="Expected Goals (xG)" home={1.84} away={0.92} />
+                    <StatRow label="Corner Kicks" home={6} away={3} />
+                    <StatRow label="Fouls Committed" home={8} away={11} />
+                    <StatRow label="Offsides" home={2} away={1} />
+                  </div>
                 </div>
               </div>
             )}
