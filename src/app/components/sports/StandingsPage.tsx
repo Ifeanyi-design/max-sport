@@ -115,21 +115,43 @@ export function StandingsPage({ slug, onBack, onSelectCompetition, onOpenMatch }
 
       {/* ── Camel.tv hero: centered crest + title ── */}
       {activeComp && (
-        <div className="ms-crest-hero" style={{ margin: "0 16px 16px", borderRadius: 12, border: "1px solid var(--ms-border)" }}>
-          <div className="ms-crest-hero-circle">
-            <Crest
-              srcs={compLogoSrcs}
-              name={activeComp.name}
-              size={68}
-              radius={0}
-              country={activeComp.country}
-            />
-          </div>
-          <div className="ms-crest-hero-title">{activeComp.name}</div>
-          <div className="ms-crest-hero-sub" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-            {activeComp.country && <FlagIcon country={activeComp.country} size={14} />}
-            <span>{activeComp.country || "International"}</span>
-            {activeComp.current_season && <><span>·</span><span>{activeComp.current_season}</span></>}
+        <div
+          className="ms-crest-hero"
+          style={{
+            margin: "0 16px 16px",
+            borderRadius: 12,
+            border: "1px solid var(--ms-border)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "url('/championship.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center 20%",
+              opacity: 0.12,
+              pointerEvents: "none",
+            }}
+          />
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <div className="ms-crest-hero-circle">
+              <Crest
+                srcs={compLogoSrcs}
+                name={activeComp.name}
+                size={68}
+                radius={0}
+                country={activeComp.country}
+              />
+            </div>
+            <div className="ms-crest-hero-title">{activeComp.name}</div>
+            <div className="ms-crest-hero-sub" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              {activeComp.country && <FlagIcon country={activeComp.country} size={14} />}
+              <span>{activeComp.country || "International"}</span>
+              {activeComp.current_season && <><span>·</span><span>{activeComp.current_season}</span></>}
+            </div>
           </div>
 
           {/* Matchday progress bar */}

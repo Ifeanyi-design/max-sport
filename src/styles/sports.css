@@ -1159,12 +1159,113 @@ body {
   align-items: flex-start;
   justify-content: center;
 }
-.ms-m-fill {
-  width: 80%;
-  max-width: 8px;
-  border-radius: 2px;
-  transition: height 0.3s ease;
+/* ================================================================
+   MOBILE RESPONSIVENESS & TOUCH OPTIMIZATIONS (Smartphones / Tablets)
+   ================================================================ */
+
+@media (max-width: 640px) {
+  /* OTT Hero Banner on Mobile */
+  .ms-ott-hero {
+    margin-bottom: 12px;
+    border-radius: var(--ms-r);
+  }
+  .ms-ott-hero-content {
+    padding: 12px;
+    gap: 8px;
+  }
+  .ms-ott-pill-row {
+    gap: 5px;
+  }
+  .ms-ott-teams-row {
+    gap: 6px;
+  }
+  .ms-ott-team-name {
+    font-size: 14px;
+    max-width: 100px;
+  }
+  .ms-ott-score-val {
+    font-size: 24px;
+  }
+
+  /* Compact Match Rows */
+  .ms-compact-match {
+    padding: 7px 10px;
+    grid-template-columns: 42px 1fr auto;
+    gap: 0;
+  }
+  .ms-compact-teams {
+    padding: 0 8px;
+  }
+  .ms-compact-team {
+    font-size: 12px;
+  }
+  .ms-compact-team span {
+    max-width: 130px;
+  }
+  .ms-compact-score {
+    font-size: 14px;
+  }
+
+  /* Sofascore Tabs Horizontal Scroll on Mobile */
+  .ms-dtabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    display: flex;
+    border-radius: 10px;
+  }
+  .ms-dtabs::-webkit-scrollbar { display: none; }
+  .ms-dtab {
+    flex: none;
+    padding: 10px 14px;
+    font-size: 12px;
+    min-width: 86px;
+  }
+
+  /* Match Detail Header on Mobile */
+  .ms-match-hdr {
+    padding: 14px 10px;
+    border-radius: 12px;
+  }
+  .ms-match-hdr-score {
+    font-size: 32px;
+  }
+  .ms-match-hdr-name {
+    font-size: 13px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Standings Table on Mobile */
+  .ms-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ms-table-head,
+  .ms-table-row {
+    grid-template-columns: 26px minmax(110px, 1fr) repeat(4, 28px) 32px 34px;
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+  .ms-team-cell span {
+    font-size: 12px;
+    max-width: 100px;
+  }
+
+  /* Filter strip padding */
+  .ms-quick-filter-bar {
+    padding: 0 2px 8px;
+    gap: 5px;
+  }
+  .ms-qf-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
 }
+
 
 
 

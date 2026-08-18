@@ -173,8 +173,20 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
 
       {/* ── 2. SOFASCORE MATCH HEADER ── */}
       <div style={{ padding: "0 16px 16px" }}>
-        <div className="ms-match-hdr">
-          <div className="ms-match-hdr-teams">
+        <div className="ms-match-hdr" style={{ position: "relative", overflow: "hidden" }}>
+          {/* Subtle atmospheric stadium glow */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "url('/stadium_night.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center 40%",
+              opacity: 0.14,
+              pointerEvents: "none",
+            }}
+          />
+          <div className="ms-match-hdr-teams" style={{ position: "relative", zIndex: 2 }}>
 
             {/* Home Team */}
             <div className="ms-match-hdr-team">

@@ -89,12 +89,26 @@ export function TeamProfilePage({ slug, onBack, onOpenMatch, onOpenCompetition }
           border: "1px solid var(--ms-border)",
           borderRadius: 14,
           overflow: "hidden",
+          position: "relative",
         }}>
+          {/* Action background overlay */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "url('/match_action.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center 30%",
+              opacity: 0.12,
+              pointerEvents: "none",
+            }}
+          />
           {/* Top strip with gradient */}
           <div style={{
             background: "linear-gradient(135deg, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0.02) 100%)",
             padding: "24px 20px 20px",
             display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap",
+            position: "relative", zIndex: 2,
           }}>
             {/* Large crest */}
             <div style={{

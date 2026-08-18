@@ -55,10 +55,10 @@ const HOME_CLIPS: VideoItem[] = [
 ];
 
 const TRENDING_NEWS = [
-  { id: 1, tag: "Transfer News", title: "Real Madrid prepare record-breaking summer bid as Kylian Mbappé hits top form", time: "25m ago", source: "The Athletic" },
-  { id: 2, tag: "Premier League", title: "Mikel Arteta reacts to title race pressure: 'Every single match is a cup final now'", time: "1h ago", source: "Sky Sports" },
-  { id: 3, tag: "Champions League", title: "UEFA confirms updated knockout draw format & extra-time rule revisions for 2026/27", time: "2h ago", source: "UEFA News" },
-  { id: 4, tag: "Tactical Analysis", title: "How Manchester City's midfield diamond broke down defensive low blocks this weekend", time: "3h ago", source: "Opta Analyst" },
+  { id: 1, tag: "Transfer News", title: "Real Madrid prepare record-breaking summer bid as Kylian Mbappé hits top form", time: "25m ago", source: "The Athletic", img: "/match_action.jpg" },
+  { id: 2, tag: "Premier League", title: "Mikel Arteta reacts to title race pressure: 'Every single match is a cup final now'", time: "1h ago", source: "Sky Sports", img: "/stadium_night.jpg" },
+  { id: 3, tag: "Champions League", title: "UEFA confirms updated knockout draw format & trophy presentation for 2026/27", time: "2h ago", source: "UEFA News", img: "/championship.jpg" },
+  { id: 4, tag: "Tactical Analysis", title: "How Manchester City's midfield diamond broke down defensive low blocks this weekend", time: "3h ago", source: "Opta Analyst", img: "/hero_banner.jpg" },
 ];
 
 function isLiveStatus(s: string) {
@@ -139,11 +139,23 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
         onMatchClick={(id) => onOpenMatch(id as number)}
       />
 
-      <div style={{ maxWidth: 1440, margin: "0 auto", padding: "16px", minHeight: "100%" }}>
+      <div style={{ maxWidth: 1440, margin: "0 auto", padding: "12px clamp(8px, 2vw, 16px)", minHeight: "100%" }}>
 
         {/* ── 1. OTT FEATURED SHOWCASE (DAZN / FIFA+ style) ── */}
         {heroMatch && (
           <div className="ms-ott-hero">
+            {/* Background stadium image with broadcast vignette */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: "url('/stadium_night.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center 35%",
+                opacity: 0.35,
+                transform: "scale(1.02)",
+              }}
+            />
             <div className="ms-ott-hero-bg" />
             <div className="ms-ott-hero-content">
 
@@ -173,7 +185,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
 
                 <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ms-muted)" }}>
                   <Eye size={12} color="var(--ms-live-bright)" />
-                  <strong style={{ color: "var(--ms-text-2)" }}>48.2k</strong> watching
+                  <strong style={{ color: "var(--ms-text-2)" }}>48.2k</strong>
                 </div>
               </div>
 
@@ -184,7 +196,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                   <Crest
                     srcs={teamLogoSources({ name: heroMatch.home, logo_url: heroMatch.homeLogo, provider_team_id: heroMatch.homeProviderId, provider_name: heroMatch.homeProviderName })}
                     name={heroMatch.home}
-                    size={46}
+                    size={44}
                     radius={8}
                   />
                   <div className="ms-ott-team-name">{heroMatch.home}</div>
@@ -199,12 +211,12 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                   ) : (
                     <div style={{
                       fontFamily: "'Barlow Condensed', sans-serif",
-                      fontSize: 26, fontWeight: 900, color: "#fff",
+                      fontSize: 24, fontWeight: 900, color: "#fff",
                     }}>
                       {heroMatch.time || "VS"}
                     </div>
                   )}
-                  <div style={{ fontSize: 11, color: isLiveStatus(heroMatch.status) ? "var(--ms-live-bright)" : "var(--ms-muted)", fontWeight: 700 }}>
+                  <div style={{ fontSize: 10, color: isLiveStatus(heroMatch.status) ? "var(--ms-live-bright)" : "var(--ms-muted)", fontWeight: 700 }}>
                     {isLiveStatus(heroMatch.status) ? (heroMatch.min || "LIVE") : fmtDate(heroMatch.date)}
                   </div>
                 </div>
@@ -215,19 +227,19 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                   <Crest
                     srcs={teamLogoSources({ name: heroMatch.away, logo_url: heroMatch.awayLogo, provider_team_id: heroMatch.awayProviderId, provider_name: heroMatch.awayProviderName })}
                     name={heroMatch.away}
-                    size={46}
+                    size={44}
                     radius={8}
                   />
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
                 <button
                   type="button"
                   onClick={() => onOpenMatch(heroMatch.id)}
                   className="ms-btn ms-btn-primary"
-                  style={{ padding: "8px 18px", fontSize: 12, fontWeight: 800, borderRadius: 8 }}
+                  style={{ flex: 1, minWidth: 140, padding: "8px 16px", fontSize: 12, fontWeight: 800, borderRadius: 8 }}
                 >
                   <Play size={13} fill="#fff" /> Watch Live Stream
                 </button>
@@ -235,9 +247,9 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                   type="button"
                   onClick={() => onOpenMatch(heroMatch.id)}
                   className="ms-btn"
-                  style={{ padding: "8px 16px", fontSize: 12, borderRadius: 8, background: "rgba(255,255,255,0.08)" }}
+                  style={{ flex: 1, minWidth: 140, padding: "8px 14px", fontSize: 12, borderRadius: 8, background: "rgba(255,255,255,0.08)" }}
                 >
-                  Match Centre &amp; Telemetry
+                  Match Centre
                 </button>
               </div>
 
@@ -534,6 +546,18 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   {TRENDING_NEWS.map((news) => (
                     <div key={news.id} className="ms-news-item">
+                      <div
+                        style={{
+                          width: 58,
+                          height: 44,
+                          borderRadius: 6,
+                          flexShrink: 0,
+                          backgroundImage: `url('${news.img}')`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                        }}
+                      />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <span className="ms-news-tag">{news.tag}</span>
                         <h4 className="ms-news-headline">{news.title}</h4>
