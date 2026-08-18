@@ -52,25 +52,31 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
   const [userVote, setUserVote] = useState<"1" | "X" | "2" | null>(null);
   const [votes, setVotes] = useState({ home: 62, draw: 18, away: 20 });
 
-  const load = () => {
+  const load = (silent = false) => {
     if (!Number.isFinite(matchId) || matchId <= 0) {
-      setError("Invalid match link.");
-      setLoading(false);
+      if (!silent) setError("Invalid match link.");
+      if (!silent) setLoading(false);
       return;
     }
-    setLoading(true);
-    setError(null);
+    if (!silent) {
+      setLoading(true);
+      setError(null);
+    }
     getMatch(matchId)
       .then(setDetail)
-      .catch((err) => setError(String(err?.message || err)))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (!silent) setError(String(err?.message || err));
+      })
+      .finally(() => {
+        if (!silent) setLoading(false);
+      });
   };
 
-  useEffect(load, [matchId]);
+  useEffect(() => { load(false); }, [matchId]);
 
   useEffect(() => {
     if (detail?.match.status !== "live") return;
-    const timer = window.setInterval(load, 25000);
+    const timer = window.setInterval(() => load(true), 25000);
     return () => window.clearInterval(timer);
   }, [detail?.match.status, matchId]);
 

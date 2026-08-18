@@ -732,7 +732,20 @@ body {
   grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   gap: 14px; align-items: start;
 }
-@media (max-width: 900px) { .ms-two-col { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .ms-two-col { grid-template-columns: 1fr !important; } }
+
+.ms-home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .ms-home-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+}
 .ms-panel {
   background: var(--ms-surface);
   border: 1px solid var(--ms-border);

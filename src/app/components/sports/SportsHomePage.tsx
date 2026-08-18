@@ -11,6 +11,7 @@ import {
 } from "./api";
 import { Crest } from "./Crest";
 import { VideoPlayerModal, type VideoItem } from "./VideoPlayerModal";
+import { NewsArticleModal, type NewsArticle } from "./NewsArticleModal";
 import { LiveTicker } from "./LiveTicker";
 
 interface Props {
@@ -54,11 +55,63 @@ const HOME_CLIPS: VideoItem[] = [
   { id: "JGwWNGJdvx8", title: "Vinicius Jr, Mbappe & Haaland — Best Skills & Goals Show 2025", comp: "Superstars", time: "15:02", channel: "Football TV" },
 ];
 
-const TRENDING_NEWS = [
-  { id: 1, tag: "Transfer News", title: "Real Madrid prepare record-breaking summer bid as Kylian Mbappé hits top form", time: "25m ago", source: "The Athletic", img: "/match_action.jpg" },
-  { id: 2, tag: "Premier League", title: "Mikel Arteta reacts to title race pressure: 'Every single match is a cup final now'", time: "1h ago", source: "Sky Sports", img: "/stadium_night.jpg" },
-  { id: 3, tag: "Champions League", title: "UEFA confirms updated knockout draw format & trophy presentation for 2026/27", time: "2h ago", source: "UEFA News", img: "/championship.jpg" },
-  { id: 4, tag: "Tactical Analysis", title: "How Manchester City's midfield diamond broke down defensive low blocks this weekend", time: "3h ago", source: "Opta Analyst", img: "/hero_banner.jpg" },
+const TRENDING_NEWS: NewsArticle[] = [
+  {
+    id: 1,
+    tag: "Transfer News",
+    title: "Real Madrid prepare record-breaking summer bid as Kylian Mbappé hits peak dynamic form",
+    time: "25m ago",
+    source: "The Athletic",
+    img: "/match_action.jpg",
+    readTime: "3 min read",
+    paragraphs: [
+      "Real Madrid's sporting directorate has finalized their summer recruitment targets following an exceptional run of performances across Europe and domestic competition. Kylian Mbappé's dynamic tactical integration into the center-forward and inverted winger roles has opened up unprecedented attacking metrics.",
+      "Internal scouting reports indicate that the Spanish champions will prioritize securing elite midfield depth and an attacking full-back to complement Vinicius Jr and Jude Bellingham. Club officials remain confident that their structure will maintain domestic supremacy while defending European titles.",
+      "The coaching staff highlighted how Mbappé's off-the-ball runs have created high-value scoring chances, averaging over 3.4 expected goal contributions per 90 minutes in high-stakes fixtures.",
+    ],
+  },
+  {
+    id: 2,
+    tag: "Premier League",
+    title: "Mikel Arteta reacts to intense title race pressure: 'Every single match is treated as a cup final'",
+    time: "1h ago",
+    source: "Sky Sports",
+    img: "/stadium_night.jpg",
+    readTime: "4 min read",
+    paragraphs: [
+      "Arsenal manager Mikel Arteta praised his team's mental resilience after a relentless stretch of Premier League and continental fixtures. Addressing journalists at London Colney, Arteta emphasized that margin for error at the top of the table has reduced to zero.",
+      "'When you are competing against the best teams in world football, consistency is everything,' said Arteta. 'We prepare every single training session with the mindset that the upcoming fixture will determine our entire season.'",
+      "With key defenders returning from injury ahead of the crunch fixture schedule, the Gunners boast the league's top defensive record, conceding the fewest open-play chances across the top five European leagues.",
+    ],
+  },
+  {
+    id: 3,
+    tag: "Champions League",
+    title: "UEFA confirms updated knockout tournament format & golden trophy ceremony for 2026/27",
+    time: "2h ago",
+    source: "UEFA News",
+    img: "/championship.jpg",
+    readTime: "3 min read",
+    paragraphs: [
+      "UEFA has officially released the updated tournament regulations for the upcoming European club competitions. The expanded 36-team single-table league phase will feature revised seeding mechanics and higher financial distribution pools.",
+      "Under the new provisions, round-of-16 seedings will directly reward regular season performance, providing higher-ranked teams with second-leg home advantage throughout the knockout stages.",
+      "Broadcasters and supporters worldwide will also benefit from enhanced real-time match analytics and multi-angle 4K streaming feeds accessible across global partner platforms.",
+    ],
+  },
+  {
+    id: 4,
+    tag: "Tactical Analysis",
+    title: "How Manchester City's midfield diamond broke down deep defensive low blocks this weekend",
+    time: "3h ago",
+    source: "Opta Analyst",
+    img: "/hero_banner.jpg",
+    readTime: "5 min read",
+    paragraphs: [
+      "A deep tactical dive into Pep Guardiola's latest midfield adjustments reveals why opposing teams have struggled to contain inverted full-backs tucking into central channels.",
+      "By creating numerical overloads in the half-spaces, City generated over 18 entries into the penalty area, resulting in 6 big chances and high-percentage cutback opportunities.",
+      "Data metrics confirm that switching the point of attack at higher tempo prevented defenders from doubling up on wide wingers, creating space for direct through-balls.",
+    ],
+  },
 ];
 
 function isLiveStatus(s: string) {
@@ -73,23 +126,26 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
   const [competitions, setCompetitions] = useState<CompetitionCard[] | null>(null);
   const [error, setError] = useState(false);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
+  const [activeArticle, setActiveArticle] = useState<NewsArticle | null>(null);
   const [statusFilter, setStatusFilter] = useState<"all" | "live" | "epl" | "laliga" | "ucl" | "finished">("all");
   const [rightTab, setRightTab] = useState<"highlights" | "news">("highlights");
 
-  const load = () => {
-    setError(false);
+  const load = (silent = false) => {
+    if (!silent) setError(false);
     Promise.all([getLiveMatches(), getMatches({ limit: 80 }), getCompetitions()])
       .then(([liveData, allData, compsData]) => {
         setLive(liveData.map(toFixtureCard));
         setMatches(allData.map(toFixtureCard));
         setCompetitions(compsData.map(toCompetitionCard));
       })
-      .catch(() => setError(true));
+      .catch(() => {
+        if (!silent) setError(true);
+      });
   };
 
   useEffect(() => {
-    load();
-    const timer = window.setInterval(load, 25000);
+    load(false);
+    const timer = window.setInterval(() => load(true), 25000);
     return () => window.clearInterval(timer);
   }, []);
 
@@ -304,15 +360,8 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
           </button>
         </div>
 
-        {/* ── 3. TWO-COLUMN DASHBOARD ── */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0,1.6fr) minmax(0,1fr)",
-          gap: 16,
-          alignItems: "start",
-        }}
-          className="ms-home-grid"
-        >
+        {/* ── 3. TWO-COLUMN DASHBOARD (Stacks 1-col on mobile) ── */}
+        <div className="ms-home-grid">
 
           {/* ═══ LEFT: Live & Grouped Fixtures ═══ */}
           <div>
@@ -545,7 +594,19 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                 /* TAB 2: Trending Football Headlines */
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   {TRENDING_NEWS.map((news) => (
-                    <div key={news.id} className="ms-news-item">
+                    <button
+                      key={news.id}
+                      type="button"
+                      onClick={() => setActiveArticle(news)}
+                      className="ms-news-item"
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        width: "100%",
+                        textAlign: "left",
+                        cursor: "pointer",
+                      }}
+                    >
                       <div
                         style={{
                           width: 58,
@@ -563,7 +624,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                         <h4 className="ms-news-headline">{news.title}</h4>
                         <div className="ms-news-time">{news.source} · {news.time}</div>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -646,6 +707,18 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
           relatedVideos={HOME_CLIPS.filter(v => v.id !== activeVideo.id)}
           onClose={() => setActiveVideo(null)}
           onSelectVideo={setActiveVideo}
+        />
+      )}
+
+      {/* Full News Article Modal */}
+      {activeArticle && (
+        <NewsArticleModal
+          article={activeArticle}
+          onClose={() => setActiveArticle(null)}
+          onOpenHighlights={() => {
+            setActiveArticle(null);
+            setActiveScreen("highlights");
+          }}
         />
       )}
     </>
