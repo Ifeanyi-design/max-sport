@@ -7,7 +7,13 @@ interface SystemSummaryPageProps {
   setActiveScreen: (s: Screen) => void;
 }
 
-const ALL_SCREENS: { screen: Screen; label: string; category: string; description: string; dataSource: string }[] = [
+const ROUTE_SCREENS: readonly Screen[] = [
+  "home", "live-list", "live-match", "fixtures", "standings",
+  "competitions", "highlights", "teams", "team", "about", "search",
+];
+const isRouteScreen = (s: string): s is Screen => (ROUTE_SCREENS as readonly string[]).includes(s);
+
+const ALL_SCREENS: { screen: string; label: string; category: string; description: string; dataSource: string }[] = [
   { screen: "home",           label: "Sports Home",         category: "Core",        description: "Hero live match, live carousel, upcoming fixtures strip, highlights reel, competition hub, trending sports.", dataSource: "GET /api/home — aggregated feed; /api/live/featured; /api/fixtures/next-5" },
   { screen: "live-list",      label: "Live Match List",      category: "Live",        description: "All currently live matches in a filterable grid. League filter chips, viewer counts, minute badges, refresh control.", dataSource: "GET /api/matches/live — poll every 30s; websocket for score updates" },
   { screen: "live-match",     label: "Live Match Detail",    category: "Live",        description: "Single match view: video player UI, real-time score header, stats panel (possession, shots, cards), commentary feed, timeline, lineups, other live sidebar.", dataSource: "GET /api/match/:id/detail; WS /ws/match/:id for commentary+score" },
@@ -68,7 +74,7 @@ const DEV_NOTES = [
   "Sidebar is 72px fixed, icon-only, with hover tooltips. Active state uses layoutId='sidebar-indicator' for smooth sliding.",
   "Mobile layout is entirely separate (MobileSportsPage). It renders inside a phone-frame for desktop preview. In production, serve the mobile layout at viewport < 768px.",
   "Color tokens: Primary BG #07070f, Surface #0d0d1c, Accent Cyan #00d4ff, Accent Green #00ff87, Live Red #ff3b3b, Gold #f5c518.",
-  "Font stack: 'Barlow Condensed' for headings/scores/labels, 'Inter' for body text. Both loaded via fonts.css.",
+  "Font stack: 'Space Grotesk' for headings/scores/labels, 'Inter' for body text. Both loaded via fonts.css.",
   "Card glass effect: background rgba(13,13,28,0.8), backdrop-filter blur(12-24px), border rgba(255,255,255,0.06).",
   "Loading skeletons use shimmer animation (background gradient sweep 1.4s). Applied as className='skeleton-shimmer'.",
   "Player/Team detail screens (PlayerProfilePage, TeamProfilePage) are currently linked from Standings and Teams nav items.",
@@ -90,7 +96,7 @@ function Section({ title, icon, children }: { title: string; icon: React.ReactNo
         }}
       >
         <div style={{ color: "#00d4ff" }}>{icon}</div>
-        <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "16px", fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: "1px", flex: 1, textAlign: "left" }}>{title}</span>
+        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "16px", fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "1px", flex: 1, textAlign: "left" }}>{title}</span>
         {open ? <ChevronDown size={14} color="#5e6280" /> : <ChevronRight size={14} color="#5e6280" />}
       </button>
       {open && (
@@ -127,7 +133,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
               Developer Reference · v1.0 · June 2026
             </div>
             <h1 style={{
-              fontFamily: "'Barlow Condensed', sans-serif", fontSize: "44px", fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif", fontSize: "44px", fontWeight: 700,
               color: "#fff", textTransform: "uppercase", letterSpacing: "-0.5px",
               lineHeight: 1, margin: 0,
             }}>MAXCINEMA <span style={{ background: "linear-gradient(135deg, #00d4ff, #00ff87)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Sports Hub</span></h1>
@@ -137,7 +143,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
           </div>
 
           <div style={{ marginLeft: "auto", flexShrink: 0, textAlign: "right" }}>
-            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "32px", fontWeight: 900, color: "#fff", lineHeight: 1 }}>{ALL_SCREENS.length}</div>
+            <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "32px", fontWeight: 700, color: "#fff", lineHeight: 1 }}>{ALL_SCREENS.length}</div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#5e6280" }}>screens</div>
           </div>
         </div>
@@ -155,7 +161,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
               background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)",
               borderRadius: "10px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "8px",
             }}>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px", fontWeight: 900, color: s.color }}>{s.value}</span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "18px", fontWeight: 700, color: s.color }}>{s.value}</span>
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#5e6280" }}>{s.label}</span>
             </div>
           ))}
@@ -186,7 +192,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
                         padding: "12px 18px", borderBottom: "1px solid rgba(255,255,255,0.04)",
                         cursor: "pointer",
                       }}
-                      onClick={() => setActiveScreen(s.screen)}
+                      onClick={() => { if (isRouteScreen(s.screen)) setActiveScreen(s.screen); }}
                     >
                       <div style={{
                         width: "6px", height: "6px", borderRadius: "50%", flexShrink: 0,
@@ -194,7 +200,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
                       }} />
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "3px" }}>
-                          <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "15px", fontWeight: 800, color: "#fff" }}>{s.label}</span>
+                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "15px", fontWeight: 700, color: "#fff" }}>{s.label}</span>
                           <code style={{
                             fontFamily: "monospace", fontSize: "11px", color: "#5e6280",
                             background: "rgba(255,255,255,0.05)", padding: "1px 6px", borderRadius: "4px",
@@ -219,7 +225,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
           <div style={{ padding: "20px 18px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
             {/* Desktop nav */}
             <div>
-              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "13px", fontWeight: 800, color: "#00d4ff", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
+              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700, color: "#00d4ff", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
                 Desktop Sidebar (72px)
               </div>
               {[
@@ -252,7 +258,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
 
             {/* Mobile nav */}
             <div>
-              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "13px", fontWeight: 800, color: "#00ff87", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
+              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700, color: "#00ff87", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
                 Mobile Bottom Nav
               </div>
               {[
@@ -273,14 +279,14 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
                 </div>
               ))}
               <div style={{ marginTop: "12px", padding: "10px", background: "rgba(255,59,59,0.06)", border: "1px solid rgba(255,59,59,0.15)", borderRadius: "10px" }}>
-                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "12px", fontWeight: 800, color: "#ff3b3b", marginBottom: "4px" }}>LIVE FAB (Floating)</div>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", fontWeight: 700, color: "#ff3b3b", marginBottom: "4px" }}>LIVE FAB (Floating)</div>
                 <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#9095b8" }}>
                   56×56 bottom-right, pulse animation. Always visible. Navigates to live-list.
                 </div>
               </div>
 
               <div style={{ marginTop: "16px" }}>
-                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "13px", fontWeight: 800, color: "#f5c518", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700, color: "#f5c518", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
                   Navigation Flow
                 </div>
                 {[
@@ -344,7 +350,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
                   boxShadow: `0 0 8px ${s.color}60`,
                 }} />
                 <div>
-                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "14px", fontWeight: 800, color: s.color, letterSpacing: "0.5px" }}>{s.state}</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, color: s.color, letterSpacing: "0.5px" }}>{s.state}</span>
                   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#9095b8", marginTop: "3px", lineHeight: 1.5 }}>{s.desc}</div>
                 </div>
               </div>
@@ -384,7 +390,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
                   flexShrink: 0, width: "22px", height: "22px", borderRadius: "50%",
                   background: "rgba(0,212,255,0.1)", border: "1px solid rgba(0,212,255,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontFamily: "'Barlow Condensed', sans-serif", fontSize: "12px", fontWeight: 800, color: "#00d4ff",
+                  fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", fontWeight: 700, color: "#00d4ff",
                 }}>{i + 1}</div>
                 <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#9095b8", lineHeight: 1.6 }}>{note}</div>
               </div>
@@ -398,7 +404,7 @@ export function SystemSummaryPage({ setActiveScreen }: SystemSummaryPageProps) {
           background: "rgba(13,13,28,0.7)", border: "1px solid rgba(255,255,255,0.06)",
           borderRadius: "14px", textAlign: "center",
         }}>
-          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px", fontWeight: 900, color: "#fff", marginBottom: "6px" }}>
+          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "18px", fontWeight: 700, color: "#fff", marginBottom: "6px" }}>
             MAXCINEMA SPORTS HUB — UI SYSTEM v1.0
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#5e6280" }}>

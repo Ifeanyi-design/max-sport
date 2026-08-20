@@ -160,8 +160,8 @@ function LiveMatchCard({ m, onOpen }: { m: FixtureCard; onOpen: (id: number) => 
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span className="ms-live-dot" />
           <span style={{
-            fontFamily: "'Barlow Condensed', sans-serif",
-            fontWeight: 900, fontSize: 14, color: "var(--ms-live)"
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700, fontSize: 14, color: "var(--ms-live)"
           }}>
             {m.min || "LIVE"}
           </span>
@@ -187,9 +187,9 @@ function LiveMatchCard({ m, onOpen }: { m: FixtureCard; onOpen: (id: number) => 
 
         {/* Score */}
         <div style={{
-          fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900,
+          fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
           fontSize: 32, fontVariantNumeric: "tabular-nums",
-          letterSpacing: "-0.04em", display: "flex", alignItems: "center", gap: 8, flexShrink: 0,
+          letterSpacing: "-0.02em", display: "flex", alignItems: "center", gap: 8, flexShrink: 0,
         }}>
           <span>{m.hs}</span>
           <span style={{ color: "var(--ms-faint)", fontSize: 20 }}>–</span>

@@ -93,7 +93,7 @@ export function NewsArticleModal({ article, onClose, onOpenHighlights }: Props) 
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <Newspaper size={16} color="var(--ms-accent)" />
-            <span style={{ fontSize: 13, fontWeight: 800, color: "var(--ms-text)", fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.02em" }}>
+            <span style={{ fontSize: 13, fontWeight: 800, color: "var(--ms-text)", fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "0.02em" }}>
               MAXSPORT EDITORIAL
             </span>
             <span style={{ fontSize: 11, color: "var(--ms-muted)" }}>•</span>
@@ -194,9 +194,9 @@ export function NewsArticleModal({ article, onClose, onOpenHighlights }: Props) 
               id="news-article-title"
               style={{
                 margin: "0 0 14px",
-                fontFamily: "'Barlow Condensed', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: "clamp(22px, 4vw, 28px)",
-                fontWeight: 900,
+                fontWeight: 700,
                 color: "#fff",
                 lineHeight: 1.15,
                 letterSpacing: "-0.01em",

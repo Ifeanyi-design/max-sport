@@ -81,7 +81,7 @@ function StatCard({ label, value, sub, color = "#00d4ff" }: { label: string; val
       borderRadius: "14px", padding: "16px 18px",
       borderTop: `2px solid ${color}40`,
     }}>
-      <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "30px", fontWeight: 900, color: "#fff", lineHeight: 1 }}>{value}</div>
+      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "30px", fontWeight: 700, color: "#fff", lineHeight: 1 }}>{value}</div>
       <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#5e6280", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</div>
       {sub && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: color, marginTop: "2px" }}>{sub}</div>}
     </div>
@@ -142,10 +142,10 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
               display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "4px",
               boxShadow: `0 8px 40px ${player.teamColor}20`,
             }}>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "36px", fontWeight: 900, color: player.teamColor, lineHeight: 1 }}>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "36px", fontWeight: 700, color: player.teamColor, lineHeight: 1 }}>
                 {player.number}
               </span>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "11px", fontWeight: 700, color: player.teamColor + "99", letterSpacing: "1px" }}>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 700, color: player.teamColor + "99", letterSpacing: "1px" }}>
                 {player.posAbbr}
               </span>
             </div>
@@ -156,7 +156,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
               display: "flex", alignItems: "center", gap: "3px",
             }}>
               <Star size={9} fill="#f5c518" color="#f5c518" />
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "12px", fontWeight: 900, color: "#f5c518" }}>{player.rating}</span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", fontWeight: 700, color: "#f5c518" }}>{player.rating}</span>
             </div>
           </div>
 
@@ -171,11 +171,11 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
               <div style={{
                 background: `${player.teamColor}20`, border: `1px solid ${player.teamColor}40`,
                 borderRadius: "6px", padding: "2px 8px",
-                fontFamily: "'Barlow Condensed', sans-serif", fontSize: "11px", fontWeight: 700, color: player.teamColor,
+                fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 700, color: player.teamColor,
               }}>{player.team}</div>
             </div>
             <h1 style={{
-              fontFamily: "'Barlow Condensed', sans-serif", fontSize: "48px", fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif", fontSize: "48px", fontWeight: 700,
               color: "#fff", textTransform: "uppercase", letterSpacing: "-1px",
               lineHeight: 1, margin: "0 0 12px",
             }}>{player.name}</h1>
@@ -191,7 +191,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
               ].map(attr => (
                 <div key={attr.label}>
                   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#5e6280", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>{attr.label}</div>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "16px", fontWeight: 800, color: "#fff" }}>{attr.value}</div>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "16px", fontWeight: 700, color: "#fff" }}>{attr.value}</div>
                 </div>
               ))}
             </div>
@@ -213,7 +213,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                 { label: "Apps", value: player.apps, color: "#9095b8" },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: "center" }}>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "36px", fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "36px", fontWeight: 700, color: s.color, lineHeight: 1 }}>{s.value}</div>
                   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#5e6280", marginTop: "3px" }}>{s.label}</div>
                 </div>
               ))}
@@ -259,7 +259,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                   background: "rgba(13,13,28,0.7)", border: "1px solid rgba(255,255,255,0.06)",
                   borderRadius: "16px", padding: "20px",
                 }}>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "15px", fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "20px" }}>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "15px", fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "20px" }}>
                     Goals This Season
                   </div>
                   <div style={{ height: "160px" }}>
@@ -283,7 +283,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                   background: "rgba(13,13,28,0.7)", border: "1px solid rgba(255,255,255,0.06)",
                   borderRadius: "16px", padding: "20px",
                 }}>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "15px", fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "16px" }}>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "15px", fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "16px" }}>
                     Attribute Radar
                   </div>
                   <div style={{ height: "180px" }}>
@@ -310,7 +310,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                 background: "rgba(13,13,28,0.7)", border: "1px solid rgba(255,255,255,0.06)",
                 borderRadius: "16px", padding: "20px",
               }}>
-                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "15px", fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "16px" }}>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "15px", fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "16px" }}>
                   Recent Performances
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "10px" }}>
@@ -326,24 +326,24 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                           <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 700, color: "#e0e4f8" }}>vs {m.opponent}</span>
                           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                             <span style={{
-                              fontFamily: "'Barlow Condensed', sans-serif", fontSize: "13px", fontWeight: 800,
+                              fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700,
                               color: resultColor, background: `${resultColor}15`,
                               padding: "1px 6px", borderRadius: "4px",
                             }}>{m.result}</span>
-                            <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "14px", fontWeight: 800, color: "#fff" }}>{m.score}</span>
+                            <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, color: "#fff" }}>{m.score}</span>
                           </div>
                         </div>
                         <div style={{ display: "flex", gap: "12px" }}>
                           <div style={{ textAlign: "center" }}>
-                            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px", fontWeight: 900, color: "#00ff87", lineHeight: 1 }}>{m.goals}</div>
+                            <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "18px", fontWeight: 700, color: "#00ff87", lineHeight: 1 }}>{m.goals}</div>
                             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#5e6280" }}>⚽</div>
                           </div>
                           <div style={{ textAlign: "center" }}>
-                            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px", fontWeight: 900, color: "#00d4ff", lineHeight: 1 }}>{m.assists}</div>
+                            <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "18px", fontWeight: 700, color: "#00d4ff", lineHeight: 1 }}>{m.assists}</div>
                             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#5e6280" }}>🎯</div>
                           </div>
                           <div style={{ marginLeft: "auto", textAlign: "right" }}>
-                            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "20px", fontWeight: 900, color: m.rating >= 9 ? "#f5c518" : "#9095b8", lineHeight: 1 }}>{m.rating}</div>
+                            <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "20px", fontWeight: 700, color: m.rating >= 9 ? "#f5c518" : "#9095b8", lineHeight: 1 }}>{m.rating}</div>
                             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#5e6280" }}>Rating</div>
                           </div>
                         </div>
@@ -363,7 +363,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                 <div style={{ background: "rgba(13,13,28,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "16px", padding: "20px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
                     <Target size={16} color="#00ff87" />
-                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "15px", fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px" }}>Attack</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "15px", fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px" }}>Attack</span>
                   </div>
                   {[
                     { label: "Goals", value: player.goals, max: 50, color: "#00ff87" },
@@ -376,7 +376,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                     <div key={s.label} style={{ marginBottom: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
                         <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#9095b8" }}>{s.label}</span>
-                        <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "16px", fontWeight: 800, color: "#fff" }}>{s.value}</span>
+                        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "16px", fontWeight: 700, color: "#fff" }}>{s.value}</span>
                       </div>
                       {s.max && (
                         <div style={{ height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
@@ -396,7 +396,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                 <div style={{ background: "rgba(13,13,28,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "16px", padding: "20px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
                     <Shield size={16} color="#00d4ff" />
-                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "15px", fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px" }}>Physical & Duel</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "15px", fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.5px" }}>Physical & Duel</span>
                   </div>
                   {[
                     { label: "Appearances", value: player.apps, max: 38, color: "#9095b8" },
@@ -408,7 +408,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                     <div key={s.label} style={{ marginBottom: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
                         <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#9095b8" }}>{s.label}</span>
-                        <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "16px", fontWeight: 800, color: "#fff" }}>{s.value}</span>
+                        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "16px", fontWeight: 700, color: "#fff" }}>{s.value}</span>
                       </div>
                       {s.max && (
                         <div style={{ height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
@@ -465,7 +465,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                     <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#5e6280", display: "flex", alignItems: "center" }}>League</div>
                     {[row.apps, row.goals, row.assists, row.goals + row.assists].map((v, j) => (
                       <div key={j} style={{
-                        fontFamily: "'Barlow Condensed', sans-serif", fontSize: "16px", fontWeight: 800,
+                        fontFamily: "'Space Grotesk', sans-serif", fontSize: "16px", fontWeight: 700,
                         color: j === 1 ? "#00ff87" : j === 2 ? "#00d4ff" : j === 3 ? "#f5c518" : "#9095b8",
                         textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center",
                       }}>{v}</div>
@@ -483,7 +483,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
               }}>
                 <div style={{ fontSize: "32px" }}>🇳🇴</div>
                 <div>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "15px", fontWeight: 800, color: "#fff", marginBottom: "3px" }}>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "15px", fontWeight: 700, color: "#fff", marginBottom: "3px" }}>
                     Norway National Team
                   </div>
                   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#9095b8" }}>
@@ -491,7 +491,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                   </div>
                 </div>
                 <div style={{ marginLeft: "auto", textAlign: "right" }}>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "28px", fontWeight: 900, color: "#f5c518", lineHeight: 1 }}>31</div>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "28px", fontWeight: 700, color: "#f5c518", lineHeight: 1 }}>31</div>
                   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#5e6280" }}>int. goals</div>
                 </div>
               </div>
@@ -517,7 +517,7 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                       }}
                     >
                       <div style={{
-                        fontFamily: "'Barlow Condensed', sans-serif", fontSize: "13px", fontWeight: 800,
+                        fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700,
                         color: resultColor, background: `${resultColor}15`,
                         padding: "4px 8px", borderRadius: "6px", minWidth: "28px", textAlign: "center",
                       }}>{m.result}</div>
@@ -527,15 +527,15 @@ export function PlayerProfilePage({ setActiveScreen }: PlayerProfilePageProps) {
                       </div>
                       <div style={{ display: "flex", gap: "16px" }}>
                         <div style={{ textAlign: "center" }}>
-                          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px", fontWeight: 900, color: "#00ff87", lineHeight: 1 }}>{m.goals}</div>
+                          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "18px", fontWeight: 700, color: "#00ff87", lineHeight: 1 }}>{m.goals}</div>
                           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#5e6280" }}>G</div>
                         </div>
                         <div style={{ textAlign: "center" }}>
-                          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px", fontWeight: 900, color: "#00d4ff", lineHeight: 1 }}>{m.assists}</div>
+                          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "18px", fontWeight: 700, color: "#00d4ff", lineHeight: 1 }}>{m.assists}</div>
                           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#5e6280" }}>A</div>
                         </div>
                         <div style={{ textAlign: "center" }}>
-                          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px", fontWeight: 900, color: m.rating >= 9 ? "#f5c518" : "#9095b8", lineHeight: 1 }}>{m.rating}</div>
+                          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "18px", fontWeight: 700, color: m.rating >= 9 ? "#f5c518" : "#9095b8", lineHeight: 1 }}>{m.rating}</div>
                           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#5e6280" }}>Rat.</div>
                         </div>
                       </div>

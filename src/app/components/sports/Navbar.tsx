@@ -54,12 +54,12 @@ export function Navbar({ activeScreen, setActiveScreen, mode, setMode }: NavbarP
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '2px', cursor: 'pointer' }}>
                 <span style={{
-                  fontFamily: "'Barlow Condensed', sans-serif", fontSize: '22px', fontWeight: 900,
-                  letterSpacing: '-0.5px', color: '#fff', lineHeight: 1,
+                  fontFamily: "'Space Grotesk', sans-serif", fontSize: '22px', fontWeight: 700,
+                  letterSpacing: '-0.03em', color: '#fff', lineHeight: 1,
                 }}>MAX</span>
                 <span style={{
-                  fontFamily: "'Barlow Condensed', sans-serif", fontSize: '22px', fontWeight: 900,
-                  letterSpacing: '-0.5px', lineHeight: 1,
+                  fontFamily: "'Space Grotesk', sans-serif", fontSize: '22px', fontWeight: 700,
+                  letterSpacing: '-0.03em', lineHeight: 1,
                   background: 'linear-gradient(135deg, #e53e3e 0%, #ff6b6b 100%)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
                 }}>CINEMA</span>
@@ -77,7 +77,7 @@ export function Navbar({ activeScreen, setActiveScreen, mode, setMode }: NavbarP
                     }}
                   >
                     <span style={{
-                      fontFamily: "'Barlow Condensed', sans-serif", fontSize: '11px',
+                      fontFamily: "'Inter', sans-serif", fontSize: '11px',
                       fontWeight: 800, letterSpacing: '1.5px', color: '#07070f',
                     }}>SPORTS</span>
                   </motion.div>
@@ -160,7 +160,7 @@ export function Navbar({ activeScreen, setActiveScreen, mode, setMode }: NavbarP
                 onClick={() => setMode(mode === 'sports' ? 'movies' : 'sports')}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '6px',
-                  padding: '6px 13px', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                  padding: '6px 13px', borderRadius: '8px', cursor: 'pointer',
                   fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600,
                   letterSpacing: '0.03em', transition: 'all 0.2s',
                   ...(mode === 'sports'

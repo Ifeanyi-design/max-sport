@@ -220,7 +220,7 @@ function FixtureRow({ f, onClick }: { f: FixtureCard; onClick?: () => void }) {
       {/* Time / status */}
       <div style={{
         width: 46, textAlign: "center", flexShrink: 0,
-        fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800,
+        fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
       }}>
         {isLive ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
@@ -255,8 +255,8 @@ function FixtureRow({ f, onClick }: { f: FixtureCard; onClick?: () => void }) {
             </span>
             {(isLive || isFinished) && (
               <span style={{
-                fontFamily: "'Barlow Condensed', sans-serif",
-                fontWeight: 900, fontSize: 16,
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700, fontSize: 16,
                 fontVariantNumeric: "tabular-nums",
                 color: "var(--ms-text)",
               }}>

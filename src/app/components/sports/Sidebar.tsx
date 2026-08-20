@@ -46,7 +46,7 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
 const LIVE_RELATED: Screen[] = ["live-list", "live-match"];
 const TEAM_RELATED: Screen[] = ["teams", "team"];
 
-/* Wordmark inline — avoids import */
+/* Wordmark inline — Premium branding */
 function Logo({ onClick }: { onClick: () => void }) {
   return (
     <button
@@ -54,20 +54,20 @@ function Logo({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       style={{
         background: "none", border: "none", cursor: "pointer",
-        display: "flex", alignItems: "center", gap: 0, padding: 0,
+        display: "flex", alignItems: "center", gap: 2, padding: 0,
       }}
       aria-label="MaxSport home"
     >
       <span style={{
-        fontFamily: "'Barlow Condensed', sans-serif",
-        fontSize: 22, fontWeight: 900, letterSpacing: "-0.5px",
+        fontFamily: "'Sora', sans-serif",
+        fontSize: 21, fontWeight: 800, letterSpacing: "-0.03em",
         color: "#fff", lineHeight: 1,
       }}>MAX</span>
       <span style={{
-        fontFamily: "'Barlow Condensed', sans-serif",
-        fontSize: 22, fontWeight: 900, letterSpacing: "-0.5px",
+        fontFamily: "'Sora', sans-serif",
+        fontSize: 21, fontWeight: 800, letterSpacing: "-0.03em",
         lineHeight: 1,
-        background: "linear-gradient(135deg, #2563eb 0%, #60a5fa 100%)",
+        background: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
         WebkitBackgroundClip: "text",
         WebkitTextFillColor: "transparent",
       }}>SPORT</span>
@@ -145,9 +145,9 @@ export function Sidebar({
             aria-label="MaxSport"
             style={{
               border: "none", cursor: "pointer",
-              fontFamily: "'Barlow Condensed', sans-serif",
-              fontSize: 22, fontWeight: 900,
-              background: "linear-gradient(135deg, #2563eb 0%, #60a5fa 100%)",
+              fontFamily: "'Sora', sans-serif",
+              fontSize: 24, fontWeight: 800,
+              background: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               padding: 0, letterSpacing: "-0.04em",
@@ -164,16 +164,16 @@ export function Sidebar({
       <nav
         ref={navRef}
         className="ms-scroll"
-        style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}
+        style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "8px 0" }}
       >
         {NAV_SECTIONS.map((section) => (
-          <div key={section.label} style={{ marginBottom: 4 }}>
+          <div key={section.label} style={{ marginBottom: 8 }}>
             {!collapsed && (
               <div
                 style={{
-                  padding: "14px 19px 5px",
-                  fontSize: 10, fontWeight: 800,
-                  color: "rgba(122,144,168,0.5)",
+                  padding: "16px 20px 8px",
+                  fontSize: 11, fontWeight: 700,
+                  color: "rgba(132,150,171,0.6)",
                   textTransform: "uppercase",
                   letterSpacing: "0.12em",
                   fontFamily: "'Inter', sans-serif",
@@ -182,7 +182,7 @@ export function Sidebar({
                 {section.label}
               </div>
             )}
-            <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {section.items.map((item) => {
                 const active = isNavActive(item.screen);
                 const isLiveItem = item.isLive;
@@ -194,22 +194,23 @@ export function Sidebar({
                     onClick={() => setActiveScreen(item.screen)}
                     style={{
                       width: "100%",
-                      height: 40,
+                      height: 44,
                       border: "none",
                       borderLeft: `3px solid ${active ? "var(--ms-accent)" : "transparent"}`,
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: collapsed ? "center" : "flex-start",
-                      gap: 10,
-                      padding: collapsed ? "0 0 0 0" : "0 16px 0 13px",
+                      gap: 12,
+                      padding: collapsed ? "0 0 0 0" : "0 18px 0 15px",
                       background: active
-                        ? "rgba(37,99,235,0.12)"
+                        ? "rgba(59,130,246,0.14)"
                         : "transparent",
-                      transition: "background 0.14s, color 0.14s",
+                      transition: "background 0.2s ease, color 0.2s ease",
+                      borderRadius: active ? "0 8px 8px 0" : 0,
                     }}
                     onMouseEnter={(e) => {
-                      if (!active) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.04)";
+                      if (!active) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)";
                     }}
                     onMouseLeave={(e) => {
                       if (!active) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
@@ -218,7 +219,7 @@ export function Sidebar({
                     {/* Icon */}
                     <span style={{ position: "relative", display: "inline-flex", flexShrink: 0 }}>
                       <item.Icon
-                        size={17}
+                        size={18}
                         color={
                           active
                             ? "#fff"
@@ -226,22 +227,23 @@ export function Sidebar({
                             ? "var(--ms-live-bright)"
                             : "var(--ms-muted)"
                         }
-                        strokeWidth={active ? 2.3 : 1.7}
+                        strokeWidth={active ? 2.2 : 1.8}
                       />
                       {/* Live count badge */}
                       {isLiveItem && liveCount > 0 && (
                         <span
                           style={{
                             position: "absolute",
-                            top: -6, right: -8,
-                            minWidth: 14, height: 13,
-                            borderRadius: 7,
+                            top: -7, right: -9,
+                            minWidth: 16, height: 15,
+                            borderRadius: 8,
                             background: "var(--ms-live)",
                             color: "#fff",
-                            fontFamily: "'Barlow Condensed', sans-serif",
-                            fontSize: 9, fontWeight: 900,
+                            fontFamily: "'Inter', sans-serif",
+                            fontSize: 9, fontWeight: 700,
                             display: "flex", alignItems: "center",
-                            justifyContent: "center", padding: "0 3px",
+                            justifyContent: "center", padding: "0 4px",
+                            boxShadow: "0 2px 6px rgba(16,185,129,0.4)",
                           }}
                         >
                           {liveCount}
@@ -254,10 +256,11 @@ export function Sidebar({
                       <span
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: 13,
-                          fontWeight: active ? 700 : 500,
+                          fontSize: 14,
+                          fontWeight: active ? 600 : 500,
                           color: active ? "#fff" : "var(--ms-muted)",
-                          transition: "color 0.14s",
+                          transition: "color 0.2s ease",
+                          letterSpacing: "-0.01em",
                         }}
                       >
                         {item.label}

@@ -70,7 +70,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
           borderRadius: '14px', padding: '16px',
         }}>
           <div style={{
-            fontFamily: "'Barlow Condensed', sans-serif", fontSize: '14px', fontWeight: 800,
+            fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', fontWeight: 700,
             color: '#00d4ff', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px',
           }}>Mobile UX Notes</div>
           {[
@@ -139,10 +139,10 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
             position: 'sticky', top: 0, zIndex: 10,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '18px', fontWeight: 900, color: '#fff' }}>MAX</span>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '18px', fontWeight: 900, background: 'linear-gradient(135deg, #e53e3e, #ff6b6b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>CINEMA</span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '18px', fontWeight: 700, color: '#fff' }}>MAX</span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '18px', fontWeight: 700, background: 'linear-gradient(135deg, #e53e3e, #ff6b6b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>CINEMA</span>
               <div style={{ background: 'linear-gradient(135deg, #00d4ff, #00ff87)', borderRadius: '4px', padding: '2px 6px' }}>
-                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '9px', fontWeight: 800, color: '#000', letterSpacing: '1px' }}>SPORTS</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', fontWeight: 800, color: '#000', letterSpacing: '1px' }}>SPORTS</span>
               </div>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
@@ -182,7 +182,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
                     background: '#ff3b3b', borderRadius: '6px', padding: '3px 8px',
                   }}>
                     <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'livePulse 1.4s infinite' }} />
-                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '10px', fontWeight: 800, color: '#fff', letterSpacing: '1px' }}>LIVE</span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', fontWeight: 800, color: '#fff', letterSpacing: '1px' }}>LIVE</span>
                   </div>
                   <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}>Champions League · QF</span>
                 </div>
@@ -197,14 +197,14 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
                       width: '44px', height: '44px', borderRadius: '50%', margin: '0 auto 6px',
                       background: 'linear-gradient(135deg, #ffd700, #ffa500)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: "'Barlow Condensed', sans-serif", fontSize: '11px', fontWeight: 900, color: '#000',
+                      fontFamily: "'Space Grotesk', sans-serif", fontSize: '11px', fontWeight: 700, color: '#000',
                     }}>RMA</div>
                     <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 700, color: '#fff' }}>Real Madrid</span>
                   </div>
                   {/* Score */}
                   <div style={{ textAlign: 'center', padding: '0 12px' }}>
-                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '38px', fontWeight: 900, color: '#fff', letterSpacing: '-2px', lineHeight: 1 }}>2—1</div>
-                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '14px', fontWeight: 800, color: '#ff3b3b', marginTop: '4px' }}>67'</div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '38px', fontWeight: 700, color: '#fff', letterSpacing: '-2px', lineHeight: 1 }}>2—1</div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', fontWeight: 700, color: '#ff3b3b', marginTop: '4px' }}>67'</div>
                   </div>
                   {/* Away */}
                   <div style={{ textAlign: 'center', flex: 1 }}>
@@ -212,7 +212,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
                       width: '44px', height: '44px', borderRadius: '50%', margin: '0 auto 6px',
                       background: 'linear-gradient(135deg, #e63946, #c1121f)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: "'Barlow Condensed', sans-serif", fontSize: '11px', fontWeight: 900, color: '#fff',
+                      fontFamily: "'Space Grotesk', sans-serif", fontSize: '11px', fontWeight: 700, color: '#fff',
                     }}>FCB</div>
                     <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 700, color: '#fff' }}>Bayern Munich</span>
                   </div>
@@ -237,7 +237,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
           {/* Sport categories */}
           <div style={{ marginBottom: '20px' }}>
             <div style={{ padding: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '15px', fontWeight: 800, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Browse Sports</span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '15px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Browse Sports</span>
             </div>
             <div ref={scrollRef} className="mobile-scroll" style={{ display: 'flex', gap: '8px', padding: '0 16px', overflowX: 'auto' }}>
               {sports.map((sport, i) => (
@@ -264,9 +264,9 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
           <div style={{ marginBottom: '24px' }}>
             <div style={{ padding: '0 16px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '15px', fontWeight: 800, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Live Now</span>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '15px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Live Now</span>
                 <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ff3b3b', display: 'inline-block', animation: 'livePulse 1.4s infinite', boxShadow: '0 0 8px #ff3b3b' }} />
-                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '11px', fontWeight: 700, color: '#ff3b3b' }}>{liveMatches.length}</span>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '11px', fontWeight: 700, color: '#ff3b3b' }}>{liveMatches.length}</span>
               </div>
               <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#5e6280' }}>
                 See all <ChevronRight size={12} />
@@ -286,10 +286,10 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                     <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', fontWeight: 700, color: '#5e6280', textTransform: 'uppercase' }}>{m.league}</span>
-                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '11px', fontWeight: 800, color: '#ff3b3b' }}>{m.time}</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '11px', fontWeight: 700, color: '#ff3b3b' }}>{m.time}</span>
                   </div>
                   <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '24px', fontWeight: 900, color: '#fff', letterSpacing: '-1px', lineHeight: 1 }}>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '24px', fontWeight: 700, color: '#fff', letterSpacing: '-1px', lineHeight: 1 }}>
                       {m.homeScore}—{m.awayScore}
                     </div>
                   </div>
@@ -304,7 +304,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
           {/* Upcoming matches */}
           <div style={{ padding: '0 12px', marginBottom: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', padding: '0 4px' }}>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '15px', fontWeight: 800, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Upcoming</span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '15px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Upcoming</span>
               <button onClick={() => setActiveScreen('fixtures')} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#00d4ff' }}>
                 All Fixtures <ChevronRight size={12} />
               </button>
@@ -351,7 +351,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
               <div style={{ fontSize: '32px', flexShrink: 0 }}>🏆</div>
               <div style={{ flex: 1 }}>
                 <div style={{
-                  fontFamily: "'Barlow Condensed', sans-serif", fontSize: '15px', fontWeight: 900,
+                  fontFamily: "'Space Grotesk', sans-serif", fontSize: '15px', fontWeight: 700,
                   color: '#fff', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px',
                 }}>World Cup 2026</div>
                 <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#8b6f2a' }}>104 matches streaming live</div>
@@ -383,7 +383,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
           }}
         >
           <Zap size={18} fill="#fff" color="#fff" />
-          <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '8px', fontWeight: 900, color: '#fff', letterSpacing: '1px' }}>LIVE</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '8px', fontWeight: 900, color: '#fff', letterSpacing: '1px' }}>LIVE</span>
         </motion.button>
 
         {/* Bottom Navigation */}
@@ -442,7 +442,7 @@ export function MobileSportsPage({ setActiveScreen }: MobileSportsPageProps) {
           borderRadius: '14px', padding: '16px',
         }}>
           <div style={{
-            fontFamily: "'Barlow Condensed', sans-serif", fontSize: '14px', fontWeight: 800,
+            fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', fontWeight: 700,
             color: '#f5c518', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px',
           }}>Navigation Model</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

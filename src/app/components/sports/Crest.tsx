@@ -6,6 +6,8 @@ import { getClubDictionaryLogo } from "./clubLogos";
 interface CrestProps {
   /** Preferred logo URL (from DB). May be null. */
   src?: string | null;
+  /** Full ordered list of candidate logo URLs (DB + CDN fallbacks). */
+  srcs?: Array<string | null | undefined>;
   /** Extra CDN fallback URLs to try if src fails or is null. */
   fallbackSrcs?: string[];
   name?: string | null;
@@ -15,6 +17,8 @@ interface CrestProps {
   /** Explicit background color; derived from name if omitted */
   bgColor?: string;
   country?: string | null;
+  /** Extra inline styles applied to the outer badge */
+  style?: React.CSSProperties;
 }
 
 function darken(hex: string, amount = 0.55): string {
@@ -25,20 +29,16 @@ function darken(hex: string, amount = 0.55): string {
   return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
-export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, bgColor, country }: CrestProps) {
+export function Crest({ src, srcs, fallbackSrcs = [], name, abbr, size = 28, radius, bgColor, country, style }: CrestProps) {
   // 1. Direct dictionary logo for world football clubs
   const dictLogo = getClubDictionaryLogo(name);
 
   // 2. Check if name is a known country (National team)
   const countryFlagUrl = getCountryFlagUrl(name || country, size > 32 ? 80 : 40);
 
-  const allSrcs = [
-    src,
-    dictLogo,
-    ...fallbackSrcs,
-    countryFlagUrl,
-  ].filter(Boolean) as string[];
-
+  // 3. Candidate URLs: explicit list (srcs) or src + CDN fallbacks
+  const explicit = (srcs && srcs.length ? srcs : [src, ...fallbackSrcs]).filter(Boolean) as string[];
+  const allSrcs = [...explicit, dictLogo, countryFlagUrl].filter(Boolean) as string[];
 
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
@@ -96,6 +96,7 @@ export function Crest({ src, fallbackSrcs = [], name, abbr, size = 28, radius, b
         background: showImg ? "rgba(255,255,255,0.06)" : `linear-gradient(145deg, ${derivedColor}, ${derivedDark})`,
         border: showImg ? "1px solid rgba(255,255,255,0.12)" : `1px solid rgba(255,255,255,0.25)`,
         boxShadow: "0 2px 8px rgba(0,0,0,0.35)",
+        ...style,
       }}
     >
       {showImg ? (

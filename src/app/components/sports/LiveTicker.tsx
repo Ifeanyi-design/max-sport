@@ -10,8 +10,8 @@ interface TickerMatch {
   as: number | null;
   min: string | null;
   status: string;
-  homeLogo?: string;
-  awayLogo?: string;
+  homeLogo?: string | null;
+  awayLogo?: string | null;
   homeProviderId?: string | number | null;
   awayProviderId?: string | number | null;
   homeProviderName?: string | null;
@@ -57,13 +57,13 @@ export function LiveTicker({ matches, onMatchClick }: LiveTickerProps) {
           const awayHigh = (m.as ?? 0) > (m.hs ?? 0);
           const homeSrcs = teamLogoSources({
             logo_url: m.homeLogo,
-            provider_team_id: m.homeProviderId,
+            provider_team_id: m.homeProviderId != null ? String(m.homeProviderId) : null,
             provider_name: m.homeProviderName,
             name: m.home,
           });
           const awaySrcs = teamLogoSources({
             logo_url: m.awayLogo,
-            provider_team_id: m.awayProviderId,
+            provider_team_id: m.awayProviderId != null ? String(m.awayProviderId) : null,
             provider_name: m.awayProviderName,
             name: m.away,
           });

@@ -141,12 +141,12 @@ export function HighlightsPage({ setActiveScreen }: Props) {
     const matchesTag =
       selectedTag === "all" ||
       v.tags.some((t) => t.includes(selectedTag)) ||
-      v.competition.toLowerCase().includes(selectedTag);
+      (v.competition || "").toLowerCase().includes(selectedTag);
 
     const matchesQuery =
       !q ||
       v.title.toLowerCase().includes(q) ||
-      v.competition.toLowerCase().includes(q) ||
+      (v.competition || "").toLowerCase().includes(q) ||
       v.tags.some((t) => t.includes(q));
 
     return matchesTag && matchesQuery;
@@ -158,7 +158,7 @@ export function HighlightsPage({ setActiveScreen }: Props) {
       VERIFIED_FOOTBALL_VIDEOS.find(
         (v) =>
           v.tags.some((t) => m.home.toLowerCase().includes(t) || m.away.toLowerCase().includes(t)) ||
-          v.competition.toLowerCase().includes((m.league || "").toLowerCase())
+          (v.competition || "").toLowerCase().includes((m.league || "").toLowerCase())
       ) || VERIFIED_FOOTBALL_VIDEOS[0];
 
     setSelectedVideo({
@@ -310,7 +310,7 @@ export function HighlightsPage({ setActiveScreen }: Props) {
                       </span>
                     </div>
 
-                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 18, fontWeight: 900, flexShrink: 0 }}>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 700, flexShrink: 0 }}>
                       {m.hs} - {m.as}
                     </div>
 

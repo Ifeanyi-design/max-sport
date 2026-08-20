@@ -68,7 +68,7 @@ export function StandingsPage({ slug, onBack, onSelectCompetition, onOpenMatch }
   const zonesPresent = new Set(rows.map((r) => r.zone).filter((z) => z !== "normal"));
 
   const filteredFixtures = fixtures.filter((f) => {
-    if (matchTab === "upcoming") return f.status === "scheduled" || f.status === "upcoming";
+    if (matchTab === "upcoming") return f.status === "upcoming";
     if (matchTab === "results") return (f.status || "").toUpperCase() === "FT" || isLiveStatus(f.status);
     return true;
   });

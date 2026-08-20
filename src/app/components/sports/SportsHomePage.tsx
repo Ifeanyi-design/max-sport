@@ -152,7 +152,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
   const today = todayKey();
   const tomorrow = tomorrowKey();
   const liveList = live ?? [];
-  const upcoming = matches?.filter(m => m.date === today || m.date === tomorrow || m.status === "scheduled") ?? [];
+  const upcoming = matches?.filter(m => m.date === today || m.date === tomorrow || m.status === "upcoming") ?? [];
   const allLeft = [...liveList, ...upcoming];
 
   // Featured Spotlight Hero match (DAZN/FIFA+ style)
@@ -187,7 +187,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
       <LiveTicker
         matches={liveList.map(m => ({
           id: m.id, home: m.home, away: m.away,
-          hs: m.hs, as: m.as, min: m.min, status: m.status,
+          hs: m.hs, as: m.as, min: m.min ?? null, status: m.status,
           homeLogo: m.homeLogo, awayLogo: m.awayLogo,
           homeProviderId: m.homeProviderId, awayProviderId: m.awayProviderId,
           homeProviderName: m.homeProviderName, awayProviderName: m.awayProviderName,
@@ -265,12 +265,13 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
                       {heroMatch.hs} – {heroMatch.as}
                     </div>
                   ) : (
-                    <div style={{
-                      fontFamily: "'Barlow Condensed', sans-serif",
-                      fontSize: 24, fontWeight: 900, color: "#fff",
-                    }}>
-                      {heroMatch.time || "VS"}
-                    </div>
+                  <div style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 26, fontWeight: 700, color: "#fff",
+                    letterSpacing: "-0.02em",
+                  }}>
+                    {heroMatch.time || "VS"}
+                  </div>
                   )}
                   <div style={{ fontSize: 10, color: isLiveStatus(heroMatch.status) ? "var(--ms-live-bright)" : "var(--ms-muted)", fontWeight: 700 }}>
                     {isLiveStatus(heroMatch.status) ? (heroMatch.min || "LIVE") : fmtDate(heroMatch.date)}
@@ -369,8 +370,9 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <h2 style={{
-                  margin: 0, fontFamily: "'Barlow Condensed', sans-serif",
-                  fontSize: 18, fontWeight: 900, color: "var(--ms-text)",
+                  margin: 0, fontFamily: "'Sora', sans-serif",
+                  fontSize: 20, fontWeight: 700, color: "var(--ms-text)",
+                  letterSpacing: "-0.02em",
                 }}>
                   {statusFilter === "live" ? "Live Fixtures" : "Match Schedule & Scores"}
                 </h2>
@@ -396,7 +398,7 @@ export function SportsHomePage({ setActiveScreen, onOpenMatch, onOpenCompetition
             {error && (
               <div style={{ padding: 24, textAlign: "center", color: "var(--ms-muted)", fontSize: 13 }}>
                 Could not load matches.{" "}
-                <button type="button" onClick={load} style={{ color: "var(--ms-accent)", background: "none", border: "none", cursor: "pointer", fontWeight: 700 }}>Retry</button>
+                <button type="button" onClick={() => load()} style={{ color: "var(--ms-accent)", background: "none", border: "none", cursor: "pointer", fontWeight: 700 }}>Retry</button>
               </div>
             )}
 

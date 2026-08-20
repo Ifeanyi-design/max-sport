@@ -25,22 +25,22 @@ export function Wordmark({ size = "md", stacked = false, onClick }: WordmarkProp
     >
       <span
         style={{
-          fontFamily: "'Barlow Condensed', sans-serif",
+          fontFamily: "'Space Grotesk', sans-serif",
           fontSize: fs,
-          fontWeight: 900,
+          fontWeight: 700,
           color: "#fff",
-          letterSpacing: "-0.04em",
+          letterSpacing: "-0.03em",
         }}
       >
         MAX
       </span>
       <span
         style={{
-          fontFamily: "'Barlow Condensed', sans-serif",
+          fontFamily: "'Space Grotesk', sans-serif",
           fontSize: fs,
-          fontWeight: 900,
+          fontWeight: 700,
           color: "#c81e1e",
-          letterSpacing: "-0.04em",
+          letterSpacing: "-0.03em",
         }}
       >
         SPORT

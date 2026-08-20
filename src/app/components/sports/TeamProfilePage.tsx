@@ -73,7 +73,7 @@ export function TeamProfilePage({ slug, onBack, onOpenMatch, onOpenCompetition }
   ].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
 
   const filteredMatches = allMatches.filter((m) => {
-    if (matchFilter === "upcoming") return m.status === "scheduled" || m.status === "upcoming";
+    if (matchFilter === "upcoming") return m.status === "upcoming";
     if (matchFilter === "results") return (m.status || "").toUpperCase() === "FT" || isLiveStatus(m.status);
     return true;
   });
@@ -133,9 +133,9 @@ export function TeamProfilePage({ slug, onBack, onOpenMatch, onOpenCompetition }
             <div style={{ flex: 1, minWidth: 0 }}>
               <h1 style={{
                 margin: "0 0 4px",
-                fontFamily: "'Barlow Condensed', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: "clamp(22px, 4vw, 32px)",
-                fontWeight: 900, color: "#fff", lineHeight: 1.1,
+                fontWeight: 700, color: "#fff", lineHeight: 1.1,
               }}>
                 {detail.team.name}
               </h1>
@@ -225,8 +225,8 @@ export function TeamProfilePage({ slug, onBack, onOpenMatch, onOpenCompetition }
                         </div>
                       </div>
                       <span style={{
-                        fontFamily: "'Barlow Condensed', sans-serif",
-                        fontSize: 22, fontWeight: 900, color: "var(--ms-accent)",
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: 22, fontWeight: 700, color: "var(--ms-accent)",
                       }}>
                         #{row.position}
                       </span>

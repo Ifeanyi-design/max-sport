@@ -222,12 +222,13 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
                 </div>
               ) : (
                 <div style={{
-                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontFamily: "'Space Grotesk', sans-serif",
                   fontSize: "clamp(28px, 6vw, 40px)",
-                  fontWeight: 900,
+                  fontWeight: 700,
                   color: "#fff",
                   lineHeight: 1,
                   margin: "4px 0",
+                  letterSpacing: "-0.02em",
                 }}>
                   {match.kickoff_at ? new Date(match.kickoff_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "VS"}
                 </div>
@@ -498,21 +499,21 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
                       border: "1px solid var(--ms-border)", textAlign: "center",
                     }}>
                       <div style={{ fontSize: 11, color: "var(--ms-muted)", fontWeight: 700 }}>1 ({homeName})</div>
-                      <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 22, fontWeight: 900, color: "var(--ms-accent)", marginTop: 2 }}>1.65</div>
+                      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: "var(--ms-accent)", marginTop: 2 }}>1.65</div>
                     </div>
                     <div style={{
                       padding: "12px", borderRadius: 8, background: "var(--ms-surface-2)",
                       border: "1px solid var(--ms-border)", textAlign: "center",
                     }}>
                       <div style={{ fontSize: 11, color: "var(--ms-muted)", fontWeight: 700 }}>X (Draw)</div>
-                      <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 22, fontWeight: 900, color: "#fff", marginTop: 2 }}>3.80</div>
+                      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: "#fff", marginTop: 2 }}>3.80</div>
                     </div>
                     <div style={{
                       padding: "12px", borderRadius: 8, background: "var(--ms-surface-2)",
                       border: "1px solid var(--ms-border)", textAlign: "center",
                     }}>
                       <div style={{ fontSize: 11, color: "var(--ms-muted)", fontWeight: 700 }}>2 ({awayName})</div>
-                      <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 22, fontWeight: 900, color: "var(--ms-loss)", marginTop: 2 }}>5.20</div>
+                      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: "var(--ms-loss)", marginTop: 2 }}>5.20</div>
                     </div>
                   </div>
 
@@ -644,7 +645,7 @@ export function LiveMatchPage({ matchId, onBack }: Props) {
                             background: event.event_type === "goal" ? "rgba(34,197,94,0.06)" : "transparent",
                           }}
                         >
-                          <strong style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 16, color: event.event_type === "goal" ? "var(--ms-win)" : "var(--ms-muted)" }}>
+                          <strong style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, color: event.event_type === "goal" ? "var(--ms-win)" : "var(--ms-muted)" }}>
                             {event.minute != null ? `${event.minute}'` : event.clock || "–"}
                           </strong>
                           <div>
@@ -836,9 +837,9 @@ function StatRow({ label, home, away }: { label: string; home: number; away: num
         fontSize: 13,
       }}
     >
-      <strong style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 16, width: 30 }}>{home}</strong>
+      <strong style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, width: 30 }}>{home}</strong>
       <span style={{ color: "var(--ms-muted)", fontSize: 12 }}>{label}</span>
-      <strong style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 16, width: 30, textAlign: "right" }}>{away}</strong>
+      <strong style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, width: 30, textAlign: "right" }}>{away}</strong>
     </div>
   );
 }

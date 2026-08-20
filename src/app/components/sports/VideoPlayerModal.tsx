@@ -155,8 +155,8 @@ export function VideoPlayerModal({
                 style={{
                   margin: 0,
                   fontSize: "clamp(15px, 2.5vw, 19px)",
-                  fontFamily: "'Barlow Condensed', sans-serif",
-                  fontWeight: 800,
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
                   color: "#fff",
                   lineHeight: 1.2,
                 }}
